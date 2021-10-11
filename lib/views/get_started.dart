@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:windmill_general_trading/views/routes/app_routes.dart';
+import 'package:windmill_general_trading/views/utils/utils_exporter.dart';
+import 'package:windmill_general_trading/views/utils/widgets/widgets_exporter.dart';
 
 class GetStarted extends StatelessWidget {
   const GetStarted({Key? key}) : super(key: key);
@@ -6,89 +9,75 @@ class GetStarted extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 20.0,
-            vertical: 20.0,
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("${Common.assetsImages}background.jpg"),
+            fit: BoxFit.fill,
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              // for header including app icon, name and little description
-              Container(
-                child: Column(
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20.0,
+              vertical: 20.0,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
                   children: [
-                    Image.asset("assets/images/temp_image.png"),
-                    Text("WINDMILL"),
+                    const SizedBox(height: 40.0),
+                    Image.asset(
+                      "${Common.assetsImages}application_icon.png",
+                      height: 100.0,
+                    ),
+                    const SizedBox(height: 15.0),
+                    Text(
+                      "WINDMILL",
+                      style: TextStyle(
+                        color: AppColors.appWhiteColor,
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     const SizedBox(height: 5.0),
                     Text(
-                      "Shop local stores for beverages Free delivery on the same day",
+                      "Shop local stores for beverages\nFree delivery on the same day",
+                      style: TextStyle(
+                        color: AppColors.appWhiteColor.withOpacity(0.5),
+                        fontSize: 18.0,
+                      ),
                       textAlign: TextAlign.center,
                     ),
                   ],
                 ),
-              ),
-              // for register or login buttons / social logins
-              Container(
-                child: Column(
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Colors.black,
-                          width: 1,
-                        ),
+                    PrimaryButton(
+                      title: "REGISTER",
+                      buttonBorder: Border.all(
+                        color: AppColors.appWhiteColor,
+                        width: 1.5,
                       ),
-                      padding: EdgeInsets.symmetric(vertical: 15.0),
-                      child: Center(
-                        child: Text(
-                          "REGISTER",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 1.6,
-                            fontSize: 17.0,
-                          ),
-                        ),
-                      ),
+                      buttonColor: Colors.transparent,
+                      onPressed: () => Navigator.of(context)
+                          .pushNamed(AppRoutes.registerRoute),
                     ),
                     const SizedBox(height: 15.0),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Color(0XFFE74D4B),
-                      ),
-                      padding: EdgeInsets.symmetric(vertical: 15.0),
-                      child: Center(
-                        child: Text(
-                          "LOG IN",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 1.6,
-                            fontSize: 17.0,
-                          ),
-                        ),
-                      ),
+                    PrimaryButton(
+                      title: 'LOG IN',
+                      onPressed: () =>
+                          Navigator.of(context).pushNamed(AppRoutes.loginRoute),
                     ),
                     const SizedBox(height: 15.0),
-                    Text(
-                      "-or register with-",
-                      style: TextStyle(),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 5.0),
-                    Row(
-                      children: [
-                        Container(),
-                      ],
-                    ),
+                    ContinueWithAndSocialAuthSection(),
                   ],
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

@@ -4,7 +4,8 @@ import 'package:windmill_general_trading/views/views_exporter.dart';
 
 import 'views/routes/app_routes.dart';
 
-void main() {
+void main() async {
+  await Common.licensesFonts();
   runApp(MyApp());
 }
 
@@ -15,9 +16,21 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: '${Common.applicationName}',
       debugShowCheckedModeBanner: false,
-      initialRoute: AppRoutes.initialRoute,
+      theme: ThemeData(scaffoldBackgroundColor: AppColors.appWhiteColor),
+      initialRoute: AppRoutes.dashboardRoute,
       routes: {
-        AppRoutes.initialRoute: (context) => GetStarted(),
+        AppRoutes.getStartedRoute: (context) => GetStarted(),
+        AppRoutes.loginRoute: (context) => Login(),
+        AppRoutes.registerRoute: (context) => Register(),
+        AppRoutes.forgetPasswordRoute: (context) => ForgetPassword(),
+        AppRoutes.chooseOptionRoute: (context) => ChooseOption(),
+        AppRoutes.dashboardRoute: (context) => Dashboard(),
+        AppRoutes.shopBuyRoute: (context) => ShopBuy(),
+        AppRoutes.shoppingCartRoute: (context) => ShoppingCart(),
+        AppRoutes.ordersRoute: (context) => Orders(),
+        AppRoutes.blogRoute: (context) => Blog(),
+        AppRoutes.contactUsRoute: (context) => ContactUs(),
+        AppRoutes.productDetailRoute: (context) => ProductDetail(),
       },
     );
   }
