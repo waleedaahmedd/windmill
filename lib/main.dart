@@ -16,7 +16,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: '${Common.applicationName}',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(scaffoldBackgroundColor: AppColors.appWhiteColor),
+      theme: ThemeData(
+        scaffoldBackgroundColor: AppColors.appWhiteColor,
+        bottomSheetTheme:
+            BottomSheetThemeData(backgroundColor: Colors.transparent),
+      ),
       initialRoute: AppRoutes.dashboardRoute,
       routes: {
         AppRoutes.getStartedRoute: (context) => GetStarted(),

@@ -89,6 +89,45 @@ class Beer extends StatelessWidget {
             child: Row(
               children: [
                 AppBarFilterButton(
+                  onPressed: () => Common.showModalSheet(
+                    context,
+                    title: "Sort",
+                    scrollViewPaddingChild: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        BottomSheetCard(
+                          title: "Recommended",
+                          isSelected: true,
+                          localImageURL:
+                              "${Common.assetsImages}application_icon.png",
+                        ),
+                        BottomSheetCard(
+                          title: "New",
+                          isSelected: false,
+                          localImageURL:
+                              "${Common.assetsImages}application_icon.png",
+                        ),
+                        BottomSheetCard(
+                          title: "High to low",
+                          isSelected: false,
+                          localImageURL:
+                              "${Common.assetsImages}application_icon.png",
+                        ),
+                        BottomSheetCard(
+                          title: "Low to high",
+                          isSelected: false,
+                          localImageURL:
+                              "${Common.assetsImages}application_icon.png",
+                        ),
+                        BottomSheetCard(
+                          title: "Discount",
+                          isSelected: false,
+                          localImageURL:
+                              "${Common.assetsImages}application_icon.png",
+                        ),
+                      ],
+                    ),
+                  ),
                   title: "Sort",
                   icon: Icons.sort,
                 ),

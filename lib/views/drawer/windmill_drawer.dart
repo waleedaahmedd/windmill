@@ -120,7 +120,7 @@ class WindmillDrawer extends StatelessWidget {
                       },
                     ),
                     DrawerListTile(
-                      icon: Icons.door_back,
+                      icon: Icons.door_back_door,
                       title: "Logout",
                       onPressed: () {
                         Navigator.of(context).pushNamedAndRemoveUntil(

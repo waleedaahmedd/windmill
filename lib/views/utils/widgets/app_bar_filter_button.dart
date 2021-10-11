@@ -16,22 +16,25 @@ class AppBarFilterButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            icon,
-            color: AppColors.appGreyColor.withOpacity(0.9),
-          ),
-          const SizedBox(width: 5.0),
-          Text(
-            "$title",
-            style: GoogleFonts.poppins(
-              color: AppColors.appGreyColor,
-              fontWeight: FontWeight.w400,
+      child: InkWell(
+        onTap: onPressed,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              color: AppColors.appGreyColor.withOpacity(0.9),
             ),
-          ),
-        ],
+            const SizedBox(width: 5.0),
+            Text(
+              "$title",
+              style: GoogleFonts.poppins(
+                color: AppColors.appGreyColor,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
