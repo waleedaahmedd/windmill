@@ -14,7 +14,6 @@ class Orders extends StatelessWidget {
           WindmillAppBar(
             appBarColor: AppColors.appBlueColor,
             needBackIcon: true,
-            needDrawer: false,
             title: "Orders History",
             titleTS: GoogleFonts.montserrat(
               color: AppColors.appWhiteColor,

@@ -32,7 +32,6 @@ class MyApp extends StatelessWidget {
         AppRoutes.shopBuyRoute: (context) => ShopBuy(),
         AppRoutes.shoppingCartRoute: (context) => ShoppingCart(),
         AppRoutes.ordersRoute: (context) => Orders(),
-        AppRoutes.blogRoute: (context) => Blog(),
         AppRoutes.contactUsRoute: (context) => ContactUs(),
         AppRoutes.productDetailRoute: (context) => ProductDetail(),
       },

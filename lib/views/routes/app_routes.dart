@@ -12,7 +12,6 @@ class AppRoutes {
   static String dashboardRoute = "/dashboard";
   static String shopBuyRoute = "/shop-buy";
   static String contactUsRoute = "/contact-us";
-  static String blogRoute = "/blog";
   static String ordersRoute = "/orders";
   static String shoppingCartRoute = "/shopping-cart";
   static String productDetailRoute = "/product-detail";

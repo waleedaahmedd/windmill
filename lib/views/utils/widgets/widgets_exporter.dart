@@ -8,5 +8,6 @@ export 'drawer_list_tile.dart';
 export 'inquiry_text_button.dart';
 export 'label_and_input_field.dart';
 export 'primary_button.dart';
+export 'product_favourite_card.dart';
 export 'social_login_button.dart';
 export 'windmill_app_bar.dart';

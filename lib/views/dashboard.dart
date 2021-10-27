@@ -20,7 +20,7 @@ class _DashboardState extends State<Dashboard> {
     Home(),
     ShopBuy(),
     ShoppingCart(),
-    Blog(),
+    Favourite(),
     Profile(),
   ];
 
@@ -41,7 +41,6 @@ class _DashboardState extends State<Dashboard> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: Common.scaffoldKey,
-      drawer: WindmillDrawer(),
       body: PageView(
         physics: BouncingScrollPhysics(),
         controller: _pageController,

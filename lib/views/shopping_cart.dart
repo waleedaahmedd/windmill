@@ -19,7 +19,6 @@ class ShoppingCart extends StatelessWidget {
             drawerColor: "black",
             needBackIcon: Navigator.of(context).canPop(),
             backIconColor: AppColors.appBlackColor,
-            needDrawer: !Navigator.of(context).canPop(),
             title: "My CartList",
             titleTS: GoogleFonts.montserrat(
               color: AppColors.appBlackColor,

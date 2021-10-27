@@ -37,6 +37,7 @@ class Common {
   }) {
     showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
       builder: (BuildContext buildContext) {
         return StatefulBuilder(builder: (context, snapshot) {
           return Container(

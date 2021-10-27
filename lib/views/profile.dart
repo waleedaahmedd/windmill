@@ -59,6 +59,22 @@ class Profile extends StatelessWidget {
                 ),
                 const SizedBox(height: 60.0),
                 ProfileCard(
+                  title: "Orders History",
+                  description:
+                      "History of your previous ordered products can be found here. Keep exploring Products to order and Enjoy the service.",
+                  onPressed: () =>
+                      Navigator.of(context).pushNamed(AppRoutes.ordersRoute),
+                ),
+                const SizedBox(height: 4.0),
+                ProfileCard(
+                  title: "Contact Us",
+                  description:
+                      "Your thoughts are valued. If you have an Suggestion/Appreciation note for us, please contact us and we'll get back to you as early as possible.",
+                  onPressed: () =>
+                      Navigator.of(context).pushNamed(AppRoutes.contactUsRoute),
+                ),
+                const SizedBox(height: 4.0),
+                ProfileCard(
                   title: "Terms And Conditions",
                   description:
                       "All terms related to application can be found here. we may update this time to time. you can get insights from here",

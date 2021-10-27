@@ -8,7 +8,7 @@ class WindmillAppBar extends StatelessWidget {
   final TextEditingController? controller;
   final Color? hamburgerIconColor, appBarColor, backIconColor;
   final String? title, drawerColor;
-  final bool needSearchBar, needDrawer, needBackIcon;
+  final bool needSearchBar, needBackIcon;
   final Widget? appBarTrailingIcon;
   final TextStyle? titleTS;
   final VoidCallback? onDrawerTap, onBackTap;
@@ -20,7 +20,6 @@ class WindmillAppBar extends StatelessWidget {
     this.hamburgerIconColor,
     this.needSearchBar = false,
     this.needBackIcon = false,
-    this.needDrawer = true,
     this.appBarColor,
     this.appBarTrailingIcon,
     this.onDrawerTap,
@@ -51,20 +50,13 @@ class WindmillAppBar extends StatelessWidget {
                           onTap: onBackTap ?? () => Navigator.of(context).pop(),
                           child: Icon(
                             Icons.arrow_back_ios_sharp,
-                            color: backIconColor ?? AppColors.appWhiteColor,
+                            color: backIconColor ??
+                                ((appBarColor == null)
+                                    ? AppColors.appBlackColor
+                                    : AppColors.appWhiteColor),
                           ),
                         )
-                      : needDrawer
-                          ? InkWell(
-                              onTap: onDrawerTap ??
-                                  () => Common.scaffoldKey.currentState!
-                                      .openDrawer(),
-                              child: Image.asset(
-                                "${Common.assetsIcons}${hamburgerIconColor ?? "$drawerColor"}_menu.png",
-                                height: 18.0,
-                              ),
-                            )
-                          : const SizedBox(),
+                      : const SizedBox(),
                   Expanded(
                     child: title != null
                         ? Text(

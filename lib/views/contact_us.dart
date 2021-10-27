@@ -19,7 +19,6 @@ class ContactUs extends StatelessWidget {
           WindmillAppBar(
             appBarColor: AppColors.appBlueColor,
             needBackIcon: true,
-            needDrawer: false,
             title: "Contact Us",
             titleTS: GoogleFonts.montserrat(
               color: AppColors.appWhiteColor,

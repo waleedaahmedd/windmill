@@ -21,7 +21,6 @@ class Home extends StatelessWidget {
               title: "Click & Collect - Ghantaat",
               appBarColor: AppColors.appBlueColor,
             ),
-            const SizedBox(height: 10.0),
             CarouselSlider(
               items: [1, 2, 3, 4, 5].map((i) {
                 return Builder(
