@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:windmill_general_trading/views/utils/utils_exporter.dart';
 import 'package:windmill_general_trading/views/views_exporter.dart';
 
+PageController pageController = new PageController();
+
 class Dashboard extends StatefulWidget {
   Dashboard({Key? key}) : super(key: key);
 
@@ -13,8 +15,6 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   int _currentIndex = 0;
-
-  PageController _pageController = new PageController();
 
   List<Widget> _screens = [
     Home(),
@@ -28,12 +28,12 @@ class _DashboardState extends State<Dashboard> {
   void initState() {
     super.initState();
     // update page controller from start if needed
-    _pageController = PageController();
+    pageController = PageController();
   }
 
   @override
   void dispose() {
-    _pageController.dispose();
+    pageController.dispose();
     super.dispose();
   }
 
@@ -43,7 +43,7 @@ class _DashboardState extends State<Dashboard> {
       key: Common.scaffoldKey,
       body: PageView(
         physics: BouncingScrollPhysics(),
-        controller: _pageController,
+        controller: pageController,
         onPageChanged: (index) {
           setState(() => _currentIndex = index);
         },
@@ -55,7 +55,7 @@ class _DashboardState extends State<Dashboard> {
         showElevation: true,
         onItemSelected: (index) {
           setState(() => _currentIndex = index);
-          _pageController.jumpToPage(index);
+          pageController.jumpToPage(index);
         },
         items: <BottomNavyBarItem>[
           BottomNavyBarItem(

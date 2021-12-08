@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:windmill_general_trading/views/routes/app_routes.dart';
+import 'package:windmill_general_trading/modals/modals_exporter.dart';
 import 'package:windmill_general_trading/views/utils/utils_exporter.dart';
+import 'package:windmill_general_trading/views/views_exporter.dart';
 
 class ProductFavouriteCard extends StatelessWidget {
-  final String title, description, price, location;
+  final ProductModal product;
+  final String userID;
   final VoidCallback? onPressed;
   const ProductFavouriteCard({
     Key? key,
-    required this.title,
-    required this.description,
-    required this.price,
-    required this.location,
+    required this.product,
+    required this.userID,
     this.onPressed,
   }) : super(key: key);
 
@@ -18,7 +18,10 @@ class ProductFavouriteCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onPressed ??
-          () => Navigator.of(context).pushNamed(AppRoutes.productDetailRoute),
+          () => Common.push(
+                context,
+                ProductDetail(product: product),
+              ),
       child: Stack(
         children: [
           Container(
@@ -30,10 +33,12 @@ class ProductFavouriteCard extends StatelessWidget {
                   flex: 1,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(10.0),
-                    child: Image.asset(
-                      '${Common.assetsImages}demo_product.png',
-                      fit: BoxFit.fill,
-                    ),
+                    child: product.images.length != 0
+                        ? Image.network(
+                            "${product.images.first.src}",
+                            fit: BoxFit.fill,
+                          )
+                        : Image.asset("${Common.assetsImages}demo_product.png"),
                   ),
                 ),
                 const SizedBox(width: 10.0),
@@ -43,66 +48,25 @@ class ProductFavouriteCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '$title',
+                        '${product.name}',
                         style: TextStyle(
                           fontSize: 18.0,
                           fontWeight: FontWeight.bold,
                           color: AppColors.appBlackColor,
                         ),
+                        textAlign: TextAlign.start,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(height: 7.0),
+                      const SizedBox(height: 5.0),
                       Text(
-                        '$description',
+                        "AED ${product.price}",
                         style: TextStyle(
-                          color: AppColors.appGreyColor,
-                          fontSize: 15.0,
+                          color: AppColors.appBlackColor,
+                          fontSize: 26.0,
+                          fontWeight: FontWeight.w900,
                         ),
-                        maxLines: 4,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 5.0),
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.location_on,
-                            color: AppColors.appGreyColor.withOpacity(0.6),
-                            size: 18.0,
-                          ),
-                          Expanded(
-                            child: Text(
-                              '$location',
-                              style: TextStyle(
-                                color: AppColors.appGreyColor,
-                                fontSize: 15.0,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 5.0),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "\$$price",
-                              style: TextStyle(
-                                color: AppColors.appBlackColor,
-                                fontSize: 26.0,
-                                fontWeight: FontWeight.w900,
-                              ),
-                            ),
-                            Icon(
-                              Icons.shopping_cart_outlined,
-                              color: AppColors.appGreyColor,
-                              size: 22.0,
-                            ),
-                          ],
-                        ),
+                        textAlign: TextAlign.start,
                       ),
                     ],
                   ),
@@ -113,24 +77,28 @@ class ProductFavouriteCard extends StatelessWidget {
           Positioned(
             top: 10.0,
             left: 20.0,
-            child: Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: AppColors.appWhiteColor,
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.appBlackColor.withOpacity(0.1),
-                    blurRadius: 10,
-                    spreadRadius: 3,
-                    offset: Offset(1, 3),
-                  ),
-                ],
-              ),
-              padding: const EdgeInsets.all(5.0),
-              child: Icon(
-                Icons.favorite,
-                size: 22.0,
-                color: AppColors.appBlueColor,
+            child: InkWell(
+              onTap: () =>
+                  ApiRequests.toggleProductWishList(true, userID, product),
+              child: Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: AppColors.appWhiteColor,
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.appBlackColor.withOpacity(0.1),
+                      blurRadius: 10,
+                      spreadRadius: 3,
+                      offset: Offset(1, 3),
+                    ),
+                  ],
+                ),
+                padding: const EdgeInsets.all(5.0),
+                child: Icon(
+                  Icons.favorite,
+                  size: 22.0,
+                  color: AppColors.appBlueColor,
+                ),
               ),
             ),
           ),

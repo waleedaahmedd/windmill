@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "82885074578",
+    "project_id": "windmill-328305",
+    "storage_bucket": "windmill-328305.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:82885074578:android:d17895a503d6018b5b104b",
+        "android_client_info": {
+          "package_name": "com.mobile.windmill.windmill_general_trading"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "82885074578-fdr5jd71v0pnjmrmh9kojchq04ukbg3n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBjPcPy4X9sIrT4u5Lf38h7INxBGUw-THQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "82885074578-fdr5jd71v0pnjmrmh9kojchq04ukbg3n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

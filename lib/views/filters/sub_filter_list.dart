@@ -1,14 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:windmill_general_trading/modals/modals_exporter.dart';
 import 'package:windmill_general_trading/views/utils/utils_exporter.dart';
 import 'package:windmill_general_trading/views/utils/widgets/widgets_exporter.dart';
 
 class SubFilterList extends StatefulWidget {
   final String categoryTitle;
+  final int categoryId;
 
   SubFilterList({
     Key? key,
     required this.categoryTitle,
+    required this.categoryId,
   }) : super(key: key);
 
   @override
@@ -16,9 +19,20 @@ class SubFilterList extends StatefulWidget {
 }
 
 class _SubFilterListState extends State<SubFilterList> {
-  List<bool> expansionList = [
-    false,
-  ];
+  List<Category>? _categories; // all categories received from api
+  List<Category> _parentCategories = <Category>[]; // parent categories only
+  List<Category> _selectedCategories =
+      <Category>[]; // empty list in start // child categories
+  bool _isLoading = true; // loading in start till categories are all loaded
+
+  //persistent storage
+  PersistentStorage _persistentStorage = PersistentStorage();
+
+  @override
+  void initState() {
+    super.initState();
+    _getAllCategories();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,71 +49,83 @@ class _SubFilterListState extends State<SubFilterList> {
               fontWeight: FontWeight.w600,
             ),
           ),
-          Expanded(
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: 10,
-              padding: EdgeInsets.zero,
-              physics: BouncingScrollPhysics(),
-              itemBuilder: (BuildContext context, int index) {
-                if (true) {
-                  return ExpansionList(
-                    children: [
-                      ExpansionPanel(
-                        headerBuilder: (context, bool) {
-                          return Padding(
-                            padding: const EdgeInsets.only(left: 20.0),
-                            child: Row(
-                              children: [
-                                Text(
-                                  "List of categories in dropdown",
-                                  style: TextStyle(
-                                    fontSize: 22.0,
-                                    fontFamily: "DINNextLTPro_Medium",
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                        body: ExpansionPanelBodyGrid(
-                          itemBuilder: (BuildContext context, int index) {
-                            return CategoryDropdownListCard(
-                              title: "Category",
-                              isSelected: index % 2 != 0,
-                            );
-                          },
-                          itemCount: 3,
-                        ),
-                        isExpanded: expansionList[0],
-                        backgroundColor: AppColors.appWhiteColor,
-                        canTapOnHeader: true,
-                      ),
-                    ],
-                    expansionCallback: (index, isOpen) =>
-                        expansionCallback(index, isOpen),
-                  );
-                } else {
-                  return SubCategoryFilterListCard(
-                    title: "Category $index",
-                    isSelected: false,
-                  );
-                }
-              },
-            ),
-          ),
+          _isLoading
+              ? Expanded(
+                  child: Center(
+                    child: CupertinoActivityIndicator(),
+                  ),
+                )
+              : Expanded(
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: _parentCategories.length,
+                    padding: EdgeInsets.zero,
+                    physics: BouncingScrollPhysics(),
+                    itemBuilder: (BuildContext context, int index) {
+                      Category _category = _parentCategories[index];
+                      return CategoryDropdownListCard(
+                        title: "${_category.name}",
+                        isSelected: _isCategorySelected(_category),
+                        onPressed: () => _toggleCategory(_category),
+                      );
+                    },
+                  ),
+                ),
         ],
       ),
     );
   }
 
-  void expansionCallback(
-    int index,
-    bool isOpen, {
-    bool isDateList = false,
-  }) {
-    expansionList[index] = !isOpen;
-    if (mounted) setState(() {});
+  void _getAllCategories() async {
+    _categories = await ApiRequests.getAllCategories();
+    _populateParentCategoriesList(_categories);
+    _getSelectedCategoriesList();
+    _isLoading = false;
+    setState(() {});
+  }
+
+  void _populateParentCategoriesList(List<Category>? categories) {
+    if (categories != null) {
+      categories.forEach((category) {
+        if (category.parent == widget.categoryId)
+          _parentCategories.add(category);
+      });
+    }
+  }
+
+  void _getSelectedCategoriesList() {
+    _selectedCategories =
+        _persistentStorage.getSelectedCategories(widget.categoryId) == null
+            ? []
+            : _persistentStorage.getSelectedCategories(widget.categoryId)!;
+    setState(() {});
+  }
+
+  bool _isCategorySelected(Category category) {
+    bool _isSelected = false;
+    _selectedCategories.forEach((_category) {
+      if((category.id == _category.id))
+        _isSelected = true;
+    });
+    return _isSelected;
+  }
+
+  void _toggleCategory(Category category) {
+    if (_isCategorySelected(category))
+      _removeCategory(category);
+    else
+      _addCategory(category);
+    _getSelectedCategoriesList();
+  }
+
+  void _removeCategory(Category category) {
+    _selectedCategories.remove(category);
+    _persistentStorage.setCategoryList(_selectedCategories, widget.categoryId);
+  }
+
+  void _addCategory(Category category) {
+    _selectedCategories.add(category);
+    _persistentStorage.setCategoryList(_selectedCategories, widget.categoryId);
   }
 }
 

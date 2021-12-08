@@ -1,11 +1,16 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:windmill_general_trading/views/utils/utils_exporter.dart';
 import 'package:windmill_general_trading/views/views_exporter.dart';
 
 import 'views/routes/app_routes.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   await Common.licensesFonts();
+  await GetStorage.init();
   runApp(MyApp());
 }
 
@@ -21,7 +26,7 @@ class MyApp extends StatelessWidget {
         bottomSheetTheme:
             BottomSheetThemeData(backgroundColor: Colors.transparent),
       ),
-      initialRoute: AppRoutes.dashboardRoute,
+      initialRoute: AppRoutes.getStartedRoute,
       routes: {
         AppRoutes.getStartedRoute: (context) => GetStarted(),
         AppRoutes.loginRoute: (context) => Login(),
@@ -32,8 +37,7 @@ class MyApp extends StatelessWidget {
         AppRoutes.shopBuyRoute: (context) => ShopBuy(),
         AppRoutes.shoppingCartRoute: (context) => ShoppingCart(),
         AppRoutes.ordersRoute: (context) => Orders(),
-        AppRoutes.contactUsRoute: (context) => ContactUs(),
-        AppRoutes.productDetailRoute: (context) => ProductDetail(),
+        AppRoutes.storeLocatorRoute: (context) => StoreLocator(),
       },
     );
   }

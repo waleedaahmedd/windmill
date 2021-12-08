@@ -3,8 +3,20 @@ import 'package:windmill_general_trading/views/routes/app_routes.dart';
 import 'package:windmill_general_trading/views/utils/utils_exporter.dart';
 import 'package:windmill_general_trading/views/utils/widgets/widgets_exporter.dart';
 
-class Profile extends StatelessWidget {
+class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
+
+  @override
+  State<Profile> createState() => _ProfileState();
+}
+
+class _ProfileState extends State<Profile> {
+  bool _isLoading = false;
+
+  void _toggleLoading({bool? isLoading}) {
+    _isLoading = isLoading ?? !_isLoading;
+    if (mounted) setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,82 +38,94 @@ class Profile extends StatelessWidget {
               horizontal: 20.0,
               vertical: 20.0,
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Align(
-                  alignment: Alignment.center,
-                  child: CircleAvatar(
-                    backgroundColor: Colors.transparent,
-                    radius: 50.0,
-                    backgroundImage: AssetImage(
-                        "${Common.assetsImages}application_icon.png"),
+            child: _isLoading
+                ? LoadingOverlay()
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Align(
+                        alignment: Alignment.center,
+                        child: CircleAvatar(
+                          backgroundColor: Colors.transparent,
+                          radius: 50.0,
+                          backgroundImage: AssetImage(
+                              "${Common.assetsImages}application_icon.png"),
+                        ),
+                      ),
+                      const SizedBox(height: 10.0),
+                      Text(
+                        "Windmill Support",
+                        style: TextStyle(
+                          color: AppColors.appBlackColor,
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.w700,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 5.0),
+                      Text(
+                        "support@gmail.com",
+                        style: TextStyle(
+                          color: AppColors.appGreyColor.withOpacity(0.5),
+                          fontSize: 16.0,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 60.0),
+                      ProfileCard(
+                        title: "Orders History",
+                        description:
+                            "History of your previous ordered products can be found here. Keep exploring Products to order and Enjoy the service.",
+                        onPressed: () => Navigator.of(context)
+                            .pushNamed(AppRoutes.ordersRoute),
+                      ),
+                      const SizedBox(height: 4.0),
+                      ProfileCard(
+                        title: "Store Locator",
+                        description:
+                            "Our stores and with location and contact information so you can get in-touch with the nearest store and get your order. Opening/Closing Hours Information is also available.",
+                        onPressed: () => Navigator.of(context)
+                            .pushNamed(AppRoutes.storeLocatorRoute),
+                      ),
+                      const SizedBox(height: 4.0),
+                      ProfileCard(
+                        onPressed: () =>
+                            Common.launchURL(Common.TERMS_AND_CONDITIONS),
+                        title: "Terms And Conditions",
+                        description:
+                            "All terms related to application can be found here. we may update this time to time. you can get insights from here",
+                      ),
+                      const SizedBox(height: 4.0),
+                      ProfileCard(
+                        onPressed: () =>
+                            Common.launchURL(Common.PRIVACY_POLICY),
+                        title: "Privacy Policy",
+                        description:
+                            "We value your privacy and believe in security of your data. you can read our privacy policy in details here",
+                      ),
+                      const SizedBox(height: 4.0),
+                      ProfileCard(
+                        onPressed: () => _processLogout(),
+                        title: "Logout",
+                        description:
+                            "Hope to see you back soon. Keep exploring for quality food in discounted price.",
+                      ),
+                    ],
                   ),
-                ),
-                const SizedBox(height: 10.0),
-                Text(
-                  "Windmill Support",
-                  style: TextStyle(
-                    color: AppColors.appBlackColor,
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.w700,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 5.0),
-                Text(
-                  "support@gmail.com",
-                  style: TextStyle(
-                    color: AppColors.appGreyColor.withOpacity(0.5),
-                    fontSize: 16.0,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 60.0),
-                ProfileCard(
-                  title: "Orders History",
-                  description:
-                      "History of your previous ordered products can be found here. Keep exploring Products to order and Enjoy the service.",
-                  onPressed: () =>
-                      Navigator.of(context).pushNamed(AppRoutes.ordersRoute),
-                ),
-                const SizedBox(height: 4.0),
-                ProfileCard(
-                  title: "Contact Us",
-                  description:
-                      "Your thoughts are valued. If you have an Suggestion/Appreciation note for us, please contact us and we'll get back to you as early as possible.",
-                  onPressed: () =>
-                      Navigator.of(context).pushNamed(AppRoutes.contactUsRoute),
-                ),
-                const SizedBox(height: 4.0),
-                ProfileCard(
-                  title: "Terms And Conditions",
-                  description:
-                      "All terms related to application can be found here. we may update this time to time. you can get insights from here",
-                ),
-                const SizedBox(height: 4.0),
-                ProfileCard(
-                  title: "Privacy Policy",
-                  description:
-                      "We value your privacy and believe in security of your data. you can read our privacy policy in details here",
-                ),
-                const SizedBox(height: 4.0),
-                ProfileCard(
-                  onPressed: () =>
-                      Navigator.of(context).pushNamedAndRemoveUntil(
-                    AppRoutes.loginRoute,
-                    (route) => false,
-                  ),
-                  title: "Logout",
-                  description:
-                      "Hope to see you back soon. Keep exploring for quality food in discounted price.",
-                ),
-              ],
-            ),
           ),
         ],
       ),
     );
+  }
+
+  void _processLogout() async {
+    if (!_isLoading) {
+      _toggleLoading();
+
+      await Common.logout(context);
+
+      _toggleLoading();
+    }
   }
 }
 

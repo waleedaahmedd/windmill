@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Windmill General Trading</string>
+    <string name="facebook_app_id">403165771193113</string>
+    <string name="fb_login_protocol_scheme">fb403165771193113</string>
+</resources>

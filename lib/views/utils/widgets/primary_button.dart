@@ -7,6 +7,8 @@ class PrimaryButton extends StatelessWidget {
   final String title;
   final EdgeInsetsGeometry? padding;
   final BoxBorder? buttonBorder;
+  final BorderRadius? borderRadius;
+  final double? fontSize;
 
   const PrimaryButton({
     Key? key,
@@ -15,6 +17,8 @@ class PrimaryButton extends StatelessWidget {
     this.buttonColor,
     this.textColor,
     this.buttonBorder,
+    this.borderRadius,
+    this.fontSize,
     this.padding = const EdgeInsets.symmetric(vertical: 15.0),
   }) : super(key: key);
 
@@ -26,6 +30,7 @@ class PrimaryButton extends StatelessWidget {
         decoration: BoxDecoration(
           color: buttonColor ?? AppColors.primaryColor,
           border: buttonBorder,
+          borderRadius: borderRadius,
         ),
         padding: padding,
         child: Center(
@@ -35,7 +40,7 @@ class PrimaryButton extends StatelessWidget {
               color: textColor ?? AppColors.appWhiteColor,
               fontWeight: FontWeight.bold,
               letterSpacing: 1.6,
-              fontSize: 17.0,
+              fontSize: fontSize ?? 17.0,
             ),
           ),
         ),
