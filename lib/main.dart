@@ -6,6 +6,7 @@ import 'package:windmill_general_trading/views/views_exporter.dart';
 
 import 'views/routes/app_routes.dart';
 
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();

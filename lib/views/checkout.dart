@@ -1,5 +1,13 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 import 'package:windmill_general_trading/modals/modals_exporter.dart';
+import 'package:windmill_general_trading/modals/payment_modal.dart';
+import 'package:windmill_general_trading/views/utils/api_requests/sms_request.dart';
+import 'package:windmill_general_trading/views/utils/current_date_time.dart';
 import 'package:windmill_general_trading/views/utils/utils_exporter.dart';
 import 'package:windmill_general_trading/views/utils/widgets/widgets_exporter.dart';
 import 'package:windmill_general_trading/views/views_exporter.dart';
@@ -34,6 +42,7 @@ class _CheckoutState extends State<Checkout> {
   void initState() {
     _getUserDetails();
     super.initState();
+    if (Platform.isAndroid) WebView.platform = AndroidWebView();
   }
 
   void _toggleLoading({bool? isLoading}) {
@@ -298,25 +307,86 @@ class _CheckoutState extends State<Checkout> {
           customerID: _userID!,
           note: _orderNotes,
           orderStatus: "processing",
-          paymentMethod: "cod",
-          paymentMethodTitle: "Cash on delivery",
+          paymentMethod: "Online Payment",
+          paymentMethodTitle: "Online Payment Through Ngenious",
           setPaid: false,
           billing: _billing,
           shipping: _shipping,
           lineItems: _lineItems,
           shippingLines: _shippingLine,
         );
-        await ApiRequests.placeOrder(_order);
-        // remove user shopping cart from fire-store
-        await ApiRequests.deleteUserShoppingCart(_userID!);
+        PaymentModal dataOrder =
+            await ApiRequests().createOrder(widget.subTotal, _order);
+        if (dataOrder.paymentUrl != null) {
+          showModalBottomSheet<void>(
+            // context and builder are
+            // required properties in this widget
 
-        Common.showSuccessTopSnack(context,
-            "Order placed successfully. Thank you for shopping with us.");
+            isScrollControlled: true,
 
-        _toggleLoading();
+            context: context,
+            builder: (BuildContext context) {
+              // we set up a container inside which
+              // we create center column and display text
+              return Padding(
+                padding: EdgeInsets.only(top: 40),
+                child: WillPopScope(
+                  onWillPop: () async {
+                    bool orderFlag =
+                        await ApiRequests().monitorOrder(dataOrder);
+                    if (orderFlag == true) {
+                      await ApiRequests.placeOrder(_order);
+                      // remove user shopping cart from fire-store
+                      await ApiRequests.deleteUserShoppingCart(_userID!);
 
-        Common.pushAndRemoveUntil(context, Dashboard());
+                      Common.showSuccessTopSnack(context,
+                          "Order placed successfully. Thank you for shopping with us.");
+                      String message =
+                          "Dear Web EDS, Thank you. We've received your Order\nOn: ${CurrentDateTime().getDate()}\nShipping: Free shipping\nPayment method: N-Genius Online Payment Gateway\nTotal Bill : AED 290\nOrder No. #11713\nFor more details click the link below: https://demo.windmillcellar.com/my-account/view-order/11713/";
+                       SmsRequest().sendSMSOrderCompletion(_order,message);
+
+                      _toggleLoading();
+
+                      Common.pushAndRemoveUntil(context, Dashboard());
+                    } else {
+                      Common.showSuccessTopSnack(
+                          context, "Failed to monitor order");
+                    }
+                    print("asdf");
+                    _toggleLoading();
+
+                    return Future.value(true);
+                  },
+                  child: Scaffold(
+                    appBar: AppBar(
+                      title: const Text('Payment Method'),
+                      backgroundColor: AppColors.appBlueColor,
+                    ),
+                    body: Wrap(
+                      children: [
+                        Container(
+                            color: Colors.white,
+                            height: MediaQuery.of(context).size.height - 100,
+                            child: WebView(
+                              gestureRecognizers: gestureRecognizers,
+                              initialUrl: dataOrder.paymentUrl,
+                              javascriptMode: JavascriptMode.unrestricted,
+                            )),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+          );
+        } else {
+          Common.showSuccessTopSnack(context, "Something went wrong!!");
+        }
       }
     }
   }
+
+  final Set<Factory<OneSequenceGestureRecognizer>> gestureRecognizers = [
+    Factory(() => EagerGestureRecognizer()),
+  ].toSet();
 }

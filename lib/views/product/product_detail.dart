@@ -360,7 +360,9 @@ class _ProductDetailState extends State<ProductDetail> {
         widget.product.id.toString(),
         purchaseItemCount,
         _userID,
-        variation: widget.product.variations.first,
+        variation: widget.product.variations.length == 0
+            ? 0
+            : widget.product.variations.first,
         context: context,
       );
       Common.showSuccessTopSnack(

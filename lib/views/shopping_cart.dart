@@ -209,6 +209,7 @@ class _ShoppingCartState extends State<ShoppingCart> {
                                     ),
                                   );
                                 }
+
                                 ShoppingCartModal _shoppingCart =
                                     ShoppingCartModal.fromJson(
                                         snapshot.data!.docs.first.data()
@@ -479,7 +480,7 @@ class _ShoppingCartState extends State<ShoppingCart> {
                       ),
                       padding: EdgeInsets.symmetric(
                           horizontal: 20.0, vertical: 10.0),
-                      child: _isSubTotalLoading || _isOrderProcessing
+                      child: _isSubTotalLoading && _isOrderProcessing
                           ? Center(
                               child: CupertinoActivityIndicator(),
                             )

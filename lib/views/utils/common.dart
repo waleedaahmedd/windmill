@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -23,6 +25,9 @@ class Common {
   static const String CONSUMER_SECRET =
       "cs_8612c1dc210cd11ceb67cf10e1cc0ccfaf3be68a";
   static const String BASE_URL = "https://demo.windmillcellar.com/wp-json/";
+  static const String BASE_URl_NGENIOUS =
+      "https://api-gateway.sandbox.ngenius-payments.com";
+
   static const String API_URL =
       "https://demo.windmillcellar.com/wp-json/wc/v3/";
 
@@ -53,7 +58,9 @@ class Common {
   static const String PREFERENCE = "PREFERENCE";
   static const String TOKEN = "TOKEN";
   static const String ID = "ID";
-
+  static const String outletId = '6782edef-036a-4ea6-a81c-fb72aa876246';
+  static const String ngeniousApi =
+      "YjRiM2JiYjQtYjEzOC00MDM3LWJhMWQtZGU4ZGJlNzBlOGY2OmJjZjIyZDUwLTlkMmEtNGYxMS05Zjk5LWY3Y2FjOTBlZGZkYg==";
   //filtering constants
   static const String RECOMMENDED = "recommended";
   static const String NEW = "date"; // for api its date filter
@@ -180,6 +187,16 @@ class Common {
 
   static Future<void> launchURL(String url) async {
     await canLaunch(url) ? await launch(url) : print("Could not launch $url");
+  }
+
+  String encryptedHeader() {
+    String credentials =
+        "ck_925c9c90c1032a4604fcd8cdea5cdb1601da7b2e:cs_b609a8b41e647ea7832c9bf12a2e3a8b043948a9";
+    Codec<String, String> stringToBase64Url = utf8.fuse(base64Url);
+    String encoded =
+        stringToBase64Url.encode(credentials); // dXNlcm5hbWU6cGFzc3dvcmQ=
+    // String decoded = stringToBase64Url.decode(encoded);
+    return encoded;
   }
 
   static Future<void> logout(BuildContext context) async {

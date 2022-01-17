@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -7,16 +8,30 @@ import 'package:flutter/material.dart';
 import 'package:flutter_login_facebook/flutter_login_facebook.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:windmill_general_trading/modals/modals_exporter.dart';
+import 'package:windmill_general_trading/modals/payment_modal.dart';
+import 'package:windmill_general_trading/views/utils/api_requests/sms_request.dart';
 import 'package:windmill_general_trading/views/utils/utils_exporter.dart';
+import 'package:http/http.dart' as http;
 
 class ApiRequests {
   static FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
-  static var header = {
+  static const String username = "ck_925c9c90c1032a4604fcd8cdea5cdb1601da7b2e";
+  static const String password = "cs_b609a8b41e647ea7832c9bf12a2e3a8b043948a9";
+  static const String key = "$username:$password";
+
+  static var header = <String, String>{
     "Accept": "*/*",
     "Accept-Encoding": "gzip, deflate, br",
     "Connection": "keep-alive",
+    'Authorization': 'Basic ' + base64Encode(key.codeUnits),
+    'Content-Type': 'application/json'
   };
-
+  static var headerNgeniousAcessToken = <String, String>{
+    "Authorization": 'Basic ' + Common.ngeniousApi,
+    "Content-Type": "application/vnd.ni-identity.v1+json",
+    "Accept": "*/*",
+    "Connection": "keep-alive",
+  };
   static Future<LoginModal> googleLogin(BuildContext context) async {
     try {
       GoogleSignInAccount? googleSignInAccount = await GoogleSignIn().signIn();
@@ -54,8 +69,7 @@ class ApiRequests {
     try {
       return await Dio()
           .get(
-        Common.API_URL +
-            "products?orderby=$orderBy&order=$order&consumer_key=${Common.CONSUMER_KEY}&consumer_secret=${Common.CONSUMER_SECRET}",
+        Common.API_URL + "products?orderby=$orderBy&order=$order",
         options: Options(headers: header),
       )
           .then((value) {
@@ -122,8 +136,7 @@ class ApiRequests {
   }
 
   static Future<ProductModal> getProduct(String id) async {
-    String url = Common.API_URL +
-        "products/$id?consumer_key=${Common.CONSUMER_KEY}&consumer_secret=${Common.CONSUMER_SECRET}";
+    String url = Common.API_URL + "products/$id";
     print(url);
     try {
       return await Dio()
@@ -141,8 +154,7 @@ class ApiRequests {
   }
 
   static Future<List<Category>> getAllCategories() async {
-    String url = Common.API_URL +
-        "products/categories?per_page=100&consumer_key=${Common.CONSUMER_KEY}&consumer_secret=${Common.CONSUMER_SECRET}";
+    String url = Common.API_URL + "products/categories?per_page=100";
     print(url);
     try {
       return await Dio()
@@ -193,18 +205,15 @@ class ApiRequests {
     String? categories,
   }) async {
     String url = "";
-    if(categories != null)
-      url = Common.API_URL +
-          "products?categories=$categories&consumer_key=${Common.CONSUMER_KEY}&consumer_secret=${Common.CONSUMER_SECRET}";
+    if (categories != null)
+      url = Common.API_URL + "products?categories=$categories";
     else
       url = (orderBy == null || orderBy == Common.RECOMMENDED)
-          ? Common.API_URL +
-          "products?category=$category&consumer_key=${Common.CONSUMER_KEY}&consumer_secret=${Common.CONSUMER_SECRET}"
+          ? Common.API_URL + "products?category=$category"
           : (orderBy == Common.DISCOUNT)
-          ? Common.API_URL +
-          "products?category=$category&$orderBy&consumer_key=${Common.CONSUMER_KEY}&consumer_secret=${Common.CONSUMER_SECRET}"
-          : Common.API_URL +
-          "products?category=$category&orderby=$orderBy&order=$order&consumer_key=${Common.CONSUMER_KEY}&consumer_secret=${Common.CONSUMER_SECRET}";
+              ? Common.API_URL + "products?category=$category&$orderBy"
+              : Common.API_URL +
+                  "products?category=$category&orderby=$orderBy&order=$order";
     print(url);
     try {
       return await Dio()
@@ -266,8 +275,7 @@ class ApiRequests {
     try {
       return await Dio()
           .post(
-        Common.API_URL +
-            "customers/$userID?consumer_key=${Common.CONSUMER_KEY}&consumer_secret=${Common.CONSUMER_SECRET}",
+        Common.API_URL + "customers/$userID",
         options: Options(headers: header),
       )
           .then((value) {
@@ -281,18 +289,27 @@ class ApiRequests {
 
   static Future<RegisterModal> registerUser(
       BuildContext context, request) async {
+    print(Common().encryptedHeader());
+    print('Basic ' + base64Encode(key.codeUnits));
     try {
       return await Dio()
           .post(
-            Common.API_URL +
-                "customers?consumer_key=${Common.CONSUMER_KEY}&consumer_secret=${Common.CONSUMER_SECRET}",
+            Common.API_URL + "customers",
             options: Options(headers: header),
             data: request,
           )
-          .then((value) => RegisterModal.fromJson(value.data));
+          .then((value) => registerMethod(value));
     } on DioError catch (e) {
+      print("Error is " + e.response.toString());
       return RegisterModal.fromJson(e.response!.data);
     }
+  }
+
+  static registerMethod(value) {
+    RegisterModal user = RegisterModal.fromJson(value.data);
+    String message =
+        "New user ${user.username} has been registered to your app";
+    SmsRequest().sendSMS(message);
   }
 
   static Future<bool> placeOrder(OrderModal order) async {
@@ -327,10 +344,9 @@ class ApiRequests {
     String url = "";
     if (role == Common.DRIVER)
       url = Common.API_URL +
-          "orders?driver=$userID&status=${Common.DRIVER_ASSIGNED}&consumer_key=${Common.CONSUMER_KEY}&consumer_secret=${Common.CONSUMER_SECRET}";
+          "orders?driver=$userID&status=${Common.DRIVER_ASSIGNED}";
     else
-      url = Common.API_URL +
-          "orders?customer=$userID&consumer_key=${Common.CONSUMER_KEY}&consumer_secret=${Common.CONSUMER_SECRET}";
+      url = Common.API_URL + "orders?customer=$userID";
     print(url);
     try {
       return await Dio()
@@ -443,6 +459,7 @@ class ApiRequests {
     bool needDecrementOnQuantity = false,
   }) async {
     // check if item is already in cart or not
+    print("Variation is " + variation.toString());
     if (await isProductInCart(productID, userID)) {
       // if item in cart then add quantity with sum of previous quantity
       if (needIncrementOnQuantity)
@@ -658,5 +675,135 @@ class ApiRequests {
 
     notificationsReference.set(notificationsModal.toJson());
     return;
+  }
+
+  Future<PaymentModal> createOrder(double amount, OrderModal order) async {
+    try {
+      var response = await Dio().post(
+        Common.BASE_URl_NGENIOUS + "/identity/auth/access-token",
+        options: Options(headers: headerNgeniousAcessToken),
+      );
+      Map<String, dynamic> json = jsonDecode(response.data.toString());
+      var _accessToken = json["access_token"].toString();
+      print("Response is " + json["access_token"].toString());
+      print("Response is status code  " + response.statusCode.toString());
+
+      if (response.statusCode == 200) {
+        var headerNgeniousOrderToken = <String, String>{
+          "Authorization": 'Bearer ' + _accessToken,
+          "Content-Type": "application/vnd.ni-payment.v2+json",
+          "Accept": "application/vnd.ni-payment.v2+json",
+          "Connection": "keep-alive",
+        };
+        int _amount = (amount * 100).toInt();
+        print("Amount is " + _amount.toString());
+
+        var _orderData = {
+          "action": "SALE",
+          "amount": {"currencyCode": "AED", "value": _amount},
+          "shippingAddress": order.shipping,
+          "billingAddress": order.billing
+        };
+        var orderResponse = await http.post(
+            Uri.parse(Common.BASE_URl_NGENIOUS +
+                "/transactions/outlets/" +
+                Common.outletId +
+                "/orders"),
+            headers: headerNgeniousOrderToken,
+            body: jsonEncode(_orderData));
+        print("Order Status Code is " + orderResponse.statusCode.toString());
+        print("Order Status Code is " + orderResponse.body.toString());
+        if (orderResponse.statusCode == 201) {
+          Map<String, dynamic> _orderResponse =
+              jsonDecode(orderResponse.body.toString());
+          var _paymentLink =
+              _orderResponse["_links"]["payment"]["href"].toString();
+          var _orderReferenceValueArray =
+              _orderResponse["_embedded"]["payment"];
+          List<dynamic> list = _orderReferenceValueArray;
+
+          var _orderReferenceValue = list[0];
+          var _orderReference =
+              _orderReferenceValue["orderReference"].toString();
+          print("Payment link is " + _paymentLink);
+          print("_orderReferenceValue " + _orderReference);
+          return PaymentModal(
+              paymentUrl: _paymentLink, orderReference: _orderReference);
+        } else {
+          print("Error in code");
+          return PaymentModal(paymentUrl: null, orderReference: null);
+        }
+      } else {
+        return PaymentModal(paymentUrl: null, orderReference: null);
+      }
+    } catch (e) {
+      print("Error is " + e.toString());
+      return PaymentModal(paymentUrl: null, orderReference: null);
+    }
+  }
+
+  Future<bool> monitorOrder(PaymentModal orderData) async {
+    var response = await Dio().post(
+      Common.BASE_URl_NGENIOUS + "/identity/auth/access-token",
+      options: Options(headers: headerNgeniousAcessToken),
+    );
+    Map<String, dynamic> json = jsonDecode(response.data.toString());
+    var _accessToken = json["access_token"].toString();
+    print("Response is " + json["access_token"].toString());
+    print("Response is status code  " + response.statusCode.toString());
+
+    if (response.statusCode == 200) {
+      var headerNgeniousOrderToken = <String, String>{
+        "Authorization": 'Bearer ' + _accessToken,
+        "Content-Type": "application/vnd.ni-payment.v2+json",
+        "Accept": "application/vnd.ni-payment.v2+json",
+        "Connection": "keep-alive",
+      };
+
+      var orderResponse = await Dio().get(
+        Common.BASE_URl_NGENIOUS +
+            "/transactions/outlets/" +
+            Common.outletId +
+            "/orders/" +
+            orderData.orderReference,
+        options: Options(headers: headerNgeniousOrderToken),
+      );
+      print("Order Status Code is " + orderResponse.statusCode.toString());
+      print("Order Status Code is " + orderResponse.data.toString());
+      if (orderResponse.statusCode == 200) {
+        Map<String, dynamic> _authResponse =
+            jsonDecode(orderResponse.data.toString());
+        var _orderReferenceValueArray = _authResponse["_embedded"]["payment"];
+        if (_orderReferenceValueArray != null) {
+          List<dynamic> list = _orderReferenceValueArray;
+          var _orderReferenceValue = list[0];
+
+          bool success = _orderReferenceValue["authResponse"]["success"] == true
+              ? true
+              : false;
+          bool resultCode =
+              _orderReferenceValue["authResponse"]["resultCode"] == "00"
+                  ? true
+                  : false;
+          bool _3dsSuccess =
+              _orderReferenceValue["3ds"]["status"] == "SUCCESS" ? true : false;
+          bool _3dSresultCode =
+              _orderReferenceValue["3ds"]["eci"] == "02" ? true : false;
+          if (success == true &&
+              resultCode == true &&
+              _3dSresultCode == true &&
+              _3dsSuccess == true) {
+            return true;
+          } else {
+            return false;
+          }
+        }
+        return false;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
   }
 }

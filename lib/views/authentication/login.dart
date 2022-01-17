@@ -112,18 +112,22 @@ class _LoginState extends State<Login> {
         setState(() {
           _isLoading = false;
         });
+
         if (value.success) {
           // store token in shared preferences
           setString(Common.TOKEN, value.data!.token);
           setInt(Common.ID, value.data!.id);
           Common.pushAndRemoveUntil(context, Dashboard());
-        } else
+        } else {
           Common.showErrorTopSnack(
             context,
             "${value.message}",
           );
+        }
       }).onError(
         (error, stackTrace) {
+          print("Dio Error --------"+error.toString());
+
           setState(() {
             _isLoading = false;
           });
