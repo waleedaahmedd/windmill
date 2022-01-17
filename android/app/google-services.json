@@ -14,13 +14,21 @@
       },
       "oauth_client": [
         {
+          "client_id": "82885074578-9ug0lmmukjbmtlnbvnva9f8eqaf9l0m3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mobile.windmill.windmill_general_trading",
+            "certificate_hash": "4f45263e517438342e3a89a101f2028d87f1f136"
+          }
+        },
+        {
           "client_id": "82885074578-fdr5jd71v0pnjmrmh9kojchq04ukbg3n.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBjPcPy4X9sIrT4u5Lf38h7INxBGUw-THQ"
+          "current_key": "AIzaSyDfLEpyILgO1MviO3d8dZjGPrcCLYQPme0"
         }
       ],
       "services": {
