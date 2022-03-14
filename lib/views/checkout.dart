@@ -306,7 +306,8 @@ class _CheckoutState extends State<Checkout> {
         OrderModal _order = new OrderModal(
           customerID: _userID!,
           note: _orderNotes,
-          orderStatus: "processing",
+          // orderStatus: "N-Genius Online Complete",
+          orderStatus: "N-Genius Online Complete",
           paymentMethod: "Online Payment",
           paymentMethodTitle: "Online Payment Through Ngenious",
           setPaid: false,
@@ -316,7 +317,7 @@ class _CheckoutState extends State<Checkout> {
           shippingLines: _shippingLine,
         );
         PaymentModal dataOrder =
-            await ApiRequests().createOrder(widget.subTotal, _order);
+        await ApiRequests().createOrder(widget.subTotal, _order);
         if (dataOrder.paymentUrl != null) {
           showModalBottomSheet<void>(
             // context and builder are
@@ -332,29 +333,8 @@ class _CheckoutState extends State<Checkout> {
                 padding: EdgeInsets.only(top: 40),
                 child: WillPopScope(
                   onWillPop: () async {
-                    bool orderFlag =
-                        await ApiRequests().monitorOrder(dataOrder);
-                    if (orderFlag == true) {
-                      await ApiRequests.placeOrder(_order);
-                      // remove user shopping cart from fire-store
-                      await ApiRequests.deleteUserShoppingCart(_userID!);
-
-                      Common.showSuccessTopSnack(context,
-                          "Order placed successfully. Thank you for shopping with us.");
-                      String message =
-                          "Dear Web EDS, Thank you. We've received your Order\nOn: ${CurrentDateTime().getDate()}\nShipping: Free shipping\nPayment method: N-Genius Online Payment Gateway\nTotal Bill : AED 290\nOrder No. #11713\nFor more details click the link below: https://demo.windmillcellar.com/my-account/view-order/11713/";
-                       SmsRequest().sendSMSOrderCompletion(_order,message);
-
-                      _toggleLoading();
-
-                      Common.pushAndRemoveUntil(context, Dashboard());
-                    } else {
-                      Common.showSuccessTopSnack(
-                          context, "Failed to monitor order");
-                    }
-                    print("asdf");
-                    _toggleLoading();
-
+                    // await ApiRequests.placeOrder(_order);
+                    _completeOrder(_order, dataOrder);
                     return Future.value(true);
                   },
                   child: Scaffold(
@@ -368,6 +348,18 @@ class _CheckoutState extends State<Checkout> {
                             color: Colors.white,
                             height: MediaQuery.of(context).size.height - 100,
                             child: WebView(
+                              navigationDelegate: (request) async {
+                                if (request.url.contains(Common.REDIRECT_URL)) {
+                                  print("I am inside");
+                                  await _completeOrder(_order, dataOrder);
+// Close current window
+                                  return NavigationDecision
+                                      .prevent; // Prevent opening url
+                                } else {
+                                  return NavigationDecision
+                                      .navigate; // Default decision
+                                }
+                              },
                               gestureRecognizers: gestureRecognizers,
                               initialUrl: dataOrder.paymentUrl,
                               javascriptMode: JavascriptMode.unrestricted,
@@ -384,6 +376,32 @@ class _CheckoutState extends State<Checkout> {
         }
       }
     }
+  }
+
+  Future<void> _completeOrder(_order, dataOrder) async {
+    await ApiRequests.placeOrder(_order);
+    //
+    // print("I am in complete order");
+    // bool orderFlag = await ApiRequests().monitorOrder(dataOrder);
+    // if (orderFlag == true) {
+    //   await ApiRequests.placeOrder(_order);
+    //   // remove user shopping cart from fire-store
+    //   await ApiRequests.deleteUserShoppingCart(_userID!);
+    //
+    //   Common.showSuccessTopSnack(context,
+    //       "Order placed successfully. Thank you for shopping with us.");
+    //   String message =
+    //       "Dear Web EDS, Thank you. We've received your Order\nOn: ${CurrentDateTime().getDate()}\nShipping: Free shipping\nPayment method: N-Genius Online Payment Gateway\nTotal Bill : AED 290\nOrder No. #11713\nFor more details click the link below: https://demo.windmillcellar.com/my-account/view-order/11713/";
+    //   SmsRequest().sendSMSOrderCompletion(_order, message);
+    //
+    //   _toggleLoading();
+    //
+    //   Common.pushAndRemoveUntil(context, Dashboard());
+    // } else {
+    //   Common.showSuccessTopSnack(context, "Transaction Declined");
+    // }
+    // print("asdf");
+    // _toggleLoading();
   }
 
   final Set<Factory<OneSequenceGestureRecognizer>> gestureRecognizers = [

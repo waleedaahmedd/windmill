@@ -505,8 +505,9 @@ class _ShoppingCartState extends State<ShoppingCart> {
   }
 
   void _processOrder() async {
-    if(_subTotal == 0)
-      Common.showErrorTopSnack(context, "Add products to cart before proceeding");
+    if (_subTotal == 0)
+      Common.showErrorTopSnack(
+          context, "Add products to cart before proceeding");
     if (!(_isSubTotalLoading || _isOrderProcessing) &&
         (_shoppingCart != null)) {
       Common.push(

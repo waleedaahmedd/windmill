@@ -15,21 +15,22 @@ import 'package:windmill_general_trading/views/views_exporter.dart';
 class Common {
   //PRIVACY POLICY AND TERMS-CONDITION URLS
   static const String PRIVACY_POLICY =
-      "https://demo.windmillcellar.com/privacy-policy/";
+      "https://windmillcellar.com/privacy-policy/";
   static const String TERMS_AND_CONDITIONS =
-      "https://demo.windmillcellar.com/terms-and-conditions/";
+      "https://windmillcellar.com/terms-and-conditions/";
 
   // Wordpress API Credentials
   static const String CONSUMER_KEY =
       "ck_f3c82188618fb5dcd7b4aa51a27187b7f9f3afb6";
   static const String CONSUMER_SECRET =
       "cs_8612c1dc210cd11ceb67cf10e1cc0ccfaf3be68a";
-  static const String BASE_URL = "https://demo.windmillcellar.com/wp-json/";
+  static const String BASE_URL = "https://windmillcellar.com/wp-json/";
   static const String BASE_URl_NGENIOUS =
       "https://api-gateway.sandbox.ngenius-payments.com";
-
-  static const String API_URL =
-      "https://demo.windmillcellar.com/wp-json/wc/v3/";
+  static const String ngeniousApi =
+      "YjRiM2JiYjQtYjEzOC00MDM3LWJhMWQtZGU4ZGJlNzBlOGY2OmJjZjIyZDUwLTlkMmEtNGYxMS05Zjk5LWY3Y2FjOTBlZGZkYg==";
+  static const String API_URL = "https://windmillcellar.com/wp-json/wc/v3/";
+  static const String REDIRECT_URL = "https://windmillcellar.com";
 
   // Application Name
   static String applicationName = "Windmill General Trading";
@@ -59,8 +60,7 @@ class Common {
   static const String TOKEN = "TOKEN";
   static const String ID = "ID";
   static const String outletId = '6782edef-036a-4ea6-a81c-fb72aa876246';
-  static const String ngeniousApi =
-      "YjRiM2JiYjQtYjEzOC00MDM3LWJhMWQtZGU4ZGJlNzBlOGY2OmJjZjIyZDUwLTlkMmEtNGYxMS05Zjk5LWY3Y2FjOTBlZGZkYg==";
+
   //filtering constants
   static const String RECOMMENDED = "recommended";
   static const String NEW = "date"; // for api its date filter
@@ -181,6 +181,7 @@ class Common {
       context,
       CustomSnackBar.info(
         message: message,
+        backgroundColor: Colors.green,
       ),
     );
   }

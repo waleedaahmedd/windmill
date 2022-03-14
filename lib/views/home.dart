@@ -185,7 +185,8 @@ class _HomeState extends State<Home> {
                             itemCount: _topPricesProducts?.length,
                             physics: BouncingScrollPhysics(),
                             itemBuilder: (BuildContext context, int index) {
-                              ProductModal _product = _topPricesProducts![index];
+                              ProductModal _product =
+                                  _topPricesProducts![index];
                               return DashboardHorizontalListCard(
                                 product: _product,
                                 width: 160.0,

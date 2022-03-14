@@ -14,4 +14,6 @@ class AppRoutes {
   static String storeLocatorRoute = "/store-locator";
   static String ordersRoute = "/orders";
   static String shoppingCartRoute = "/shopping-cart";
+  static String editProfileRoute = "/edit-profile";
+  static String notificationRoute = "/notification";
 }

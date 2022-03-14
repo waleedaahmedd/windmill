@@ -1,6 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -15,8 +13,8 @@ import 'package:http/http.dart' as http;
 
 class ApiRequests {
   static FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
-  static const String username = "ck_925c9c90c1032a4604fcd8cdea5cdb1601da7b2e";
-  static const String password = "cs_b609a8b41e647ea7832c9bf12a2e3a8b043948a9";
+  static const String username = "ck_920da5e157d013d1b547b499fe81dc186218c375";
+  static const String password = "cs_578b7434cb8c504b8f56d498a45ff245310ec1e7";
   static const String key = "$username:$password";
 
   static var header = <String, String>{
@@ -176,8 +174,7 @@ class ApiRequests {
   }
 
   static Future<List<Category>> getCategory(int categoryId) async {
-    String url = Common.API_URL +
-        "products/categories=$categoryId?consumer_key=${Common.CONSUMER_KEY}&consumer_secret=${Common.CONSUMER_SECRET}";
+    String url = Common.API_URL + "products/categories=$categoryId";
     print(url);
     try {
       return await Dio()
@@ -274,15 +271,15 @@ class ApiRequests {
   static Future<UserModal> getUser(String userID) async {
     try {
       return await Dio()
-          .post(
+          .put(
         Common.API_URL + "customers/$userID",
         options: Options(headers: header),
       )
           .then((value) {
-        print(value.data);
         return UserModal.fromJson(value.data);
       });
     } on DioError catch (e) {
+      print("Error is: ${e.response}");
       return UserModal.fromJson(e.response!.data);
     }
   }
@@ -315,25 +312,19 @@ class ApiRequests {
   static Future<bool> placeOrder(OrderModal order) async {
     try {
       String _token = await getString(Common.TOKEN);
-      header = {
-        "Accept": "*/*",
-        "Accept-Encoding": "gzip, deflate, br",
-        "Connection": "keep-alive",
-        HttpHeaders.authorizationHeader: "Basic $_token",
-        HttpHeaders.contentTypeHeader: "application/json",
-      };
-      return await Dio()
-          .post(
-        Common.API_URL +
-            "orders?consumer_key=${Common.CONSUMER_KEY}&consumer_secret=${Common.CONSUMER_SECRET}",
+
+      header = header;
+      var data = await Dio().post(
+        Common.API_URL + "orders",
         data: order.toJson(),
         options: Options(headers: header),
-      )
-          .then((value) {
-        print(value);
-        return true;
-      });
+      );
+      print("Value is ---" + data.data.toString());
+
+      return true;
     } on DioError catch (e) {
+      print("Value is ---" + e.toString());
+
       return false;
     }
   }
@@ -607,8 +598,7 @@ class ApiRequests {
         "status": "completed",
       };
 
-    String url = Common.API_URL +
-        "orders/${order.id}?consumer_key=${Common.CONSUMER_KEY}&consumer_secret=${Common.CONSUMER_SECRET}";
+    String url = Common.API_URL + "orders/${order.id}";
     print(url);
     // mark order as completed and paid if order was COD
     try {
@@ -702,7 +692,11 @@ class ApiRequests {
           "action": "SALE",
           "amount": {"currencyCode": "AED", "value": _amount},
           "shippingAddress": order.shipping,
-          "billingAddress": order.billing
+          "billingAddress": order.billing,
+          "merchantAttributes": {
+            "redirectUrl": Common.REDIRECT_URL,
+            "skipConfirmationPage": true
+          }
         };
         var orderResponse = await http.post(
             Uri.parse(Common.BASE_URl_NGENIOUS +
@@ -777,23 +771,33 @@ class ApiRequests {
         if (_orderReferenceValueArray != null) {
           List<dynamic> list = _orderReferenceValueArray;
           var _orderReferenceValue = list[0];
+          bool state =
+              _orderReferenceValue["state"] == "CAPTURED" ? true : false;
+          if (state) {
+            bool success =
+                _orderReferenceValue["authResponse"]["success"] == true
+                    ? true
+                    : false;
+            bool resultCode =
+                _orderReferenceValue["authResponse"]["resultCode"] == "00"
+                    ? true
+                    : false;
+            bool _3dsSuccess =
+                _orderReferenceValue["3ds"]["status"] == "SUCCESS"
+                    ? true
+                    : false;
+            bool _3dSresultCode =
+                _orderReferenceValue["3ds"]["eci"] == "02" ? true : false;
 
-          bool success = _orderReferenceValue["authResponse"]["success"] == true
-              ? true
-              : false;
-          bool resultCode =
-              _orderReferenceValue["authResponse"]["resultCode"] == "00"
-                  ? true
-                  : false;
-          bool _3dsSuccess =
-              _orderReferenceValue["3ds"]["status"] == "SUCCESS" ? true : false;
-          bool _3dSresultCode =
-              _orderReferenceValue["3ds"]["eci"] == "02" ? true : false;
-          if (success == true &&
-              resultCode == true &&
-              _3dSresultCode == true &&
-              _3dsSuccess == true) {
-            return true;
+            print("Output of success " + success.toString());
+            print("Output of resultCode " + resultCode.toString());
+            print("Output of _3dSresultCode " + _3dSresultCode.toString());
+            print("Output of _3dsSuccess " + _3dsSuccess.toString());
+            if (success == true && resultCode == true) {
+              return true;
+            } else {
+              return false;
+            }
           } else {
             return false;
           }
