@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:windmill_general_trading/modals/modals_exporter.dart';
@@ -21,6 +22,8 @@ class _ProductDetailState extends State<ProductDetail> {
   String _userID = "";
   bool _isLoading = true, _isWishListLoading = true;
   bool _isProductWishListed = false;
+  String? _packingValue ;
+  String? _volumeValue;
 
   @override
   void initState() {
@@ -241,6 +244,64 @@ class _ProductDetailState extends State<ProductDetail> {
                                 ),
                               ],
                             ),
+                          ],
+                        ),
+                        const SizedBox(height: 20.0),
+                        Row(
+                          children: [
+                            Text('Packing',style: TextStyle(
+                              fontSize: 18,fontWeight: FontWeight.w500
+                            ),),
+                            SizedBox(
+                              width: 20,
+                            ),
+                            Expanded(
+                              child: DropdownButton<String>(
+                                isExpanded: true,
+                                value: _packingValue,
+                                hint: Text("Choose an Option"),
+                                items: widget.product.attributes[1].options.map((packingOne){
+                                return DropdownMenuItem(
+                                  child: Text(packingOne), //label of item
+                                  value: packingOne, //value of item
+                                );
+                              }).toList(),
+                                  onChanged: (value){
+                                  setState(() {
+                                    _packingValue = value!;
+                                  });
+                                     //change the country name
+                                  },),
+                            )
+                          ],
+                        ),
+                        const SizedBox(height: 20.0),
+                        Row(
+                          children: [
+                            Text('Volume',style: TextStyle(
+                                fontSize: 18,fontWeight: FontWeight.w500
+                            ),),
+                            SizedBox(
+                              width: 20,
+                            ),
+                            Expanded(
+                              child: DropdownButton<String>(
+                                isExpanded: true,
+                                value: _volumeValue,
+                                hint: Text("Choose an Option"),
+                                items: widget.product.attributes[1].options.map((volumeOne){
+                                  return DropdownMenuItem(
+                                    child: Text(volumeOne), //label of item
+                                    value: volumeOne, //value of item
+                                  );
+                                }).toList(),
+                                onChanged: (value){
+                                  setState(() {
+                                    _volumeValue = value!;
+                                  });
+                                  //change the country name
+                                },),
+                            )
                           ],
                         ),
                         const SizedBox(height: 20.0),

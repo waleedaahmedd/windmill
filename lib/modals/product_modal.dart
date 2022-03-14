@@ -1,7 +1,7 @@
 // To parse this JSON data, do
 //
 //     final productModal = productModalFromJson(jsonString);
-//
+
 import 'dart:convert';
 
 ProductModal productModalFromJson(String str) =>
