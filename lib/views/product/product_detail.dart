@@ -524,7 +524,7 @@ class _ProductDetailState extends State<ProductDetail> {
         });
       }
     }
-
+//
     if (volumeIndex != -1 && packingIndex != -1) {
       if (volumeIndex == packingIndex) {
         setState(() {
