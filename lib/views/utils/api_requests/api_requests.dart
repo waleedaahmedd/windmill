@@ -7,6 +7,7 @@ import 'package:flutter_login_facebook/flutter_login_facebook.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:windmill_general_trading/modals/modals_exporter.dart';
 import 'package:windmill_general_trading/modals/payment_modal.dart';
+import 'package:windmill_general_trading/modals/varition_model.dart';
 import 'package:windmill_general_trading/views/utils/api_requests/sms_request.dart';
 import 'package:windmill_general_trading/views/utils/utils_exporter.dart';
 import 'package:http/http.dart' as http;
@@ -150,6 +151,25 @@ class ApiRequests {
       return ProductModal.fromJson(e.response!.data);
     }
   }
+
+  static Future<VariationModel> getVariations(String productId, int variationId) async {
+    String url = Common.API_URL + "products/$productId/variations/$variationId";
+    print(url);
+    try {
+      return await Dio()
+          .get(
+        url,
+        options: Options(headers: header),
+      )
+          .then(
+            (value) => VariationModel.fromJson(value.data),
+      );
+    } on DioError catch (e) {
+      print(e);
+      return VariationModel.fromJson(e.response!.data);
+    }
+  }
+
 
   static Future<List<Category>> getAllCategories() async {
     String url = Common.API_URL + "products/categories?per_page=100";

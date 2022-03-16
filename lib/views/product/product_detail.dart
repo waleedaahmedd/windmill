@@ -6,8 +6,11 @@ import 'package:windmill_general_trading/views/utils/utils_exporter.dart';
 import 'package:windmill_general_trading/views/utils/widgets/widgets_exporter.dart';
 import 'package:windmill_general_trading/views/views_exporter.dart';
 
+import '../../modals/varition_model.dart';
+
 class ProductDetail extends StatefulWidget {
   final ProductModal product;
+
   const ProductDetail({
     Key? key,
     required this.product,
@@ -18,23 +21,38 @@ class ProductDetail extends StatefulWidget {
 }
 
 class _ProductDetailState extends State<ProductDetail> {
+  VariationModel? _variationDetail;
+  VariationModel? _finalVariationDetail;
+  List<VariationModel> _variationList = [];
   int purchaseItemCount = 1;
   String _userID = "";
-  bool _isLoading = true, _isWishListLoading = true;
+  bool _isLoading = true,
+      _isWishListLoading = true;
   bool _isProductWishListed = false;
-  String? _packingValue ;
+  String? _packingValue;
+
   String? _volumeValue;
+  int? volumeIndex;
+  int? packingIndex;
 
   @override
   void initState() {
+    if (widget.product.variations.isNotEmpty) {
+      _getVariants();
+    }
+    else{
+      _toggleLoading(isLoading: false);
+    }
+    _getIndex();
     _getUser();
+
     super.initState();
   }
 
   void _getUser() async {
     int _id = await getInt(Common.ID);
     _userID = _id.toString();
-    _toggleLoading();
+   // _toggleLoading();
 
     await _getWishListDetails();
   }
@@ -64,7 +82,7 @@ class _ProductDetailState extends State<ProductDetail> {
                           bottomRight: Radius.circular(30.0),
                         ),
                         child: Image.network(
-                          '${widget.product.images.first.src}',
+                          '${_finalVariationDetail != null ? _finalVariationDetail!.image!.src : widget.product.images.first.src}',
                           fit: BoxFit.fill,
                           height: 350.0,
                         ),
@@ -114,7 +132,7 @@ class _ProductDetailState extends State<ProductDetail> {
                           children: [
                             Expanded(
                               child: Text(
-                                '${widget.product.name}',
+                                '${_finalVariationDetail != null ? _finalVariationDetail!.image!.name : widget.product.name}',
                                 style: TextStyle(
                                   fontWeight: FontWeight.w900,
                                   fontSize: 30.0,
@@ -223,7 +241,7 @@ class _ProductDetailState extends State<ProductDetail> {
                               children: [
                                 widget.product.onSale
                                     ? Text(
-                                        'AED ${widget.product.regularPrice}',
+                                        'AED ${_finalVariationDetail != null ? _finalVariationDetail!.regularPrice : widget.product.regularPrice}',
                                         style: TextStyle(
                                           color: Colors.black,
                                           fontFamily: 'MontserratBlack',
@@ -234,7 +252,7 @@ class _ProductDetailState extends State<ProductDetail> {
                                       )
                                     : const SizedBox.shrink(),
                                 Text(
-                                  'AED ${widget.product.price}',
+                                  'AED ${_finalVariationDetail != null ? _finalVariationDetail!.price : widget.product.price}',
                                   style: TextStyle(
                                     color: Colors.black,
                                     fontWeight: FontWeight.bold,
@@ -247,62 +265,89 @@ class _ProductDetailState extends State<ProductDetail> {
                           ],
                         ),
                         const SizedBox(height: 20.0),
-                        Row(
-                          children: [
-                            Text('Packing',style: TextStyle(
-                              fontSize: 18,fontWeight: FontWeight.w500
-                            ),),
-                            SizedBox(
-                              width: 20,
-                            ),
-                            Expanded(
-                              child: DropdownButton<String>(
-                                isExpanded: true,
-                                value: _packingValue,
-                                hint: Text("Choose an Option"),
-                                items: widget.product.attributes[1].options.map((packingOne){
-                                return DropdownMenuItem(
-                                  child: Text(packingOne), //label of item
-                                  value: packingOne, //value of item
-                                );
-                              }).toList(),
-                                  onChanged: (value){
-                                  setState(() {
-                                    _packingValue = value!;
-                                  });
-                                     //change the country name
-                                  },),
-                            )
-                          ],
-                        ),
-                        const SizedBox(height: 20.0),
-                        Row(
-                          children: [
-                            Text('Volume',style: TextStyle(
-                                fontSize: 18,fontWeight: FontWeight.w500
-                            ),),
-                            SizedBox(
-                              width: 20,
-                            ),
-                            Expanded(
-                              child: DropdownButton<String>(
-                                isExpanded: true,
-                                value: _volumeValue,
-                                hint: Text("Choose an Option"),
-                                items: widget.product.attributes[1].options.map((volumeOne){
-                                  return DropdownMenuItem(
-                                    child: Text(volumeOne), //label of item
-                                    value: volumeOne, //value of item
-                                  );
-                                }).toList(),
-                                onChanged: (value){
-                                  setState(() {
-                                    _volumeValue = value!;
-                                  });
-                                  //change the country name
-                                },),
-                            )
-                          ],
+                        Visibility(
+                          visible:
+                              widget.product.variations.isEmpty ? false : true,
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  Text(
+                                    'Packing',
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                  SizedBox(
+                                    width: 20,
+                                  ),
+                                  Expanded(
+                                    child: DropdownButton<String>(
+                                      isExpanded: true,
+                                      value: _packingValue,
+                                      hint: Text("Choose an Option"),
+                                      items: widget.product
+                                          .attributes[packingIndex!].options
+                                          .map((packingOne) {
+                                        return DropdownMenuItem(
+                                          child: Text(packingOne),
+                                          //label of item
+                                          value: packingOne, //value of item
+                                        );
+                                      }).toList(),
+                                      onChanged: (value) {
+                                        setState(() {
+                                          _packingValue = value!;
+                                          _volumeValue = null;
+                                        });
+                                        findVariationIndex();
+
+                                        //change the country name
+                                      },
+                                    ),
+                                  )
+                                ],
+                              ),
+                              const SizedBox(height: 20.0),
+                              Row(
+                                children: [
+                                  Text(
+                                    'Volume',
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                  SizedBox(
+                                    width: 20,
+                                  ),
+                                  Expanded(
+                                    child: DropdownButton<String>(
+                                      isExpanded: true,
+                                      value: _volumeValue,
+                                      hint: Text("Choose an Option"),
+                                      items: widget.product
+                                          .attributes[volumeIndex!].options
+                                          .map((volumeOne) {
+                                        return DropdownMenuItem(
+                                          child: Text(volumeOne),
+                                          //label of item
+                                          value: volumeOne, //value of item
+                                        );
+                                      }).toList(),
+                                      onChanged: (value) {
+                                        setState(() {
+                                          _volumeValue = value!;
+
+                                        });
+                                        findVariationIndex();
+                                        //change the country name
+                                      },
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                         const SizedBox(height: 20.0),
                         Text(
@@ -316,7 +361,7 @@ class _ProductDetailState extends State<ProductDetail> {
                         ),
                         const SizedBox(height: 5.0),
                         Text(
-                          '${widget.product.description}',
+                          '${ widget.product.description}',
                           style: TextStyle(
                             fontSize: 14.0,
                             color: Colors.black54,
@@ -431,5 +476,61 @@ class _ProductDetailState extends State<ProductDetail> {
     }
 
     _toggleLoading();
+  }
+
+  void _getIndex() {
+    final index =
+        widget.product.attributes.indexWhere((element) => element.id == 1);
+    final index1 =
+        widget.product.attributes.indexWhere((element) => element.id == 5);
+    if (index != -1 && index1 != -1 && index != null && index1 != null) {
+      setState(() {
+        volumeIndex = index;
+        packingIndex = index1;
+      });
+    } else {
+      volumeIndex = 0;
+      packingIndex = 0;
+    }
+  }
+
+  void _getVariants() async {
+    for (var i = 0, j = widget.product.variations.length; i < j; i++) {
+      _variationDetail = await ApiRequests.getVariations(
+          widget.product.id.toString(), widget.product.variations[i]);
+      _variationList.add(_variationDetail!);
+      print(_variationDetail);
+      print(_variationList);
+    }
+    _toggleLoading(isLoading: false);
+  }
+
+  void findVariationIndex() {
+    final volumeIndex = _variationList
+        .indexWhere((element) => element.attributes![1].option == _volumeValue);
+    final packingIndex = _variationList.indexWhere(
+        (element) => element.attributes![0].option == _packingValue);
+
+    if (volumeIndex != -1 && packingIndex != -1) {
+      if(volumeIndex == packingIndex){
+        setState(() {
+          _finalVariationDetail = _variationList[packingIndex];
+        });
+      }
+      else{
+        setState(() {
+          _finalVariationDetail = _variationList[volumeIndex];
+        });
+      }
+
+    } else if (volumeIndex != -1 && packingIndex == -1) {
+      setState(() {
+        _finalVariationDetail = _variationList[volumeIndex];
+      });
+    } else if (packingIndex != -1 && volumeIndex == -1) {
+      setState(() {
+        _finalVariationDetail = _variationList[packingIndex];
+      });
+    }
   }
 }
