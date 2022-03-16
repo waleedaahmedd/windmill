@@ -24,10 +24,13 @@ class _ProductDetailState extends State<ProductDetail> {
   VariationModel? _variationDetail;
   VariationModel? _finalVariationDetail;
   List<VariationModel> _variationList = [];
+  List<String> _volumeList = [];
+  List<String> _packingList = [];
+  List<String> _finalVolumeList = [];
+  List<String> _finalPackingList = [];
   int purchaseItemCount = 1;
   String _userID = "";
-  bool _isLoading = true,
-      _isWishListLoading = true;
+  bool _isLoading = true, _isWishListLoading = true;
   bool _isProductWishListed = false;
   String? _packingValue;
 
@@ -37,13 +40,13 @@ class _ProductDetailState extends State<ProductDetail> {
 
   @override
   void initState() {
+    _getIndex();
+    _finalVolumeList.addAll(widget.product.attributes[volumeIndex!].options);
     if (widget.product.variations.isNotEmpty) {
       _getVariants();
-    }
-    else{
+    } else {
       _toggleLoading(isLoading: false);
     }
-    _getIndex();
     _getUser();
 
     super.initState();
@@ -52,7 +55,7 @@ class _ProductDetailState extends State<ProductDetail> {
   void _getUser() async {
     int _id = await getInt(Common.ID);
     _userID = _id.toString();
-   // _toggleLoading();
+    // _toggleLoading();
 
     await _getWishListDetails();
   }
@@ -132,7 +135,7 @@ class _ProductDetailState extends State<ProductDetail> {
                           children: [
                             Expanded(
                               child: Text(
-                                '${_finalVariationDetail != null ? _finalVariationDetail!.image!.name : widget.product.name}',
+                                '${widget.product.name}',
                                 style: TextStyle(
                                   fontWeight: FontWeight.w900,
                                   fontSize: 30.0,
@@ -325,9 +328,7 @@ class _ProductDetailState extends State<ProductDetail> {
                                       isExpanded: true,
                                       value: _volumeValue,
                                       hint: Text("Choose an Option"),
-                                      items: widget.product
-                                          .attributes[volumeIndex!].options
-                                          .map((volumeOne) {
+                                      items: _finalVolumeList.map((volumeOne) {
                                         return DropdownMenuItem(
                                           child: Text(volumeOne),
                                           //label of item
@@ -337,7 +338,6 @@ class _ProductDetailState extends State<ProductDetail> {
                                       onChanged: (value) {
                                         setState(() {
                                           _volumeValue = value!;
-
                                         });
                                         findVariationIndex();
                                         //change the country name
@@ -361,7 +361,7 @@ class _ProductDetailState extends State<ProductDetail> {
                         ),
                         const SizedBox(height: 5.0),
                         Text(
-                          '${ widget.product.description}',
+                          '${widget.product.description}',
                           style: TextStyle(
                             fontSize: 14.0,
                             color: Colors.black54,
@@ -483,6 +483,7 @@ class _ProductDetailState extends State<ProductDetail> {
         widget.product.attributes.indexWhere((element) => element.id == 1);
     final index1 =
         widget.product.attributes.indexWhere((element) => element.id == 5);
+
     if (index != -1 && index1 != -1 && index != null && index1 != null) {
       setState(() {
         volumeIndex = index;
@@ -510,19 +511,30 @@ class _ProductDetailState extends State<ProductDetail> {
         .indexWhere((element) => element.attributes![1].option == _volumeValue);
     final packingIndex = _variationList.indexWhere(
         (element) => element.attributes![0].option == _packingValue);
+    _volumeList.clear();
+    if (volumeIndex != -1 || packingIndex != -1) {
+      for (var elements in _variationList) {
+        if (elements.attributes![0].option == _packingValue) {
+          print(elements.attributes![1].option);
+          _volumeList.add(elements.attributes![1].option!);
+          print(_volumeList);
+        }
+        setState(() {
+          _finalVolumeList = _volumeList;
+        });
+      }
+    }
 
     if (volumeIndex != -1 && packingIndex != -1) {
-      if(volumeIndex == packingIndex){
+      if (volumeIndex == packingIndex) {
         setState(() {
           _finalVariationDetail = _variationList[packingIndex];
         });
-      }
-      else{
+      } else {
         setState(() {
           _finalVariationDetail = _variationList[volumeIndex];
         });
       }
-
     } else if (volumeIndex != -1 && packingIndex == -1) {
       setState(() {
         _finalVariationDetail = _variationList[volumeIndex];
