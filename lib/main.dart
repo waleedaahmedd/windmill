@@ -4,6 +4,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:windmill_general_trading/views/edit_profile.dart';
 import 'package:windmill_general_trading/views/notification.dart';
 import 'package:windmill_general_trading/views/utils/utils_exporter.dart';
+import 'package:windmill_general_trading/views/verification_screen.dart';
 import 'package:windmill_general_trading/views/views_exporter.dart';
 
 import 'views/routes/app_routes.dart';
@@ -28,9 +29,12 @@ class MyApp extends StatelessWidget {
         bottomSheetTheme:
             BottomSheetThemeData(backgroundColor: Colors.transparent),
       ),
-      initialRoute: AppRoutes.getStartedRoute,
+      initialRoute: AppRoutes.verificationRoute,
       routes: {
+        AppRoutes.verificationRoute: (context) => VerificationScreen(),
+
         AppRoutes.getStartedRoute: (context) => GetStarted(),
+
         AppRoutes.loginRoute: (context) => Login(),
         AppRoutes.registerRoute: (context) => Register(),
         AppRoutes.forgetPasswordRoute: (context) => ForgetPassword(),

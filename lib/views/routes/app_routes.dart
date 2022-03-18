@@ -3,6 +3,8 @@ class AppRoutes {
   static String initialRoute = "/";
 
   // application routes
+  static String verificationRoute = "/verification";
+
   static String splashRoute = "/splash";
   static String getStartedRoute = "/get-started";
   static String forgetPasswordRoute = "/forget-password";

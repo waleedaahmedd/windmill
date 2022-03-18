@@ -1,6 +1,9 @@
+import 'dart:math';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:windmill_general_trading/modals/modals_exporter.dart';
 import 'package:windmill_general_trading/views/utils/utils_exporter.dart';
 import 'package:windmill_general_trading/views/utils/widgets/widgets_exporter.dart';
@@ -25,23 +28,30 @@ class _ProductDetailState extends State<ProductDetail> {
   VariationModel? _finalVariationDetail;
   List<VariationModel> _variationList = [];
   List<String> _volumeList = [];
-  List<String> _packingList = [];
   List<String> _finalVolumeList = [];
   List<String> _finalPackingList = [];
+  List<int> _variationPrice = [];
+  String? _minValue;
+  String? _maxValue;
   int purchaseItemCount = 1;
   String _userID = "";
   bool _isLoading = true, _isWishListLoading = true;
   bool _isProductWishListed = false;
   String? _packingValue;
-
+  bool? sale;
   String? _volumeValue;
-  int? volumeIndex;
-  int? packingIndex;
+  int? productVolumeIndex;
+  int? productPackingIndex;
 
   @override
   void initState() {
+    sale = widget.product.onSale;
     _getIndex();
-    _finalVolumeList.addAll(widget.product.attributes[volumeIndex!].options);
+    _finalVolumeList
+        .addAll(widget.product.attributes[productVolumeIndex!].options);
+    _finalPackingList
+        .addAll(widget.product.attributes[productPackingIndex!].options);
+
     if (widget.product.variations.isNotEmpty) {
       _getVariants();
     } else {
@@ -240,31 +250,42 @@ class _ProductDetailState extends State<ProductDetail> {
                                 ],
                               ),
                             ),
-                            Column(
-                              children: [
-                                widget.product.onSale
-                                    ? Text(
-                                        'AED ${_finalVariationDetail != null ? _finalVariationDetail!.regularPrice : widget.product.regularPrice}',
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontFamily: 'MontserratBlack',
-                                          decoration:
-                                              TextDecoration.lineThrough,
-                                          fontSize: 22.0,
-                                        ),
-                                      )
-                                    : const SizedBox.shrink(),
-                                Text(
-                                  'AED ${_finalVariationDetail != null ? _finalVariationDetail!.price : widget.product.price}',
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: 'MontserratBlack',
-                                    fontSize: 30.0,
+                            _finalVariationDetail == null && _minValue != null?
+                            Text('AED $_minValue - AED $_maxValue', style: TextStyle(
+                              color: Colors.blue,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'MontserratBlack',
+                              fontSize: 30.0,
+                            )):
+                            Visibility(
+                              visible: _isLoading? false : true,
+                              child: Column(
+                                children: [
+                                  sale!
+                                      ? Text(
+                                    'AED ${_finalVariationDetail != null ? _finalVariationDetail!.regularPrice : widget.product.regularPrice}',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontFamily: 'MontserratBlack',
+                                      decoration:
+                                      TextDecoration.lineThrough,
+                                      fontSize: 22.0,
+                                    ),
+                                  )
+                                      : const SizedBox.shrink(),
+                                  Text(
+                                    'AED ${_finalVariationDetail != null ? _finalVariationDetail!.price : widget.product.price}',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: 'MontserratBlack',
+                                      fontSize: 30.0,
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
+                                ],
+                              ),
+                            ) ,
+
                           ],
                         ),
                         const SizedBox(height: 20.0),
@@ -289,9 +310,8 @@ class _ProductDetailState extends State<ProductDetail> {
                                       isExpanded: true,
                                       value: _packingValue,
                                       hint: Text("Choose an Option"),
-                                      items: widget.product
-                                          .attributes[packingIndex!].options
-                                          .map((packingOne) {
+                                      items:
+                                          _finalPackingList.map((packingOne) {
                                         return DropdownMenuItem(
                                           child: Text(packingOne),
                                           //label of item
@@ -336,10 +356,13 @@ class _ProductDetailState extends State<ProductDetail> {
                                         );
                                       }).toList(),
                                       onChanged: (value) {
-                                        setState(() {
-                                          _volumeValue = value!;
-                                        });
-                                        findVariationIndex();
+                                        _packingValue != null
+                                            ? setState(() {
+                                                _volumeValue = value!;
+                                                findVariationIndex();
+                                              })
+                                            : showMessage();
+
                                         //change the country name
                                       },
                                     ),
@@ -360,14 +383,7 @@ class _ProductDetailState extends State<ProductDetail> {
                           ),
                         ),
                         const SizedBox(height: 5.0),
-                        Text(
-                          '${widget.product.description}',
-                          style: TextStyle(
-                            fontSize: 14.0,
-                            color: Colors.black54,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+                        Html(data: widget.product.description)
                       ],
                     ),
                   ),
@@ -459,23 +475,40 @@ class _ProductDetailState extends State<ProductDetail> {
   }
 
   void _processAddToCart() async {
-    _toggleLoading(isLoading: true);
-
-    if (_isLoading) {
-      await ApiRequests.processAddProductToCart(
-        widget.product.id.toString(),
-        purchaseItemCount,
-        _userID,
-        variation: widget.product.variations.length == 0
-            ? 0
-            : widget.product.variations.first,
-        context: context,
-      );
-      Common.showSuccessTopSnack(
-          context, "Product Added to Cart Successfully!");
+    if(widget.product.variations.isNotEmpty && _volumeValue != null && _packingValue != null){
+      _toggleLoading(isLoading: true);
+      if (_isLoading) {
+        await ApiRequests.processAddProductToCart(
+          widget.product.id.toString(),
+          purchaseItemCount,
+          _userID,
+          variation: _finalVariationDetail?.id,
+          context: context,
+        );
+        Common.showSuccessTopSnack(
+            context, "Product Added to Cart Successfully!");
+      }
+      _toggleLoading();
+    }
+    else if (widget.product.variations.isNotEmpty && (_volumeValue == null || _packingValue == null)){
+      Common.showErrorTopSnack(context, "First Select Variants");
+    }
+    else{
+      _toggleLoading(isLoading: true);
+      if (_isLoading) {
+        await ApiRequests.processAddProductToCart(
+          widget.product.id.toString(),
+          purchaseItemCount,
+          _userID,
+          variation: 0,
+          context: context,
+        );
+        Common.showSuccessTopSnack(
+            context, "Product Added to Cart Successfully!");
+      }
+      _toggleLoading();
     }
 
-    _toggleLoading();
   }
 
   void _getIndex() {
@@ -486,12 +519,12 @@ class _ProductDetailState extends State<ProductDetail> {
 
     if (index != -1 && index1 != -1 && index != null && index1 != null) {
       setState(() {
-        volumeIndex = index;
-        packingIndex = index1;
+        productVolumeIndex = index;
+        productPackingIndex = index1;
       });
     } else {
-      volumeIndex = 0;
-      packingIndex = 0;
+      productVolumeIndex = 0;
+      productPackingIndex = 0;
     }
   }
 
@@ -500,19 +533,31 @@ class _ProductDetailState extends State<ProductDetail> {
       _variationDetail = await ApiRequests.getVariations(
           widget.product.id.toString(), widget.product.variations[i]);
       _variationList.add(_variationDetail!);
-      print(_variationDetail);
+      final int variationPrices = int.parse(_variationDetail!.price!);
+      _variationPrice.add(variationPrices);
+      print(_variationPrice);
       print(_variationList);
     }
+    setState(() {
+      _minValue = _variationPrice.reduce(min).toString();
+      _maxValue = _variationPrice.reduce(max).toString();
+    });
     _toggleLoading(isLoading: false);
   }
 
   void findVariationIndex() {
+    final bothTrueIndex = _variationList.indexWhere((element) =>
+        element.attributes![1].option == _volumeValue &&
+        element.attributes![0].option == _packingValue);
+
     final volumeIndex = _variationList
         .indexWhere((element) => element.attributes![1].option == _volumeValue);
+
     final packingIndex = _variationList.indexWhere(
         (element) => element.attributes![0].option == _packingValue);
-    _volumeList.clear();
-    if (volumeIndex != -1 || packingIndex != -1) {
+
+    if (packingIndex != -1 && volumeIndex == -1) {
+      _volumeList.clear();
       for (var elements in _variationList) {
         if (elements.attributes![0].option == _packingValue) {
           print(elements.attributes![1].option);
@@ -520,12 +565,29 @@ class _ProductDetailState extends State<ProductDetail> {
           print(_volumeList);
         }
         setState(() {
+          _finalVariationDetail = _variationList[packingIndex];
+          sale = _finalVariationDetail!.onSale!;
+          _finalVolumeList = _volumeList;
+        });
+      }
+    } else {
+      _volumeList.clear();
+      for (var elements in _variationList) {
+        if (elements.attributes![0].option == _packingValue) {
+          print(elements.attributes![1].option);
+          _volumeList.add(elements.attributes![1].option!);
+          print(_volumeList);
+        }
+        setState(() {
+          _finalVariationDetail = _variationList[bothTrueIndex];
+          sale = _finalVariationDetail!.onSale!;
           _finalVolumeList = _volumeList;
         });
       }
     }
+
 //
-    if (volumeIndex != -1 && packingIndex != -1) {
+    /*if (volumeIndex != -1 && packingIndex != -1) {
       if (volumeIndex == packingIndex) {
         setState(() {
           _finalVariationDetail = _variationList[packingIndex];
@@ -543,6 +605,10 @@ class _ProductDetailState extends State<ProductDetail> {
       setState(() {
         _finalVariationDetail = _variationList[packingIndex];
       });
-    }
+    }*/
+  }
+
+  showMessage() {
+    Common.showErrorTopSnack(context, "Select packing First");
   }
 }

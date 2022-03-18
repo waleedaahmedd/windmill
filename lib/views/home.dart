@@ -36,6 +36,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey.shade200,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -44,6 +45,94 @@ class _HomeState extends State<Home> {
             controller: searchController,
             title: "Click & Collect - Ghantaat",
             appBarColor: AppColors.appBlueColor,
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 10,right: 5, top: 10,bottom: 10),
+                  child: Container(
+                      color: Colors.white,
+                      child: Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Row(
+                          children: [
+                            Container(
+                              height:30,
+                              child: Image.asset(
+                                "${Common.assetsImages}free-delivery.png",
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 5.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  Text('Free Delivery',style: TextStyle(
+                                      color: Colors.red, fontWeight: FontWeight.bold,fontSize: 18
+                                  ),),
+                                  Container(
+                                      width: 100,
+                                      child: Text('From AED 150 within Abu Dhabi & Al Ain only',
+                                        style: TextStyle(
+                                            fontSize: 12
+                                        ),
+                                        maxLines: 3,
+                                        overflow: TextOverflow.ellipsis,))
+                                ],
+                              ),
+                            ),
+
+                          ],
+                        ),
+                      )
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 5,right: 10, top: 10,bottom: 10),
+                  child: Container(
+                      color: Colors.white,
+                      child: Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Row(
+                          children: [
+                            Container(
+                              height:30,
+                              child: Image.asset(
+                                "${Common.assetsImages}click-collect.png",
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 5.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  Text('Click & Collect',style: TextStyle(
+                                      color: Colors.red, fontWeight: FontWeight.bold,fontSize: 18
+                                  ),),
+                                  Container(
+                                      width: 100,
+                                      child: Text('Shop at your fingertips and collect at Ghantoot',
+                                          style: TextStyle(
+                                            fontSize: 12
+                                          ),
+                                        maxLines: 3,
+                                        overflow: TextOverflow.ellipsis,))
+                                ],
+                              ),
+                            ),
+
+                          ],
+                        ),
+                      )
+                  ),
+                ),
+              ),
+            ],
           ),
           Expanded(
             child: SingleChildScrollView(
@@ -88,8 +177,8 @@ class _HomeState extends State<Home> {
                     ),
                   ),
                   DashboardMainCategoryTitleWithViewAll(
-                    blackText: "Latest",
-                    blueText: "Beverages",
+                    blackText: "Featured",
+                    blueText: "Products",
                   ),
                   SizedBox(
                     height: 236.0,
@@ -207,12 +296,14 @@ class _HomeState extends State<Home> {
   Future<void> _getProducts() async {
     _trendingProducts =
         await ApiRequests.getProducts(orderBy: "popularity", order: Common.ASC);
-    _recentPostedProducts =
+    _isTrendingLoading = false;
+    if (mounted) setState(() {});
+      _recentPostedProducts =
         await ApiRequests.getProducts(orderBy: "date", order: Common.ASC);
+    _isRecentLoading = false;
+    if (mounted) setState(() {});
     _topPricesProducts =
         await ApiRequests.getProducts(orderBy: "price", order: Common.ASC);
-    _isTrendingLoading = false;
-    _isRecentLoading = false;
     _isTopLoading = false;
     if (mounted) setState(() {});
   }
