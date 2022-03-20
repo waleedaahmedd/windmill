@@ -1,8 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:windmill_general_trading/views/routes/app_routes.dart';
 import 'package:windmill_general_trading/views/utils/common.dart';
+
+import '../cart_provider.dart';
 
 class VerificationScreen extends StatefulWidget {
   const VerificationScreen({Key? key}) : super(key: key);
@@ -161,7 +164,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
                     Expanded(
                       child: Center(
                         child: GestureDetector(
-                          onTap: (){
+                          onTap: () async {
                             Navigator.of(context)
                                 .pushNamed(AppRoutes.getStartedRoute);
                           },

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:windmill_general_trading/views/routes/app_routes.dart';
 import 'package:windmill_general_trading/views/utils/utils_exporter.dart';
 import 'package:windmill_general_trading/views/utils/widgets/widgets_exporter.dart';
 import 'package:windmill_general_trading/views/views_exporter.dart';
+
+import '../../cart_provider.dart';
 
 class Login extends StatefulWidget {
   Login({Key? key}) : super(key: key);
@@ -107,7 +110,6 @@ class _LoginState extends State<Login> {
     else {
       _isLoading = true;
       setState(() {});
-
       await ApiRequests.loginUser(context, email, uid: uid).then((value) async {
         setState(() {
           _isLoading = false;

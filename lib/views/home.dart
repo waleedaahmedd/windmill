@@ -15,14 +15,19 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   TextEditingController searchController = TextEditingController();
-  List<ProductModal>? _trendingProducts,
-      _recentPostedProducts,
-      _topPricesProducts;
+  List<ProductModal>? _trendingProducts, _featuredProducts, _onSaleProducts;
+
+  List<String> images = [
+    "${Common.assetsImages}banner2.jpg",
+    "${Common.assetsImages}banner3.jpg",
+    "${Common.assetsImages}banner4.jpg",
+    "${Common.assetsImages}banner5.jpg"
+  ];
 
   // loading variables
   bool _isTrendingLoading = true;
-  bool _isRecentLoading = true;
-  bool _isTopLoading = true;
+  bool _isFeaturedLoading = true;
+  bool _isOnSaleLoading = true;
 
   @override
   void initState() {
@@ -50,7 +55,8 @@ class _HomeState extends State<Home> {
             children: [
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 10,right: 5, top: 10,bottom: 10),
+                  padding: const EdgeInsets.only(
+                      left: 10, right: 5, top: 10, bottom: 10),
                   child: Container(
                       color: Colors.white,
                       child: Padding(
@@ -58,7 +64,7 @@ class _HomeState extends State<Home> {
                         child: Row(
                           children: [
                             Container(
-                              height:30,
+                              height: 30,
                               child: Image.asset(
                                 "${Common.assetsImages}free-delivery.png",
                               ),
@@ -69,30 +75,33 @@ class _HomeState extends State<Home> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisSize: MainAxisSize.max,
                                 children: [
-                                  Text('Free Delivery',style: TextStyle(
-                                      color: Colors.red, fontWeight: FontWeight.bold,fontSize: 18
-                                  ),),
+                                  Text(
+                                    'Free Delivery',
+                                    style: TextStyle(
+                                        color: Colors.red,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18),
+                                  ),
                                   Container(
                                       width: 100,
-                                      child: Text('From AED 150 within Abu Dhabi & Al Ain only',
-                                        style: TextStyle(
-                                            fontSize: 12
-                                        ),
+                                      child: Text(
+                                        'From AED 150 within Abu Dhabi & Al Ain only',
+                                        style: TextStyle(fontSize: 12),
                                         maxLines: 3,
-                                        overflow: TextOverflow.ellipsis,))
+                                        overflow: TextOverflow.ellipsis,
+                                      ))
                                 ],
                               ),
                             ),
-
                           ],
                         ),
-                      )
-                  ),
+                      )),
                 ),
               ),
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 5,right: 10, top: 10,bottom: 10),
+                  padding: const EdgeInsets.only(
+                      left: 5, right: 10, top: 10, bottom: 10),
                   child: Container(
                       color: Colors.white,
                       child: Padding(
@@ -100,7 +109,7 @@ class _HomeState extends State<Home> {
                         child: Row(
                           children: [
                             Container(
-                              height:30,
+                              height: 30,
                               child: Image.asset(
                                 "${Common.assetsImages}click-collect.png",
                               ),
@@ -111,25 +120,27 @@ class _HomeState extends State<Home> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisSize: MainAxisSize.max,
                                 children: [
-                                  Text('Click & Collect',style: TextStyle(
-                                      color: Colors.red, fontWeight: FontWeight.bold,fontSize: 18
-                                  ),),
+                                  Text(
+                                    'Click & Collect',
+                                    style: TextStyle(
+                                        color: Colors.red,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18),
+                                  ),
                                   Container(
                                       width: 100,
-                                      child: Text('Shop at your fingertips and collect at Ghantoot',
-                                          style: TextStyle(
-                                            fontSize: 12
-                                          ),
+                                      child: Text(
+                                        'Shop at your fingertips and collect at Ghantoot',
+                                        style: TextStyle(fontSize: 12),
                                         maxLines: 3,
-                                        overflow: TextOverflow.ellipsis,))
+                                        overflow: TextOverflow.ellipsis,
+                                      ))
                                 ],
                               ),
                             ),
-
                           ],
                         ),
-                      )
-                  ),
+                      )),
                 ),
               ),
             ],
@@ -139,19 +150,19 @@ class _HomeState extends State<Home> {
               child: Column(
                 children: [
                   CarouselSlider(
-                    items: [1, 2, 3, 4, 5].map((i) {
+                    items: images.map((i) {
                       return Builder(
                         builder: (BuildContext context) {
                           return Container(
                             width: MediaQuery.of(context).size.width,
                             margin: EdgeInsets.symmetric(horizontal: 5.0),
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15.0),
+                              borderRadius: BorderRadius.circular(10.0),
                               image: DecorationImage(
                                 image: AssetImage(
-                                  "${Common.assetsImages}product_banner.jpg",
+                                  "$i",
                                 ),
-                                fit: BoxFit.fill,
+                                fit: BoxFit.cover,
                               ),
                             ),
                           );
@@ -159,8 +170,8 @@ class _HomeState extends State<Home> {
                       );
                     }).toList(),
                     options: CarouselOptions(
-                      height: 200,
-                      aspectRatio: 6 / 9,
+                      height: 150,
+                      //aspectRatio: 6 / 9,
                       viewportFraction: 0.8,
                       initialPage: 0,
                       enableInfiniteScroll: true,
@@ -182,7 +193,7 @@ class _HomeState extends State<Home> {
                   ),
                   SizedBox(
                     height: 236.0,
-                    child: _isRecentLoading
+                    child: _isFeaturedLoading
                         ? CupertinoActivityIndicator()
                         : ListView.builder(
                             padding: const EdgeInsets.only(
@@ -192,12 +203,11 @@ class _HomeState extends State<Home> {
                             ),
                             scrollDirection: Axis.horizontal,
                             shrinkWrap: true,
-                            itemCount: _recentPostedProducts?.length,
+                            itemCount: _featuredProducts?.length,
                             physics: BouncingScrollPhysics(),
                             itemBuilder: (BuildContext context, int index) {
-                              print(_recentPostedProducts?.length);
-                              ProductModal _product =
-                                  _recentPostedProducts![index];
+                              print(_featuredProducts?.length);
+                              ProductModal _product = _featuredProducts![index];
                               return DashboardHorizontalListCard(
                                 product: _product,
                                 width: 160.0,
@@ -206,8 +216,8 @@ class _HomeState extends State<Home> {
                           ),
                   ),
                   DashboardMainCategoryTitleWithViewAll(
-                    blackText: "Trending",
-                    blueText: "Products",
+                    blackText: "On",
+                    blueText: "Trending",
                   ),
                   SizedBox(
                     height: 236.0,
@@ -235,7 +245,7 @@ class _HomeState extends State<Home> {
                   const SizedBox(height: 10.0),
                   Stack(
                     children: [
-                      Image.asset("${Common.assetsImages}product_banner.jpg"),
+                      Image.asset("${Common.assetsImages}banner3.jpg"),
                       Positioned.fill(
                         right: 30.0,
                         left: 160.0,
@@ -256,12 +266,12 @@ class _HomeState extends State<Home> {
                   ),
                   const SizedBox(height: 10.0),
                   DashboardMainCategoryTitleWithViewAll(
-                    blackText: "Top",
-                    blueText: "Sellers",
+                    blackText: "On",
+                    blueText: "Sale",
                   ),
                   SizedBox(
                     height: 236.0,
-                    child: _isTopLoading
+                    child: _isOnSaleLoading
                         ? CupertinoActivityIndicator()
                         : ListView.builder(
                             padding: const EdgeInsets.only(
@@ -271,11 +281,10 @@ class _HomeState extends State<Home> {
                             ),
                             scrollDirection: Axis.horizontal,
                             shrinkWrap: true,
-                            itemCount: _topPricesProducts?.length,
+                            itemCount: _onSaleProducts?.length,
                             physics: BouncingScrollPhysics(),
                             itemBuilder: (BuildContext context, int index) {
-                              ProductModal _product =
-                                  _topPricesProducts![index];
+                              ProductModal _product = _onSaleProducts![index];
                               return DashboardHorizontalListCard(
                                 product: _product,
                                 width: 160.0,
@@ -294,17 +303,16 @@ class _HomeState extends State<Home> {
   }
 
   Future<void> _getProducts() async {
+    _featuredProducts =
+        await ApiRequests.getProductByType('featured=true', 5, 1);
+    _isFeaturedLoading = false;
+    if (mounted) setState(() {});
     _trendingProducts =
-        await ApiRequests.getProducts(orderBy: "popularity", order: Common.ASC);
+        await ApiRequests.getProductByType('orderby=popularity', 5, 1);
     _isTrendingLoading = false;
     if (mounted) setState(() {});
-      _recentPostedProducts =
-        await ApiRequests.getProducts(orderBy: "date", order: Common.ASC);
-    _isRecentLoading = false;
-    if (mounted) setState(() {});
-    _topPricesProducts =
-        await ApiRequests.getProducts(orderBy: "price", order: Common.ASC);
-    _isTopLoading = false;
+    _onSaleProducts = await ApiRequests.getProductByType('on_sale=true', 5, 1);
+    _isOnSaleLoading = false;
     if (mounted) setState(() {});
   }
 }

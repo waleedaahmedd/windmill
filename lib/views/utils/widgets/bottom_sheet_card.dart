@@ -4,14 +4,15 @@ import 'package:windmill_general_trading/views/utils/utils_exporter.dart';
 
 class BottomSheetCard extends StatelessWidget {
   final bool isSelected;
-  final String title, localImageURL;
+  final String title;
+  final String? localImageURL;
   final VoidCallback? onPressed;
 
   const BottomSheetCard({
     Key? key,
     required this.isSelected,
     required this.title,
-    required this.localImageURL,
+     this.localImageURL,
     this.onPressed,
   }) : super(key: key);
 
@@ -33,9 +34,12 @@ class BottomSheetCard extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 3.0),
         child: Row(
           children: [
-            Image.asset(
-              "$localImageURL",
-              width: 40.0,
+            Visibility(
+              visible: localImageURL != null? true :false,
+              child: Image.asset(
+                "$localImageURL",
+                width: 40.0,
+              ),
             ),
             const SizedBox(width: 20.0),
             Expanded(

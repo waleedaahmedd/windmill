@@ -23,7 +23,7 @@ class ShopBuy extends StatelessWidget {
       title: "Wine",
     ),
     CustomTab(
-      title: "Liquor",
+      title: "Spirits",
     ),
     CustomTab(
       title: "Sale",
@@ -119,41 +119,46 @@ class _BeerState extends State<Beer> {
                           onPressed: () => _updateSortingBy(Common.RECOMMENDED),
                           title: "Recommended",
                           isSelected: (_sortingBy == Common.RECOMMENDED),
-                          localImageURL:
-                              "${Common.assetsImages}application_icon.png",
+                          /*localImageURL:
+                              "${Common.assetsImages}application_icon.png",*/
                         ),
+                        SizedBox(height: 10,),
                         BottomSheetCard(
                           onPressed: () => _updateSortingBy(Common.NEW),
                           title: "New",
                           isSelected: (_sortingBy == Common.NEW),
-                          localImageURL:
-                              "${Common.assetsImages}application_icon.png",
+                         /* localImageURL:
+                              "${Common.assetsImages}application_icon.png",*/
                         ),
+                        SizedBox(height: 10,),
                         BottomSheetCard(
                           onPressed: () => _updateSortingBy(Common.PRICE,
                               order: Common.DESC),
                           title: "High to low",
                           isSelected: (_sortingBy == Common.PRICE &&
                               _order == Common.DESC),
-                          localImageURL:
-                              "${Common.assetsImages}application_icon.png",
+                          /*localImageURL:
+                              "${Common.assetsImages}application_icon.png",*/
                         ),
+                        SizedBox(height: 10,),
                         BottomSheetCard(
                           onPressed: () =>
                               _updateSortingBy(Common.PRICE, order: Common.ASC),
                           title: "Low to high",
                           isSelected: (_sortingBy == Common.PRICE &&
                               _order == Common.ASC),
-                          localImageURL:
-                              "${Common.assetsImages}application_icon.png",
+                          /*localImageURL:
+                              "${Common.assetsImages}application_icon.png",*/
                         ),
+                        SizedBox(height: 10,),
                         BottomSheetCard(
                           onPressed: () => _updateSortingBy(Common.DISCOUNT),
                           title: "Discount",
                           isSelected: (_sortingBy == Common.DISCOUNT),
-                          localImageURL:
-                              "${Common.assetsImages}application_icon.png",
+                        /*  localImageURL:
+                              "${Common.assetsImages}application_icon.png",*/
                         ),
+                        SizedBox(height: 10,),
                       ],
                     ),
                   ),
@@ -170,8 +175,8 @@ class _BeerState extends State<Beer> {
                         BottomSheetCard(
                           title: "Category",
                           isSelected: false,
-                          localImageURL:
-                              "${Common.assetsImages}application_icon.png",
+                          /*localImageURL:
+                              "${Common.assetsImages}application_icon.png",*/
                           onPressed: () {
                             if (_isBeerProductsLoading) return;
                             // popping to close bottom sheet
@@ -218,30 +223,35 @@ class _BeerState extends State<Beer> {
                             );
                           },
                         ),
+                        SizedBox(height: 10,),
                         BottomSheetCard(
                           title: "Colors",
                           isSelected: false,
-                          localImageURL:
-                              "${Common.assetsImages}application_icon.png",
+                        /*  localImageURL:
+                              "${Common.assetsImages}application_icon.png",*/
                         ),
+                        SizedBox(height: 10,),
                         BottomSheetCard(
                           title: "Sizes",
                           isSelected: false,
-                          localImageURL:
-                              "${Common.assetsImages}application_icon.png",
+                         /* localImageURL:
+                              "${Common.assetsImages}application_icon.png",*/
                         ),
+                        SizedBox(height: 10,),
                         BottomSheetCard(
                           title: "Prices",
                           isSelected: false,
-                          localImageURL:
-                              "${Common.assetsImages}application_icon.png",
+                         /* localImageURL:
+                              "${Common.assetsImages}application_icon.png",*/
                         ),
+                        SizedBox(height: 10,),
                         BottomSheetCard(
                           title: "Bundles",
                           isSelected: false,
-                          localImageURL:
-                              "${Common.assetsImages}application_icon.png",
+                          /*localImageURL:
+                              "${Common.assetsImages}application_icon.png",*/
                         ),
+                        SizedBox(height: 10,),
                       ],
                     ),
                   ),
@@ -374,33 +384,38 @@ class _WineState extends State<Wine> {
                         BottomSheetCard(
                           title: "Recommended",
                           isSelected: true,
-                          localImageURL:
-                              "${Common.assetsImages}application_icon.png",
+                         /* localImageURL:
+                              "${Common.assetsImages}application_icon.png",*/
                         ),
+                        SizedBox(height: 10,),
                         BottomSheetCard(
                           title: "New",
                           isSelected: false,
-                          localImageURL:
-                              "${Common.assetsImages}application_icon.png",
+                         /* localImageURL:
+                              "${Common.assetsImages}application_icon.png",*/
                         ),
+                        SizedBox(height: 10,),
                         BottomSheetCard(
                           title: "High to low",
                           isSelected: false,
-                          localImageURL:
-                              "${Common.assetsImages}application_icon.png",
+                          /*localImageURL:
+                              "${Common.assetsImages}application_icon.png",*/
                         ),
+                        SizedBox(height: 10,),
                         BottomSheetCard(
                           title: "Low to high",
                           isSelected: false,
-                          localImageURL:
-                              "${Common.assetsImages}application_icon.png",
+                         /* localImageURL:
+                              "${Common.assetsImages}application_icon.png",*/
                         ),
+                        SizedBox(height: 10,),
                         BottomSheetCard(
                           title: "Discount",
                           isSelected: false,
-                          localImageURL:
-                              "${Common.assetsImages}application_icon.png",
+                          /*localImageURL:
+                              "${Common.assetsImages}application_icon.png",*/
                         ),
+                        SizedBox(height: 10,),
                       ],
                     ),
                   ),
@@ -417,8 +432,8 @@ class _WineState extends State<Wine> {
                         BottomSheetCard(
                           title: "Category",
                           isSelected: false,
-                          localImageURL:
-                              "${Common.assetsImages}application_icon.png",
+                          /*localImageURL:
+                              "${Common.assetsImages}application_icon.png",*/
                           onPressed: () => Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (context) => SubFilterList(
@@ -428,48 +443,56 @@ class _WineState extends State<Wine> {
                             ),
                           ),
                         ),
+                        SizedBox(height: 10,),
                         BottomSheetCard(
                           title: "Brands",
                           isSelected: false,
-                          localImageURL:
-                              "${Common.assetsImages}application_icon.png",
+                          /*localImageURL:
+                              "${Common.assetsImages}application_icon.png",*/
                         ),
+                        SizedBox(height: 10,),
                         BottomSheetCard(
                           title: "Colors",
                           isSelected: false,
-                          localImageURL:
-                              "${Common.assetsImages}application_icon.png",
+                          /*localImageURL:
+                              "${Common.assetsImages}application_icon.png",*/
                         ),
+                        SizedBox(height: 10,),
                         BottomSheetCard(
                           title: "Sizes",
                           isSelected: false,
-                          localImageURL:
-                              "${Common.assetsImages}application_icon.png",
+                          /*localImageURL:
+                              "${Common.assetsImages}application_icon.png",*/
                         ),
+                        SizedBox(height: 10,),
                         BottomSheetCard(
                           title: "Prices",
                           isSelected: false,
-                          localImageURL:
-                              "${Common.assetsImages}application_icon.png",
+                          /*localImageURL:
+                              "${Common.assetsImages}application_icon.png",*/
                         ),
+                        SizedBox(height: 10,),
                         BottomSheetCard(
                           title: "New Arrivals",
                           isSelected: false,
-                          localImageURL:
-                              "${Common.assetsImages}application_icon.png",
+                          /*localImageURL:
+                              "${Common.assetsImages}application_icon.png",*/
                         ),
+                        SizedBox(height: 10,),
                         BottomSheetCard(
                           title: "Bundles",
                           isSelected: false,
-                          localImageURL:
-                              "${Common.assetsImages}application_icon.png",
+                          /*localImageURL:
+                              "${Common.assetsImages}application_icon.png",*/
                         ),
+                        SizedBox(height: 10,),
                         BottomSheetCard(
                           title: "Discounted Products",
                           isSelected: true,
-                          localImageURL:
-                              "${Common.assetsImages}application_icon.png",
+                          /*localImageURL:
+                              "${Common.assetsImages}application_icon.png",*/
                         ),
+                        SizedBox(height: 10,),
                       ],
                     ),
                   ),
@@ -556,33 +579,38 @@ class _LiquorState extends State<Liquor> {
                         BottomSheetCard(
                           title: "Recommended",
                           isSelected: true,
-                          localImageURL:
-                              "${Common.assetsImages}application_icon.png",
+                         /* localImageURL:
+                              "${Common.assetsImages}application_icon.png",*/
                         ),
+                        SizedBox(height: 10,),
                         BottomSheetCard(
                           title: "New",
                           isSelected: false,
-                          localImageURL:
-                              "${Common.assetsImages}application_icon.png",
+                          /*localImageURL:
+                              "${Common.assetsImages}application_icon.png",*/
                         ),
+                        SizedBox(height: 10,),
                         BottomSheetCard(
                           title: "High to low",
                           isSelected: false,
-                          localImageURL:
-                              "${Common.assetsImages}application_icon.png",
+                          /*localImageURL:
+                              "${Common.assetsImages}application_icon.png",*/
                         ),
+                        SizedBox(height: 10,),
                         BottomSheetCard(
                           title: "Low to high",
                           isSelected: false,
-                          localImageURL:
-                              "${Common.assetsImages}application_icon.png",
+                         /* localImageURL:
+                              "${Common.assetsImages}application_icon.png",*/
                         ),
+                        SizedBox(height: 10,),
                         BottomSheetCard(
                           title: "Discount",
                           isSelected: false,
-                          localImageURL:
-                              "${Common.assetsImages}application_icon.png",
+                          /*localImageURL:
+                              "${Common.assetsImages}application_icon.png",*/
                         ),
+                        SizedBox(height: 10,),
                       ],
                     ),
                   ),
@@ -599,8 +627,8 @@ class _LiquorState extends State<Liquor> {
                         BottomSheetCard(
                           title: "Category",
                           isSelected: false,
-                          localImageURL:
-                              "${Common.assetsImages}application_icon.png",
+                         /* localImageURL:
+                              "${Common.assetsImages}application_icon.png",*/
                           onPressed: () => Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (context) => SubFilterList(
@@ -610,48 +638,56 @@ class _LiquorState extends State<Liquor> {
                             ),
                           ),
                         ),
+                        SizedBox(height: 10,),
                         BottomSheetCard(
                           title: "Brands",
                           isSelected: false,
-                          localImageURL:
-                              "${Common.assetsImages}application_icon.png",
+                         /* localImageURL:
+                              "${Common.assetsImages}application_icon.png",*/
                         ),
+                        SizedBox(height: 10,),
                         BottomSheetCard(
                           title: "Colors",
                           isSelected: false,
-                          localImageURL:
-                              "${Common.assetsImages}application_icon.png",
+                          /*localImageURL:
+                              "${Common.assetsImages}application_icon.png",*/
                         ),
+                        SizedBox(height: 10,),
                         BottomSheetCard(
                           title: "Sizes",
                           isSelected: false,
-                          localImageURL:
-                              "${Common.assetsImages}application_icon.png",
+                          /*localImageURL:
+                              "${Common.assetsImages}application_icon.png",*/
                         ),
+                        SizedBox(height: 10,),
                         BottomSheetCard(
                           title: "Prices",
                           isSelected: false,
-                          localImageURL:
-                              "${Common.assetsImages}application_icon.png",
+                          /*localImageURL:
+                              "${Common.assetsImages}application_icon.png",*/
                         ),
+                        SizedBox(height: 10,),
                         BottomSheetCard(
                           title: "New Arrivals",
                           isSelected: false,
-                          localImageURL:
-                              "${Common.assetsImages}application_icon.png",
+                          /*localImageURL:
+                              "${Common.assetsImages}application_icon.png",*/
                         ),
+                        SizedBox(height: 10,),
                         BottomSheetCard(
                           title: "Bundles",
                           isSelected: false,
-                          localImageURL:
-                              "${Common.assetsImages}application_icon.png",
+                          /*localImageURL:
+                              "${Common.assetsImages}application_icon.png",*/
                         ),
+                        SizedBox(height: 10,),
                         BottomSheetCard(
                           title: "Discounted Products",
                           isSelected: true,
-                          localImageURL:
-                              "${Common.assetsImages}application_icon.png",
+                          /*localImageURL:
+                              "${Common.assetsImages}application_icon.png",*/
                         ),
+                        SizedBox(height: 10,),
                       ],
                     ),
                   ),
@@ -738,33 +774,38 @@ class _SaleState extends State<Sale> {
                         BottomSheetCard(
                           title: "Recommended",
                           isSelected: true,
-                          localImageURL:
-                              "${Common.assetsImages}application_icon.png",
+                         /* localImageURL:
+                              "${Common.assetsImages}application_icon.png",*/
                         ),
+                        SizedBox(height: 10,),
                         BottomSheetCard(
                           title: "New",
                           isSelected: false,
-                          localImageURL:
-                              "${Common.assetsImages}application_icon.png",
+                          /*localImageURL:
+                              "${Common.assetsImages}application_icon.png",*/
                         ),
+                        SizedBox(height: 10,),
                         BottomSheetCard(
                           title: "High to low",
                           isSelected: false,
-                          localImageURL:
-                              "${Common.assetsImages}application_icon.png",
+                         /* localImageURL:
+                              "${Common.assetsImages}application_icon.png",*/
                         ),
+                        SizedBox(height: 10,),
                         BottomSheetCard(
                           title: "Low to high",
                           isSelected: false,
-                          localImageURL:
-                              "${Common.assetsImages}application_icon.png",
+                          /*localImageURL:
+                              "${Common.assetsImages}application_icon.png",*/
                         ),
+                        SizedBox(height: 10,),
                         BottomSheetCard(
                           title: "Discount",
                           isSelected: false,
-                          localImageURL:
-                              "${Common.assetsImages}application_icon.png",
+                          /*localImageURL:
+                              "${Common.assetsImages}application_icon.png",*/
                         ),
+                        SizedBox(height: 10,),
                       ],
                     ),
                   ),
@@ -781,8 +822,8 @@ class _SaleState extends State<Sale> {
                         BottomSheetCard(
                           title: "Category",
                           isSelected: false,
-                          localImageURL:
-                              "${Common.assetsImages}application_icon.png",
+                          /*localImageURL:
+                              "${Common.assetsImages}application_icon.png",*/
                           onPressed: () => Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (context) => SubFilterList(
@@ -792,48 +833,56 @@ class _SaleState extends State<Sale> {
                             ),
                           ),
                         ),
+                        SizedBox(height: 10,),
                         BottomSheetCard(
                           title: "Brands",
                           isSelected: false,
-                          localImageURL:
-                              "${Common.assetsImages}application_icon.png",
+                          /*localImageURL:
+                              "${Common.assetsImages}application_icon.png",*/
                         ),
+                        SizedBox(height: 10,),
                         BottomSheetCard(
                           title: "Colors",
                           isSelected: false,
-                          localImageURL:
-                              "${Common.assetsImages}application_icon.png",
+                          /*localImageURL:
+                              "${Common.assetsImages}application_icon.png",*/
                         ),
+                        SizedBox(height: 10,),
                         BottomSheetCard(
                           title: "Sizes",
                           isSelected: false,
-                          localImageURL:
-                              "${Common.assetsImages}application_icon.png",
+                          /*localImageURL:
+                              "${Common.assetsImages}application_icon.png",*/
                         ),
+                        SizedBox(height: 10,),
                         BottomSheetCard(
                           title: "Prices",
                           isSelected: false,
-                          localImageURL:
-                              "${Common.assetsImages}application_icon.png",
+                          /*localImageURL:
+                              "${Common.assetsImages}application_icon.png",*/
                         ),
+                        SizedBox(height: 10,),
                         BottomSheetCard(
                           title: "New Arrivals",
                           isSelected: false,
-                          localImageURL:
-                              "${Common.assetsImages}application_icon.png",
+                          /*localImageURL:
+                              "${Common.assetsImages}application_icon.png",*/
                         ),
+                        SizedBox(height: 10,),
                         BottomSheetCard(
                           title: "Bundles",
                           isSelected: false,
-                          localImageURL:
-                              "${Common.assetsImages}application_icon.png",
+                          /*localImageURL:
+                              "${Common.assetsImages}application_icon.png",*/
                         ),
+                        SizedBox(height: 10,),
                         BottomSheetCard(
                           title: "Discounted Products",
                           isSelected: true,
-                          localImageURL:
-                              "${Common.assetsImages}application_icon.png",
+                          /*localImageURL:
+                              "${Common.assetsImages}application_icon.png",*/
                         ),
+                        SizedBox(height: 10,),
                       ],
                     ),
                   ),

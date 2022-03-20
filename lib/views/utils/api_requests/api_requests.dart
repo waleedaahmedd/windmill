@@ -5,12 +5,15 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_login_facebook/flutter_login_facebook.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:provider/provider.dart';
 import 'package:windmill_general_trading/modals/modals_exporter.dart';
 import 'package:windmill_general_trading/modals/payment_modal.dart';
 import 'package:windmill_general_trading/modals/varition_model.dart';
 import 'package:windmill_general_trading/views/utils/api_requests/sms_request.dart';
 import 'package:windmill_general_trading/views/utils/utils_exporter.dart';
 import 'package:http/http.dart' as http;
+
+import '../../../cart_provider.dart';
 
 class ApiRequests {
   static FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
@@ -31,6 +34,7 @@ class ApiRequests {
     "Accept": "*/*",
     "Connection": "keep-alive",
   };
+
   static Future<LoginModal> googleLogin(BuildContext context) async {
     try {
       GoogleSignInAccount? googleSignInAccount = await GoogleSignIn().signIn();
@@ -60,6 +64,48 @@ class ApiRequests {
       }
     } catch (e) {
       throw (e);
+    }
+  }
+
+  static Future<ProductModal> getProduct(String id) async {
+    String url = Common.API_URL + "products/$id";
+    print(url);
+    try {
+      return await Dio()
+          .get(
+            url,
+            options: Options(headers: header),
+          )
+          .then(
+            (value) => ProductModal.fromJson(value.data),
+          );
+    } on DioError catch (e) {
+      print(e);
+      return ProductModal.fromJson(e.response!.data);
+    }
+  }
+
+  static Future<List<ProductModal>> getProductByType(
+      String type, int perPage, int pageNumber) async {
+    String url =
+        Common.API_URL + "products/?$type&per_page=$perPage&page=$pageNumber";
+    print(url);
+    try {
+      return await Dio()
+          .get(
+        url,
+        options: Options(headers: header),
+      )
+          .then((value) {
+        List<ProductModal> _products = [];
+        value.data.forEach((product) {
+          _products.add(ProductModal.fromJson(product));
+        });
+        return _products;
+      });
+    } on DioError catch (e) {
+      print(e);
+      return <ProductModal>[];
     }
   }
 
@@ -134,8 +180,9 @@ class ApiRequests {
         .snapshots();
   }
 
-  static Future<ProductModal> getProduct(String id) async {
-    String url = Common.API_URL + "products/$id";
+  static Future<VariationModel> getVariations(
+      String productId, int variationId) async {
+    String url = Common.API_URL + "products/$productId/variations/$variationId";
     print(url);
     try {
       return await Dio()
@@ -144,32 +191,13 @@ class ApiRequests {
             options: Options(headers: header),
           )
           .then(
-            (value) => ProductModal.fromJson(value.data),
-          );
-    } on DioError catch (e) {
-      print(e);
-      return ProductModal.fromJson(e.response!.data);
-    }
-  }
-
-  static Future<VariationModel> getVariations(String productId, int variationId) async {
-    String url = Common.API_URL + "products/$productId/variations/$variationId";
-    print(url);
-    try {
-      return await Dio()
-          .get(
-        url,
-        options: Options(headers: header),
-      )
-          .then(
             (value) => VariationModel.fromJson(value.data),
-      );
+          );
     } on DioError catch (e) {
       print(e);
       return VariationModel.fromJson(e.response!.data);
     }
   }
-
 
   static Future<List<Category>> getAllCategories() async {
     String url = Common.API_URL + "products/categories?per_page=100";
@@ -509,6 +537,22 @@ class ApiRequests {
       // if item not in cart then add quantity only
       await addProductToCart(productID, quantity, variation!, userID);
     }
+  }
+
+  static Future<void> getInCartProductsNew(String userID, BuildContext context) async {
+    ShoppingCartModal? _shoppingCart;
+
+    _firebaseFirestore
+        .collection(Common.SHOPPING_CART)
+        .where("user_id", isEqualTo: userID)
+        .orderBy("last_activity_at", descending: true)
+        .get()
+        .then((value) {
+      value.docs.forEach((shoppingCart) {
+        _shoppingCart = ShoppingCartModal.fromJson(shoppingCart.data());
+        Provider.of<CartProvider>(context, listen: false).setCartCount(_shoppingCart!.products.length);
+      });
+    });
   }
 
   static getInCartProducts(String userID) {
