@@ -19,6 +19,7 @@ class ProductModal {
     required this.regularPrice,
     required this.salePrice,
     required this.onSale,
+    required this.shortDescription,
     required this.totalSales,
     required this.weight,
     required this.dimensions,
@@ -33,6 +34,7 @@ class ProductModal {
   String name;
   DateTime dateCreated;
   String description;
+  String shortDescription;
   String price;
   String regularPrice;
   String salePrice;
@@ -51,7 +53,9 @@ class ProductModal {
         name: json["name"],
         dateCreated: DateTime.parse(json["date_created"]),
         description: json["description"],
-        price: json["price"],
+    shortDescription: json["short_description"],
+
+    price: json["price"],
         regularPrice: json["regular_price"],
         salePrice: json["sale_price"],
         onSale: json["on_sale"],
@@ -73,7 +77,9 @@ class ProductModal {
         "name": name,
         "date_created": dateCreated.toIso8601String(),
         "description": description,
-        "price": price,
+    "short_description": shortDescription,
+
+    "price": price,
         "regular_price": regularPrice,
         "sale_price": salePrice,
         "on_sale": onSale,

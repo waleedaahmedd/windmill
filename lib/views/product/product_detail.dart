@@ -531,15 +531,19 @@ class _ProductDetailState extends State<ProductDetail> {
           widget.product.id.toString(),
           purchaseItemCount,
           _userID,
-          variation: 0,
+          variation: _finalVariationDetail == null? 0 : _finalVariationDetail!.id,
           context: context,
         );
+        await Provider.of<CartProvider>(context, listen: false)
+            .getCartProducts(context);
         Common.showSuccessTopSnack(
             context, "Product Added to Cart Successfully!");
       }
       _toggleLoading();
     }
   }
+
+
 
   void _getIndex() {
     final index =

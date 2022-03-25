@@ -921,10 +921,16 @@ class _SaleState extends State<Sale> {
   }
 
   void _getSaleProducts() async {
-    _saleProducts = await ApiRequests.getProductsByCategory(category: 113);
+    _saleProducts = await ApiRequests.getProductByType('on_sale=true',10,1);
     _isSaleProductsLoading = false;
     if (mounted) setState(() {});
   }
+
+  /*void _getSaleProducts() async {
+    _saleProducts = await ApiRequests.getProductsByCategory(category: 113);
+    _isSaleProductsLoading = false;
+    if (mounted) setState(() {});
+  }*/
 }
 
 class CustomTab extends StatelessWidget {

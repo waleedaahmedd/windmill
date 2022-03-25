@@ -9,8 +9,8 @@ class CartProvider with ChangeNotifier {
   String? _userID;
   final firestoreInstance = FirebaseFirestore.instance;
 
-  addCartCount(int count) {
-    this.cartCount = count;
+  addCartCount() {
+    this.cartCount = cartCount++;
     notifyListeners();
   }
 
@@ -28,5 +28,13 @@ class CartProvider with ChangeNotifier {
     if (checkCart) {
       await ApiRequests.getInCartProductsNew(_userID!, context);
     }
+  }
+
+  Future<dynamic> addCartProducts(BuildContext context, String productID, int quantity, int variation) async {
+
+    final reponse = await ApiRequests.addProductToCart( productID, quantity, variation, '$_userID');
+
+
+
   }
 }

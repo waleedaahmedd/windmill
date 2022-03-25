@@ -171,6 +171,7 @@ class Common {
     showTopSnackBar(
       context,
       CustomSnackBar.error(
+        icon: Icon(Icons.clear,color:Color(0xffff5252),),
         message: message,
       ),
     );
@@ -180,6 +181,7 @@ class Common {
     showTopSnackBar(
       context,
       CustomSnackBar.info(
+        icon: Icon(Icons.check,color: Colors.green,),
         message: message,
         backgroundColor: Colors.green,
       ),

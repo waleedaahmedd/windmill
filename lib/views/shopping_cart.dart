@@ -2,10 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:windmill_general_trading/modals/modals_exporter.dart';
+import 'package:windmill_general_trading/modals/varition_model.dart';
 import 'package:windmill_general_trading/views/utils/utils_exporter.dart';
 import 'package:windmill_general_trading/views/utils/widgets/widgets_exporter.dart';
 import 'package:windmill_general_trading/views/views_exporter.dart';
+
+import '../cart_provider.dart';
 
 class ShoppingCart extends StatefulWidget {
   ShoppingCart({Key? key}) : super(key: key);
@@ -66,14 +70,19 @@ class _ShoppingCartState extends State<ShoppingCart> {
     }
   }
 
-  void _removeProductFromUserCart(String productId) async {
+  void _removeProductFromUserCart(String productId, int productVariation) async {
     if (!_isQuantityLoading) {
       _toggleQuantityLoading();
 
-      await ApiRequests.removeItemFromShoppingCart(_userID, productId);
-
+      await ApiRequests.removeItemFromShoppingCart(_userID, productId, productVariation);
+      getCart();
       _toggleQuantityLoading();
     }
+  }
+
+  Future<void> getCart() async {
+    await Provider.of<CartProvider>(context, listen: false)
+        .getCartProducts(context);
   }
 
   void _incrementProductQuantity(String productId) async {
@@ -106,6 +115,9 @@ class _ShoppingCartState extends State<ShoppingCart> {
     _toggleCartLoading();
     _getSubTotal();
   }
+
+  ProductModal? _prod;
+  VariationModel? _var;
 
   @override
   Widget build(BuildContext context) {
@@ -224,15 +236,24 @@ class _ShoppingCartState extends State<ShoppingCart> {
                                     Product _product =
                                         _shoppingCart.products[index];
                                     return FutureBuilder(
-                                      future: ApiRequests.getProduct(
-                                          _product.productId),
+                                      future: _product.productVariation == 0
+                                          ? ApiRequests.getProduct(
+                                              _product.productId)
+                                          : ApiRequests.getVariations(
+                                              _product.productId,
+                                              _product.productVariation),
                                       builder: (context, snapshot) {
                                         if (!snapshot.hasData)
                                           return Center(
                                             child: CupertinoActivityIndicator(),
                                           );
-                                        ProductModal _prod =
-                                            snapshot.data as ProductModal;
+
+                                        if (_product.productVariation == 0) {
+                                          _prod = snapshot.data as ProductModal;
+                                        } else {
+                                          _var =
+                                              snapshot.data as VariationModel;
+                                        }
                                         return Column(
                                           children: [
                                             Row(
@@ -240,29 +261,47 @@ class _ShoppingCartState extends State<ShoppingCart> {
                                                 Expanded(
                                                   flex: 1,
                                                   child: Image.network(
-                                                    '${_prod.images.first.src}',
+                                                    '${_product.productVariation == 0 ? _prod!.images.first.src : _var!.image!.src}',
                                                     fit: BoxFit.fill,
                                                   ),
                                                 ),
                                                 Expanded(
                                                   flex: 2,
                                                   child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
                                                     crossAxisAlignment:
                                                         CrossAxisAlignment
                                                             .stretch,
                                                     children: [
-                                                      Text(
-                                                        "${_prod.name}",
-                                                        style: GoogleFonts
-                                                            .montserrat(
-                                                          color: AppColors
-                                                              .appBlackColor,
-                                                          fontSize: 16.0,
-                                                          fontWeight:
-                                                              FontWeight.w800,
-                                                        ),
+                                                      Row(
+                                                        children: [
+                                                          Expanded(
+                                                            child: Text(
+                                                              "${_product.productVariation == 0 ?_prod!.name: _var!.image!.name}",
+                                                              style: GoogleFonts
+                                                                  .montserrat(
+                                                                color: AppColors
+                                                                    .appBlackColor,
+                                                                fontSize: 16.0,
+                                                                fontWeight:
+                                                                    FontWeight.w800,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          GestureDetector(
+                                                            onTap: (){
+                                                              _removeProductFromUserCart(_product
+                                                                  .productId,_product
+                                                                  .productVariation);
+                                                            }
+                                                            ,child: Icon(Icons.delete_forever,color: AppColors
+                                                                .appBlueColor,),
+                                                          )
+                                                        ],
                                                       ),
-                                                      const SizedBox(
+                                                      /* const SizedBox(
                                                           height: 2.5),
                                                       Text(
                                                         "${_prod.description}",
@@ -272,9 +311,9 @@ class _ShoppingCartState extends State<ShoppingCart> {
                                                               .appGreyColor,
                                                           fontSize: 14.0,
                                                         ),
-                                                      ),
+                                                      ),*/
                                                       const SizedBox(
-                                                          height: 8.0),
+                                                          height: 20.0),
                                                       Row(
                                                         mainAxisAlignment:
                                                             MainAxisAlignment
@@ -313,10 +352,10 @@ class _ShoppingCartState extends State<ShoppingCart> {
                                                                             .productId,
                                                                       );
                                                                     else
-                                                                      _removeProductFromUserCart(_shoppingCart
+                                                                    /*  _removeProductFromUserCart(_shoppingCart
                                                                           .products[
                                                                               index]
-                                                                          .productId);
+                                                                          .productId);*/
                                                                     setState(
                                                                         () {});
                                                                   },
@@ -363,7 +402,7 @@ class _ShoppingCartState extends State<ShoppingCart> {
                                                           ),
                                                           Expanded(
                                                             child: Text(
-                                                              'AED ${(double.parse(_prod.price)) * (_shoppingCart.products[index].productQuantity)}',
+                                                              'AED ${(double.parse(_product.productVariation == 0 ? _prod!.price : _var!.price!)) * (_shoppingCart.products[index].productQuantity)}',
                                                               textAlign:
                                                                   TextAlign.end,
                                                               style: GoogleFonts
@@ -382,6 +421,7 @@ class _ShoppingCartState extends State<ShoppingCart> {
                                                     ],
                                                   ),
                                                 ),
+
                                               ],
                                             ),
                                             const SizedBox(height: 10.0),

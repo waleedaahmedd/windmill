@@ -18,7 +18,7 @@ class VariationModel {
   int? downloadExpiry;
   String? taxStatus;
   String? taxClass;
-  bool? manageStock;
+ // String? manageStock;
   String? stockStatus;
   String? backorders;
   bool? backordersAllowed;
@@ -53,7 +53,7 @@ class VariationModel {
         this.downloadExpiry,
         this.taxStatus,
         this.taxClass,
-        this.manageStock,
+      //  this.manageStock,
         this.stockStatus,
         this.backorders,
         this.backordersAllowed,
@@ -85,7 +85,7 @@ class VariationModel {
     downloadExpiry = json['download_expiry'];
     taxStatus = json['tax_status'];
     taxClass = json['tax_class'];
-    manageStock = json['manage_stock'];
+  //  manageStock = json['manage_stock'];
     stockStatus = json['stock_status'];
     backorders = json['backorders'];
     backordersAllowed = json['backorders_allowed'];
@@ -127,7 +127,7 @@ Map<String, dynamic> toJson() {
     data['download_expiry'] = this.downloadExpiry;
     data['tax_status'] = this.taxStatus;
     data['tax_class'] = this.taxClass;
-    data['manage_stock'] = this.manageStock;
+   // data['manage_stock'] = this.manageStock;
     data['stock_status'] = this.stockStatus;
     data['backorders'] = this.backorders;
     data['backorders_allowed'] = this.backordersAllowed;

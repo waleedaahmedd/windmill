@@ -15,6 +15,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   flutter_html: ^2.2.1
   dio: ^4.0.1
+  async: ^2.8.2
   firebase_core: null
   firebase_messaging: null
 

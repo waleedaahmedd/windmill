@@ -402,7 +402,8 @@ class ApiRequests {
     }
   }
 
-  static Future<bool> isProductInCart(String productID, String userID) async {
+  static Future<bool> isProductInCart(
+      String productID, String userID, int variation) async {
     bool _isItemInCart = false;
     await _firebaseFirestore
         .collection(Common.SHOPPING_CART)
@@ -414,7 +415,8 @@ class ApiRequests {
         ShoppingCartModal _shoppingCart =
             ShoppingCartModal.fromJson(shoppingCart.data());
         _shoppingCart.products.forEach((product) {
-          _isItemInCart = product.productId == productID;
+          _isItemInCart = product.productId == productID &&
+              product.productVariation == variation;
         });
       });
     });
@@ -444,14 +446,15 @@ class ApiRequests {
   static Future<void> updateInCartProduct(
     String productID,
     String userID,
-    int newQuantity, {
+    int newQuantity,
+    int variation, {
     required bool needIncrementOnQuantity,
     required bool needDecrementOnQuantity,
   }) async {
     String _shoppingCartID = "";
     late ShoppingCartModal _shoppingCart;
     int _quantity = newQuantity;
-    int _variation = 0;
+    int _variation = variation;
     List<Product> _updatedList = [];
     await _firebaseFirestore
         .collection(Common.SHOPPING_CART)
@@ -466,7 +469,11 @@ class ApiRequests {
           if (product.productId != productID)
             _updatedList.add(product);
           else {
-            _variation = product.productVariation;
+            if (product.productId == productID &&
+                product.productVariation != variation) {
+              _updatedList.add(product);
+            }
+            //_variation = product.productVariation;
             if (needIncrementOnQuantity)
               _quantity += product.productQuantity;
             else if (needDecrementOnQuantity)
@@ -499,13 +506,14 @@ class ApiRequests {
   }) async {
     // check if item is already in cart or not
     print("Variation is " + variation.toString());
-    if (await isProductInCart(productID, userID)) {
+    if (await isProductInCart(productID, userID, variation!)) {
       // if item in cart then add quantity with sum of previous quantity
       if (needIncrementOnQuantity)
         await updateInCartProduct(
           productID,
           userID,
           quantity,
+          variation,
           needIncrementOnQuantity: true,
           needDecrementOnQuantity: false,
         );
@@ -514,6 +522,7 @@ class ApiRequests {
           productID,
           userID,
           quantity,
+          variation,
           needDecrementOnQuantity: true,
           needIncrementOnQuantity: false,
         );
@@ -522,6 +531,7 @@ class ApiRequests {
           productID,
           userID,
           quantity,
+          variation,
           needDecrementOnQuantity: false,
           needIncrementOnQuantity: false,
         );
@@ -530,16 +540,18 @@ class ApiRequests {
         productID,
         userID,
         quantity,
+        variation,
         needDecrementOnQuantity: false,
         needIncrementOnQuantity: false,
       );
     } else {
       // if item not in cart then add quantity only
-      await addProductToCart(productID, quantity, variation!, userID);
+      await addProductToCart(productID, quantity, variation, userID);
     }
   }
 
-  static Future<void> getInCartProductsNew(String userID, BuildContext context) async {
+  static Future<void> getInCartProductsNew(
+      String userID, BuildContext context) async {
     ShoppingCartModal? _shoppingCart;
 
     _firebaseFirestore
@@ -550,7 +562,8 @@ class ApiRequests {
         .then((value) {
       value.docs.forEach((shoppingCart) {
         _shoppingCart = ShoppingCartModal.fromJson(shoppingCart.data());
-        Provider.of<CartProvider>(context, listen: false).setCartCount(_shoppingCart!.products.length);
+        Provider.of<CartProvider>(context, listen: false)
+            .setCartCount(_shoppingCart!.products.length);
       });
     });
   }
@@ -577,11 +590,11 @@ class ApiRequests {
   }
 
   static Future<void> removeItemFromShoppingCart(
-      String userID, String productID) async {
+      String userID, String productID, int productVariation) async {
     String _shoppingCartID = "";
-    late ShoppingCartModal _shoppingCart;
+    ShoppingCartModal? _shoppingCart;
     List<Product> _updatedList = [];
-    await _firebaseFirestore
+    /*await _firebaseFirestore
         .collection(Common.SHOPPING_CART)
         .where("user_id", isEqualTo: userID)
         .orderBy("last_activity_at", descending: true)
@@ -591,15 +604,37 @@ class ApiRequests {
         _shoppingCart = ShoppingCartModal.fromJson(shoppingCart.data());
         _shoppingCartID = _shoppingCart.id;
         _shoppingCart.products.forEach((product) {
-          if (product.productId != productID) _updatedList.add(product);
+          if (product.productId != productID && product.productVariation != productVariation)
+            _updatedList.add(product);
         });
       });
+    });*/
+    await _firebaseFirestore
+        .collection(Common.SHOPPING_CART)
+        .where("user_id", isEqualTo: userID)
+        .orderBy("last_activity_at", descending: true)
+        .get()
+        .then((value) {
+      value.docs.forEach((shoppingCart) {
+        _shoppingCart = ShoppingCartModal.fromJson(shoppingCart.data());
+        _shoppingCartID = _shoppingCart!.id;
+      });
     });
-    _shoppingCart.products = _updatedList;
+
+    _shoppingCart!.products.forEach((product) {
+      if (productVariation == 0) {
+        if (product.productId != productID )
+          _updatedList.add(product);
+      } else {
+        if (product.productId == productID &&
+            product.productVariation != productVariation) _updatedList.add(product);
+      }
+    });
+    _shoppingCart!.products = _updatedList;
     await _firebaseFirestore
         .collection(Common.SHOPPING_CART)
         .doc(_shoppingCartID)
-        .update(_shoppingCart.toJson());
+        .update(_shoppingCart!.toJson());
   }
 
   static Future<double> getSubTotalForShoppingCart(String userID) async {
@@ -614,8 +649,16 @@ class ApiRequests {
       for (var shoppingCart in value.docs) {
         _shoppingCart = ShoppingCartModal.fromJson(shoppingCart.data());
         for (var product in _shoppingCart.products) {
-          ProductModal _product = await getProduct(product.productId);
-          _subTotal += (double.parse(_product.price) * product.productQuantity);
+          if (product.productVariation == 0) {
+            ProductModal _product = await getProduct(product.productId);
+            _subTotal +=
+                (double.parse(_product.price) * product.productQuantity);
+          } else {
+            VariationModel _variation = await getVariations(
+                product.productId, product.productVariation);
+            _subTotal +=
+                (double.parse(_variation.price!) * product.productQuantity);
+          }
         }
       }
     });
