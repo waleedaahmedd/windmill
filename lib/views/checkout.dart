@@ -1,8 +1,12 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:windmill_general_trading/modals/modals_exporter.dart';
 import 'package:windmill_general_trading/modals/payment_modal.dart';
@@ -15,6 +19,7 @@ import 'package:windmill_general_trading/views/views_exporter.dart';
 class Checkout extends StatefulWidget {
   final double subTotal;
   final ShoppingCartModal shoppingCart;
+
   const Checkout({
     Key? key,
     required this.subTotal,
@@ -32,6 +37,13 @@ class _CheckoutState extends State<Checkout> {
   TextEditingController _emailAddressController = new TextEditingController();
   TextEditingController _streetAddressController = new TextEditingController();
   TextEditingController _orderNotesController = new TextEditingController();
+
+  Completer<GoogleMapController> _controller = Completer();
+
+  static final CameraPosition _kGooglePlex = CameraPosition(
+    target: LatLng(37.42796133580664, -122.085749655962),
+    zoom: 14.4746,
+  );
 
   UserModal? _user;
   String? _userID;
@@ -108,9 +120,9 @@ class _CheckoutState extends State<Checkout> {
                     children: [
                       Text(
                         "Shipping Address Information",
-                        style: TextStyle(
+                        style: GoogleFonts.montserrat(
                           color: AppColors.appBlackColor,
-                          fontSize: 22.0,
+                          fontSize: 20.0,
                           fontWeight: FontWeight.bold,
                         ),
                         textAlign: TextAlign.center,
@@ -152,8 +164,8 @@ class _CheckoutState extends State<Checkout> {
                       const SizedBox(height: 10.0),
                       Text(
                         "Country/Region:",
-                        style: TextStyle(
-                          fontSize: 18.0,
+                        style: GoogleFonts.montserrat(
+                          fontSize: 15.0,
                           color: AppColors.appBlackColor,
                           fontWeight: FontWeight.w600,
                         ),
@@ -161,10 +173,10 @@ class _CheckoutState extends State<Checkout> {
                       const SizedBox(height: 5.0),
                       Text(
                         "United Arab Emirates",
-                        style: TextStyle(
+                        style: GoogleFonts.montserrat(
                           fontWeight: FontWeight.w700,
                           color: AppColors.appBlueColor,
-                          fontSize: 16.0,
+                          fontSize: 15.0,
                         ),
                       ),
                       const SizedBox(height: 10.0),
@@ -179,8 +191,8 @@ class _CheckoutState extends State<Checkout> {
                       // add emirate as abu dhabi in text
                       Text(
                         "Emirate:",
-                        style: TextStyle(
-                          fontSize: 18.0,
+                        style: GoogleFonts.montserrat(
+                          fontSize: 15.0,
                           color: AppColors.appBlackColor,
                           fontWeight: FontWeight.w600,
                         ),
@@ -188,10 +200,10 @@ class _CheckoutState extends State<Checkout> {
                       const SizedBox(height: 5.0),
                       Text(
                         "Abu Dhabi",
-                        style: TextStyle(
+                        style: GoogleFonts.montserrat(
                           fontWeight: FontWeight.w700,
                           color: AppColors.appBlueColor,
-                          fontSize: 16.0,
+                          fontSize: 15.0,
                         ),
                       ),
                       const SizedBox(height: 10.0),
@@ -203,9 +215,27 @@ class _CheckoutState extends State<Checkout> {
                         fieldHeight: 50.0,
                       ),
                       const SizedBox(height: 10.0),
+                      Container(
+                        height: 300,
+                        child: GoogleMap(
+                          mapType: MapType.normal,
+                          initialCameraPosition: _kGooglePlex,
+                          onMapCreated: (GoogleMapController controller) {
+                            _controller.complete(controller);
+                          },
+                          myLocationEnabled: true,
+                        ),
+                      ),
+                      const SizedBox(height: 10.0),
+                      PrimaryButton(
+                        buttonColor: AppColors.appBlueColor,
+                        title: "Detect Current Location",
+                        onPressed: () => _currentLocation(),
+                      ),
+                      const SizedBox(height: 10.0),
                       Text(
                         "Your personal data will be used to process your order, support your experience throughout application, and for other purposes described in our privacy policy.",
-                        style: TextStyle(
+                        style: GoogleFonts.montserrat(
                           color: AppColors.appGreyColor,
                           fontSize: 11.0,
                         ),
@@ -220,9 +250,9 @@ class _CheckoutState extends State<Checkout> {
                         controlAffinity: ListTileControlAffinity.leading,
                         title: Text(
                           "I have read and agree to terms and conditions",
-                          style: TextStyle(
+                          style: GoogleFonts.montserrat(
                             color: AppColors.appBlackColor,
-                            fontSize: 14.0,
+                            fontSize: 12.0,
                           ),
                         ),
                       ),
@@ -240,6 +270,25 @@ class _CheckoutState extends State<Checkout> {
         ),
       ),
     );
+  }
+
+  void _currentLocation() async {
+    final GoogleMapController controller = await _controller.future;
+    LocationData? currentLocation;
+    var location = new Location();
+    try {
+      currentLocation = await location.getLocation();
+    } on Exception {
+      currentLocation = null;
+    }
+
+    controller.animateCamera(CameraUpdate.newCameraPosition(
+      CameraPosition(
+        bearing: 0,
+        target: LatLng(currentLocation!.latitude!, currentLocation.longitude!),
+        zoom: 17.0,
+      ),
+    ));
   }
 
   void _processOrder() async {
@@ -317,7 +366,7 @@ class _CheckoutState extends State<Checkout> {
           shippingLines: _shippingLine,
         );
         PaymentModal dataOrder =
-        await ApiRequests().createOrder(widget.subTotal, _order);
+            await ApiRequests().createOrder(widget.subTotal, _order);
         if (dataOrder.paymentUrl != null) {
           showModalBottomSheet<void>(
             // context and builder are
@@ -339,7 +388,7 @@ class _CheckoutState extends State<Checkout> {
                   },
                   child: Scaffold(
                     appBar: AppBar(
-                      title: const Text('Payment Method'),
+                      title: const Text('Payment Method',),
                       backgroundColor: AppColors.appBlueColor,
                     ),
                     body: Wrap(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:windmill_general_trading/views/utils/utils_exporter.dart';
 import 'package:windmill_general_trading/views/utils/widgets/widgets_exporter.dart';
@@ -60,7 +61,7 @@ class _RegisterState extends State<Register> {
                       const SizedBox(height: 15.0),
                       Text(
                         "Create\nAccount",
-                        style: TextStyle(
+                        style: GoogleFonts.montserrat(
                           color: AppColors.appWhiteColor,
                           fontWeight: FontWeight.bold,
                           fontSize: 40.0,

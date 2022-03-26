@@ -1,6 +1,7 @@
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:windmill_general_trading/views/utils/utils_exporter.dart';
 import 'package:windmill_general_trading/views/views_exporter.dart';
@@ -70,6 +71,7 @@ class _DashboardState extends State<Dashboard> {
               inactiveColor: Colors.blue,
               title: Text(
                 'Home',
+                style: GoogleFonts.montserrat(),
                 textAlign: TextAlign.center,
               ),
               icon: Icon(
@@ -80,7 +82,7 @@ class _DashboardState extends State<Dashboard> {
               activeColor: AppColors.appWhiteColor,
               inactiveColor: Colors.blue,
               title: Text(
-                'Shop',
+                'Shop',style: GoogleFonts.montserrat(),
                 textAlign: TextAlign.center,
               ),
               icon: Icon(Icons.add_business),
@@ -89,7 +91,7 @@ class _DashboardState extends State<Dashboard> {
                 activeColor: AppColors.appWhiteColor,
                 inactiveColor: Colors.blue,
                 title: Text(
-                  "Cart",
+                  "Cart",style: GoogleFonts.montserrat(),
                   textAlign: TextAlign.center,
                 ),
                 icon: Container(
@@ -98,7 +100,7 @@ class _DashboardState extends State<Dashboard> {
                     badgeColor: Colors.deepOrange,
                     showBadge: true,
                     badgeContent: Text('${i.cartCount}',
-                        style: TextStyle(color: Colors.white)),
+                        style: GoogleFonts.montserrat(color: Colors.white)),
                     child: Icon(Icons.shopping_cart),
                   ),
                 )),
@@ -106,7 +108,7 @@ class _DashboardState extends State<Dashboard> {
               activeColor: AppColors.appWhiteColor,
               inactiveColor: Colors.blue,
               title: Text(
-                'Wishlist',
+                'Wishlist',style: GoogleFonts.montserrat(),
                 textAlign: TextAlign.center,
               ),
               icon: Icon(Icons.favorite),
@@ -115,7 +117,7 @@ class _DashboardState extends State<Dashboard> {
               activeColor: AppColors.appWhiteColor,
               inactiveColor: Colors.blue,
               title: Text(
-                'Profile',
+                'Profile',style: GoogleFonts.montserrat(),
                 textAlign: TextAlign.center,
               ),
               icon: Icon(Icons.account_circle_rounded),

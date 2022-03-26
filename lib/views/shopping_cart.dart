@@ -71,12 +71,12 @@ class _ShoppingCartState extends State<ShoppingCart> {
   }
 
   void _removeProductFromUserCart(String productId, int productVariation) async {
-    if (!_isQuantityLoading) {
-      _toggleQuantityLoading();
+    if (!_isCartLoading) {
+      _toggleCartLoading();
 
       await ApiRequests.removeItemFromShoppingCart(_userID, productId, productVariation);
       getCart();
-      _toggleQuantityLoading();
+      _toggleCartLoading();
     }
   }
 
@@ -284,7 +284,7 @@ class _ShoppingCartState extends State<ShoppingCart> {
                                                                   .montserrat(
                                                                 color: AppColors
                                                                     .appBlackColor,
-                                                                fontSize: 16.0,
+                                                                fontSize: 15.0,
                                                                 fontWeight:
                                                                     FontWeight.w800,
                                                               ),
@@ -412,7 +412,7 @@ class _ShoppingCartState extends State<ShoppingCart> {
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .w700,
-                                                                fontSize: 25.0,
+                                                                fontSize: 20.0,
                                                               ),
                                                             ),
                                                           ),
@@ -505,7 +505,7 @@ class _ShoppingCartState extends State<ShoppingCart> {
                       style: GoogleFonts.montserrat(
                         color: AppColors.appWhiteColor,
                         fontWeight: FontWeight.w600,
-                        fontSize: 12.0,
+                        fontSize: 10.0,
                       ),
                     ),
                   ),
@@ -529,7 +529,7 @@ class _ShoppingCartState extends State<ShoppingCart> {
                               style: GoogleFonts.montserrat(
                                 color: AppColors.appWhiteColor,
                                 fontWeight: FontWeight.w700,
-                                fontSize: 18.0,
+                                fontSize: 15.0,
                               ),
                               textAlign: TextAlign.center,
                             ),

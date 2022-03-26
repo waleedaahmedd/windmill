@@ -112,7 +112,7 @@ class Common {
                 const SizedBox(height: 5.0),
                 Text(
                   "$title",
-                  style: GoogleFonts.poppins(
+                  style: GoogleFonts.montserrat(
                     color: AppColors.appBlackColor,
                     fontWeight: FontWeight.w800,
                     fontSize: 24.0,
@@ -226,8 +226,8 @@ class Common {
     return showDialog(
       context: context,
       builder: (context) => new AlertDialog(
-        title: new Text(Common.applicationName),
-        content: new Text(dialogMessage),
+        title: new Text(Common.applicationName,style: GoogleFonts.montserrat(),),
+        content: new Text(dialogMessage,style: GoogleFonts.montserrat(),),
         actions: <Widget>[
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10.0),

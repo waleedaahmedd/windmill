@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:windmill_general_trading/views/utils/utils_exporter.dart';
 
 class InquiryTextButton extends StatelessWidget {
@@ -21,14 +22,14 @@ class InquiryTextButton extends StatelessWidget {
         children: [
           Text(
             questionText ?? "Don't have an account?",
-            style: TextStyle(
+            style: GoogleFonts.montserrat(
               color: AppColors.appWhiteColor.withOpacity(0.9),
               fontSize: 14.0,
             ),
           ),
           Text(
             actionText ?? " Register Now",
-            style: TextStyle(
+            style: GoogleFonts.montserrat(
               color: AppColors.primaryColor,
               fontSize: 14.0,
               fontWeight: FontWeight.bold,

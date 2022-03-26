@@ -109,6 +109,30 @@ class ApiRequests {
     }
   }
 
+  static Future<List<ProductModal>> getAllProduct(
+      int perPage, int pageNumber) async {
+    String url =
+        Common.API_URL + "products/?per_page=$perPage&page=$pageNumber";
+    print(url);
+    try {
+      return await Dio()
+          .get(
+        url,
+        options: Options(headers: header),
+      )
+          .then((value) {
+        List<ProductModal> _products = [];
+        value.data.forEach((product) {
+          _products.add(ProductModal.fromJson(product));
+        });
+        return _products;
+      });
+    } on DioError catch (e) {
+      print(e);
+      return <ProductModal>[];
+    }
+  }
+
   static Future<List<ProductModal>> getProducts(
       {required String orderBy, String order = Common.DESC}) async {
     try {
@@ -612,7 +636,6 @@ class ApiRequests {
     await _firebaseFirestore
         .collection(Common.SHOPPING_CART)
         .where("user_id", isEqualTo: userID)
-        .orderBy("last_activity_at", descending: true)
         .get()
         .then((value) {
       value.docs.forEach((shoppingCart) {
@@ -621,15 +644,22 @@ class ApiRequests {
       });
     });
 
-    _shoppingCart!.products.forEach((product) {
-      if (productVariation == 0) {
-        if (product.productId != productID )
+    if (productVariation == 0) {
+      _shoppingCart!.products.forEach((product) {
+        if (product.productId != productID)
           _updatedList.add(product);
-      } else {
-        if (product.productId == productID &&
-            product.productVariation != productVariation) _updatedList.add(product);
-      }
-    });
+      });
+    } else {
+      _shoppingCart!.products.forEach((product) {
+        if (product.productVariation != productVariation)
+          _updatedList.add(product);
+      });
+    }
+
+    /* if (product.productId == productID &&
+          product.productVariation != productVariation) _updatedList.add(
+          product);*/
+
     _shoppingCart!.products = _updatedList;
     await _firebaseFirestore
         .collection(Common.SHOPPING_CART)

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:windmill_general_trading/views/routes/app_routes.dart';
 import 'package:windmill_general_trading/views/utils/utils_exporter.dart';
@@ -54,7 +55,7 @@ class _LoginState extends State<Login> {
                     const SizedBox(height: 15.0),
                     Text(
                       "Welcome\nBack",
-                      style: TextStyle(
+                      style: GoogleFonts.montserrat(
                         color: AppColors.appWhiteColor,
                         fontWeight: FontWeight.bold,
                         fontSize: 40.0,

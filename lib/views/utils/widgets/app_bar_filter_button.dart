@@ -28,7 +28,7 @@ class AppBarFilterButton extends StatelessWidget {
             const SizedBox(width: 5.0),
             Text(
               "$title",
-              style: GoogleFonts.poppins(
+              style: GoogleFonts.montserrat(
                 color: AppColors.appGreyColor,
                 fontWeight: FontWeight.w400,
               ),

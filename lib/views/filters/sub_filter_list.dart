@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:windmill_general_trading/modals/modals_exporter.dart';
 import 'package:windmill_general_trading/views/utils/utils_exporter.dart';
 import 'package:windmill_general_trading/views/utils/widgets/widgets_exporter.dart';
@@ -205,7 +206,7 @@ class SubCategoryFilterListCard extends StatelessWidget {
         children: [
           Text(
             "$title",
-            style: TextStyle(
+            style: GoogleFonts.montserrat(
               color:
                   isSelected ? AppColors.appBlackColor : AppColors.appGreyColor,
               fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
@@ -253,7 +254,7 @@ class CategoryDropdownListCard extends StatelessWidget {
           children: [
             Text(
               "$title",
-              style: TextStyle(
+              style: GoogleFonts.montserrat(
                 color: AppColors.textColor,
                 fontSize: 18.0,
                 fontWeight: isSelected ? FontWeight.w800 : FontWeight.w300,

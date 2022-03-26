@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:windmill_general_trading/views/routes/app_routes.dart';
 import 'package:windmill_general_trading/views/utils/utils_exporter.dart';
 import 'package:windmill_general_trading/views/utils/widgets/widgets_exporter.dart';
@@ -43,7 +44,7 @@ class ChooseOption extends StatelessWidget {
                     const SizedBox(height: 15.0),
                     Text(
                       "Choose your option",
-                      style: TextStyle(
+                      style: GoogleFonts.montserrat(
                         color: AppColors.appWhiteColor,
                         fontWeight: FontWeight.bold,
                         fontSize: 40.0,
@@ -87,7 +88,7 @@ class ChooseOption extends StatelessWidget {
                 Text(
                   "CONDITIONS APPLY*",
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: GoogleFonts.montserrat(
                     color: AppColors.appWhiteColor.withOpacity(0.5),
                     fontSize: 12.0,
                   ),

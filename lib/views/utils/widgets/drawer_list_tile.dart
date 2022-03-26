@@ -33,7 +33,7 @@ class DrawerListTile extends StatelessWidget {
             Expanded(
               child: Text(
                 "$title",
-                style: GoogleFonts.poppins(
+                style: GoogleFonts.montserrat(
                   color: AppColors.appBlackColor.withOpacity(0.9),
                   fontWeight: FontWeight.w600,
                 ),

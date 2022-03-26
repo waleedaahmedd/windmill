@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:windmill_general_trading/views/routes/app_routes.dart';
 import 'package:windmill_general_trading/views/utils/common.dart';
@@ -35,7 +36,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
                 ),
                 Text(
                   'Choose a type of shopping',
-                  style: TextStyle(fontSize: 20, color: Colors.grey),
+                  style: GoogleFonts.montserrat(fontSize: 20, color: Colors.grey),
                 ),
                 SizedBox(
                   height: 20,
@@ -53,17 +54,17 @@ class _VerificationScreenState extends State<VerificationScreen> {
                                 children: [
                                   Text(
                                     'Click & Collect',
-                                    style: TextStyle(
+                                    style: GoogleFonts.montserrat(
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold,
-                                        fontSize: 20),
+                                        fontSize: 15),
                                   ),
                                   SizedBox(
                                     height: 10,
                                   ),
                                   Text(
                                     'Ghantoot Branch Only',
-                                    style: TextStyle(color: Colors.white,fontSize: 12),
+                                    style: GoogleFonts.montserrat(color: Colors.white,fontSize: 9),
                                   )
                                 ],
                               ),
@@ -81,17 +82,17 @@ class _VerificationScreenState extends State<VerificationScreen> {
                                 children: [
                                   Text(
                                     'Free Delivery',
-                                    style: TextStyle(
+                                    style: GoogleFonts.montserrat(
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold,
-                                        fontSize: 20),
+                                        fontSize: 15),
                                   ),
                                   SizedBox(
                                     height: 10,
                                   ),
                                   Text(
                                     'Abu Dhabi and Al Ain Only',
-                                    style: TextStyle(color: Colors.white,fontSize: 12),
+                                    style: GoogleFonts.montserrat(color: Colors.white,fontSize: 9),
                                   )
                                 ],
                               ),
@@ -106,7 +107,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
                 CheckboxListTile(
                   title: Text(
                     "Remember me",
-                    style: TextStyle(color: Colors.grey),
+                    style: GoogleFonts.montserrat(color: Colors.grey),
                   ),
                   value: checkedValue,
                   onChanged: (newValue) {
@@ -120,7 +121,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
                 CheckboxListTile(
                   title: RichText(
                     text: TextSpan(
-                      style: new TextStyle(
+                      style:  GoogleFonts.montserrat(
                         fontSize: 14.0,
                         color: Colors.black,
                       ),
@@ -154,7 +155,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
                 ),
                 Text(
                   "Are you over 21 years of age?",
-                  style: TextStyle(color: Colors.grey,fontSize: 20),
+                  style: GoogleFonts.montserrat(color: Colors.grey,fontSize: 20),
                 ),
                 SizedBox(
                   height: 40,
@@ -179,7 +180,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
                             child: Center(
                               child: Text(
                                 'Yes',
-                                style: TextStyle(color: Colors.white,fontSize: 20),
+                                style: GoogleFonts.montserrat(color: Colors.white,fontSize: 20),
                               ),
                             ),
                           ),
@@ -188,18 +189,26 @@ class _VerificationScreenState extends State<VerificationScreen> {
                     ),  
                     Expanded(
                       child: Center(
-                        child: Container(
-                          height: 40,
-                          width: 80,
-                          decoration: new BoxDecoration(
-                            color: Colors.red,
-                            borderRadius: new BorderRadius.all(
-                              Radius.circular(10.0),
-                            ),),
-                          child: Center(
-                            child: Text(
-                              'No',
-                              style: TextStyle(color: Colors.white,fontSize: 20),
+                        child: GestureDetector(
+                          onTap: (){
+                          /*  Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => const MapWidget()),
+                            );*/
+                          },
+                          child: Container(
+                            height: 40,
+                            width: 80,
+                            decoration: new BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: new BorderRadius.all(
+                                Radius.circular(10.0),
+                              ),),
+                            child: Center(
+                              child: Text(
+                                'No',
+                                style: GoogleFonts.montserrat(color: Colors.white,fontSize: 20),
+                              ),
                             ),
                           ),
                         ),

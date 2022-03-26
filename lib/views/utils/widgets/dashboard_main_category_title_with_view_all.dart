@@ -49,9 +49,9 @@ class DashboardMainCategoryTitleWithViewAll extends StatelessWidget {
             ),
             Text(
               "View all",
-              style: TextStyle(
-                color: Colors.blue.shade800
-                /*AppColors.textColor.withOpacity(0.6)*/,
+              style: GoogleFonts.montserrat(
+                color: AppColors.appBlueColor
+                /*AppColors.textColor.withOpacity(0.6)*/
               ),
             ),
           ],

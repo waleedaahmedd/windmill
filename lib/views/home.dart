@@ -58,7 +58,7 @@ class _HomeState extends State<Home> {
               appBarColor: AppColors.appBlueColor,
             ),
             Visibility(
-              visible: i.productList.isEmpty? false : true,
+              visible: i.productList.isEmpty ? false : true,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: Container(
@@ -73,58 +73,93 @@ class _HomeState extends State<Home> {
                             child: Padding(
                               padding: const EdgeInsets.all(10.0),
                               child: ListTile(
-                                onTap: () {
-                                  Common.push(
-                                    context,
-                                    ProductDetail(product: i.productList[index]),
-                                  );
-                                },
-                                dense: true,
-                                leading: SizedBox(
-                                  height: 200,
-                                  width: 50,
-                                  child: Image.network(
-                                    '${i.productList[index].images.first.src}',
-                                    fit: BoxFit.fill,
+                                  onTap: () {
+                                    Common.push(
+                                      context,
+                                      ProductDetail(
+                                          product: i.productList[index]),
+                                    );
+                                  },
+                                  dense: true,
+                                  leading: SizedBox(
+                                    height: 200,
+                                    width: 50,
+                                    child: Image.network(
+                                      '${i.productList[index].images.first.src}',
+                                      fit: BoxFit.fill,
+                                    ),
                                   ),
-                                ),
-                               // horizontalTitleGap: 50,
-                                title: Padding(
-                                  padding: const EdgeInsets.only(left: 8.0),
-                                  child: Text('${i.productList[index].name}',style: TextStyle(color: Colors.blueAccent),),
-                                ),
-                                subtitle: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Html(data: "${i.productList[index].shortDescription}",),
-                                    Padding(
-                                      padding: const EdgeInsets.only(left:8.0),
-                                      child: Row(
-                                        children: [
-                                          Visibility(
-                                            visible: i.productList[index].salePrice != "" ? true : false,
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(right: 10.0),
-                                              child: Text('AED ${i.productList[index].regularPrice}',style: TextStyle(color: Colors.grey,
-                                                  decoration: TextDecoration.lineThrough),),
+                                  // horizontalTitleGap: 50,
+                                  title: Padding(
+                                    padding: const EdgeInsets.only(left: 8.0),
+                                    child: Text(
+                                      '${i.productList[index].name}',
+                                      style:
+                                      GoogleFonts.montserrat(color: Colors.blueAccent),
+                                    ),
+                                  ),
+                                  subtitle: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Html(
+                                          data:
+                                              "${i.productList[index].shortDescription}",
+                                          style: {
+                                            '#': Style(
+                                              fontSize: FontSize(12),
+                                              maxLines: 2,
+                                              textOverflow:
+                                                  TextOverflow.ellipsis,
                                             ),
-                                          ),
-                                          Text('AED ${i.productList[index].price}',style: TextStyle(color: Colors.red),),
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                ),
+                                          }),
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 8.0),
+                                        child: Row(
+                                          children: [
+                                            Visibility(
+                                              visible: i.productList[index]
+                                                          .salePrice !=
+                                                      ""
+                                                  ? true
+                                                  : false,
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(
+                                                    right: 10.0),
+                                                child: Text(
+                                                  'AED ${i.productList[index].regularPrice}',
+                                                  style: GoogleFonts.montserrat(
+                                                      color: Colors.grey,
+                                                      decoration: TextDecoration
+                                                          .lineThrough),
+                                                ),
+                                              ),
+                                            ),
+                                            Text(
+                                              'AED ${i.productList[index].price}',
+                                              style:
+                                              GoogleFonts.montserrat(color: Colors.red),
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                    ],
+                                  ),
                                   trailing: Visibility(
                                     visible: i.productList[index].onSale,
                                     child: Container(
                                       color: Colors.lightGreen,
                                       child: Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                                        child: Text('Sale',style: TextStyle(color: Colors.white),),
-                                      ),),
-                                  )
-                              ),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 10.0),
+                                        child: Text(
+                                          'Sale',
+                                          style: GoogleFonts.montserrat(color: Colors.white),
+                                        ),
+                                      ),
+                                    ),
+                                  )),
                             ),
                           ),
                         );
@@ -135,7 +170,8 @@ class _HomeState extends State<Home> {
                 ),
               ),
             ),
-            Row(
+            SizedBox(height: 20),
+            /*Row(
               children: [
                 Expanded(
                   child: Padding(
@@ -228,7 +264,7 @@ class _HomeState extends State<Home> {
                   ),
                 ),
               ],
-            ),
+            ),*/
             Expanded(
               child: SingleChildScrollView(
                 child: Column(

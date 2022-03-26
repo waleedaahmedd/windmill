@@ -45,7 +45,7 @@ class BottomSheetCard extends StatelessWidget {
             Expanded(
               child: Text(
                 "$title",
-                style: GoogleFonts.poppins(
+                style: GoogleFonts.montserrat(
                   color: isSelected
                       ? AppColors.appWhiteColor
                       : AppColors.appBlackColor,

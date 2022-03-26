@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:windmill_general_trading/modals/modals_exporter.dart';
 import 'package:windmill_general_trading/views/utils/utils_exporter.dart';
 import 'package:windmill_general_trading/views/views_exporter.dart';
@@ -49,7 +50,7 @@ class ProductFavouriteCard extends StatelessWidget {
                     children: [
                       Text(
                         '${product.name}',
-                        style: TextStyle(
+                        style: GoogleFonts.montserrat(
                           fontSize: 18.0,
                           fontWeight: FontWeight.bold,
                           color: AppColors.appBlackColor,
@@ -61,7 +62,7 @@ class ProductFavouriteCard extends StatelessWidget {
                       const SizedBox(height: 5.0),
                       Text(
                         "AED ${product.price}",
-                        style: TextStyle(
+                        style: GoogleFonts.montserrat(
                           color: AppColors.appBlackColor,
                           fontSize: 26.0,
                           fontWeight: FontWeight.w900,

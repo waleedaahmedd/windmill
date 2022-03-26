@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:windmill_general_trading/views/utils/utils_exporter.dart';
 import 'package:windmill_general_trading/views/utils/widgets/widgets_exporter.dart';
 
@@ -44,7 +45,7 @@ class ForgetPassword extends StatelessWidget {
                     const SizedBox(height: 15.0),
                     Text(
                       "Recover\nPassword",
-                      style: TextStyle(
+                      style: GoogleFonts.montserrat(
                         color: AppColors.appWhiteColor,
                         fontWeight: FontWeight.bold,
                         fontSize: 40.0,

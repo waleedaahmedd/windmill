@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:windmill_general_trading/modals/modals_exporter.dart';
 import 'package:windmill_general_trading/views/routes/app_routes.dart';
 import 'package:windmill_general_trading/views/utils/utils_exporter.dart';
@@ -57,7 +58,7 @@ class _ProfileState extends State<Profile> {
                         const SizedBox(height: 10.0),
                         Text(
                           "Windmill Support",
-                          style: TextStyle(
+                          style: GoogleFonts.montserrat(
                             color: AppColors.appBlackColor,
                             fontSize: 20.0,
                             fontWeight: FontWeight.w700,
@@ -67,7 +68,7 @@ class _ProfileState extends State<Profile> {
                         const SizedBox(height: 5.0),
                         Text(
                           "support@gmail.com",
-                          style: TextStyle(
+                          style: GoogleFonts.montserrat(
                             color: AppColors.appGreyColor.withOpacity(0.5),
                             fontSize: 16.0,
                           ),
@@ -180,7 +181,7 @@ class ProfileCard extends StatelessWidget {
                 Expanded(
                   child: Text(
                     "$title",
-                    style: TextStyle(
+                    style: GoogleFonts.montserrat(
                       color: AppColors.appBlackColor.withOpacity(0.65),
                       fontSize: 18.0,
                       fontWeight: FontWeight.w600,
@@ -198,7 +199,7 @@ class ProfileCard extends StatelessWidget {
             const SizedBox(height: 6.0),
             Text(
               "$description",
-              style: TextStyle(
+              style: GoogleFonts.montserrat(
                 color: AppColors.appGreyColor,
                 fontSize: 12.0,
               ),

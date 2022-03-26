@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:windmill_general_trading/modals/modals_exporter.dart';
 import 'package:windmill_general_trading/views/utils/utils_exporter.dart';
@@ -93,7 +94,7 @@ class _ProductDetailState extends State<ProductDetail> {
               position: BadgePosition.topEnd(top: -12, end: -20),
               badgeColor: Colors.deepOrange,
               showBadge: true,
-              badgeContent: Text('${i.cartCount}',style: TextStyle(color: Colors.white),),
+              badgeContent: Text('${i.cartCount}',style: GoogleFonts.montserrat(color: Colors.white),),
               child: Icon(Icons.shopping_cart),
             ),
             backgroundColor: Colors.blue.shade800,
@@ -174,9 +175,9 @@ class _ProductDetailState extends State<ProductDetail> {
                               Expanded(
                                 child: Text(
                                   '${widget.product.name}',
-                                  style: TextStyle(
+                                  style: GoogleFonts.montserrat(
                                     fontWeight: FontWeight.w900,
-                                    fontSize: 30.0,
+                                    fontSize: 20.0,
                                     height: 1.0,
                                   ),
                                 ),
@@ -250,7 +251,7 @@ class _ProductDetailState extends State<ProductDetail> {
                                     ),
                                     Text(
                                       '$purchaseItemCount',
-                                      style: TextStyle(
+                                      style: GoogleFonts.montserrat(
                                         color: Colors.white,
                                         fontSize: 18.0,
                                       ),
@@ -280,11 +281,10 @@ class _ProductDetailState extends State<ProductDetail> {
                               ),
                               _finalVariationDetail == null && _minValue != null
                                   ? Text('AED $_minValue - AED $_maxValue',
-                                  style: TextStyle(
+                                  style: GoogleFonts.montserrat(
                                     color: Colors.blue,
                                     fontWeight: FontWeight.bold,
-                                    fontFamily: 'MontserratBlack',
-                                    fontSize: 30.0,
+                                    fontSize: 20.0,
                                   ))
                                   : Visibility(
                                 visible: _isLoading ? false : true,
@@ -293,22 +293,20 @@ class _ProductDetailState extends State<ProductDetail> {
                                     sale!
                                         ? Text(
                                       'AED ${_finalVariationDetail != null ? _finalVariationDetail!.regularPrice : widget.product.regularPrice}',
-                                      style: TextStyle(
+                                      style: GoogleFonts.montserrat(
                                         color: Colors.black,
-                                        fontFamily: 'MontserratBlack',
                                         decoration: TextDecoration
                                             .lineThrough,
-                                        fontSize: 22.0,
+                                        fontSize: 15.0,
                                       ),
                                     )
                                         : const SizedBox.shrink(),
                                     Text(
                                       'AED ${_finalVariationDetail != null ? _finalVariationDetail!.price : widget.product.price}',
-                                      style: TextStyle(
+                                      style: GoogleFonts.montserrat(
                                         color: Colors.black,
                                         fontWeight: FontWeight.bold,
-                                        fontFamily: 'MontserratBlack',
-                                        fontSize: 30.0,
+                                        fontSize: 20.0,
                                       ),
                                     ),
                                   ],
@@ -326,7 +324,7 @@ class _ProductDetailState extends State<ProductDetail> {
                                   children: [
                                     Text(
                                       'Packing',
-                                      style: TextStyle(
+                                      style: GoogleFonts.montserrat(
                                           fontSize: 18,
                                           fontWeight: FontWeight.w500),
                                     ),
@@ -337,11 +335,11 @@ class _ProductDetailState extends State<ProductDetail> {
                                       child: DropdownButton<String>(
                                         isExpanded: true,
                                         value: _packingValue,
-                                        hint: Text("Choose an Option"),
+                                        hint: Text("Choose an Option",style: GoogleFonts.montserrat(),),
                                         items:
                                         _finalPackingList.map((packingOne) {
                                           return DropdownMenuItem(
-                                            child: Text(packingOne),
+                                            child: Text(packingOne,style: GoogleFonts.montserrat()),
                                             //label of item
                                             value: packingOne, //value of item
                                           );
@@ -364,7 +362,7 @@ class _ProductDetailState extends State<ProductDetail> {
                                   children: [
                                     Text(
                                       'Volume',
-                                      style: TextStyle(
+                                      style: GoogleFonts.montserrat(
                                           fontSize: 18,
                                           fontWeight: FontWeight.w500),
                                     ),
@@ -375,10 +373,10 @@ class _ProductDetailState extends State<ProductDetail> {
                                       child: DropdownButton<String>(
                                         isExpanded: true,
                                         value: _volumeValue,
-                                        hint: Text("Choose an Option"),
+                                        hint: Text("Choose an Option",style: GoogleFonts.montserrat()),
                                         items: _finalVolumeList.map((volumeOne) {
                                           return DropdownMenuItem(
-                                            child: Text(volumeOne),
+                                            child: Text(volumeOne, style: GoogleFonts.montserrat(),),
                                             //label of item
                                             value: volumeOne, //value of item
                                           );
@@ -403,10 +401,9 @@ class _ProductDetailState extends State<ProductDetail> {
                           const SizedBox(height: 20.0),
                           Text(
                             'Details',
-                            style: TextStyle(
+                            style: GoogleFonts.montserrat(
                               fontSize: 18.0,
                               color: Colors.black87,
-                              fontFamily: 'Poppins',
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -445,11 +442,10 @@ class _ProductDetailState extends State<ProductDetail> {
                   onTap: () => Common.pushAndRemoveUntil(context, Dashboard()),
                   child: Text(
                     'CONTINUE EXPLORING',
-                    style: TextStyle(
+                    style: GoogleFonts.montserrat(
                       color: AppColors.appBlueColor,
                       fontWeight: FontWeight.w900,
-                      fontFamily: 'MontserratBlack',
-                      fontSize: 12.0,
+                      fontSize: 10.0,
                     ),
                   ),
                 ),
@@ -466,11 +462,10 @@ class _ProductDetailState extends State<ProductDetail> {
                     EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
                     child: Text(
                       'Add to cart',
-                      style: TextStyle(
+                      style: GoogleFonts.montserrat(
                         color: AppColors.appWhiteColor,
                         fontWeight: FontWeight.w700,
-                        fontFamily: 'MontserratBlack',
-                        fontSize: 18.0,
+                        fontSize: 15.0,
                       ),
                       textAlign: TextAlign.center,
                     ),

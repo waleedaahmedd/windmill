@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:windmill_general_trading/views/utils/utils_exporter.dart';
 
 class PrimaryButton extends StatelessWidget {
@@ -36,7 +37,7 @@ class PrimaryButton extends StatelessWidget {
         child: Center(
           child: Text(
             "$title",
-            style: TextStyle(
+            style: GoogleFonts.montserrat(
               color: textColor ?? AppColors.appWhiteColor,
               fontWeight: FontWeight.bold,
               letterSpacing: 1.6,

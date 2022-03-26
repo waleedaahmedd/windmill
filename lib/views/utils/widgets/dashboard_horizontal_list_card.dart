@@ -1,9 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:windmill_general_trading/modals/modals_exporter.dart';
 import 'package:windmill_general_trading/views/utils/utils_exporter.dart';
 import 'package:windmill_general_trading/views/views_exporter.dart';
+
+import '../../../cart_provider.dart';
 
 class DashboardHorizontalListCard extends StatefulWidget {
   final ProductModal product;
@@ -27,6 +30,7 @@ class DashboardHorizontalListCard extends StatefulWidget {
 class _DashboardHorizontalListCardState
     extends State<DashboardHorizontalListCard> {
   bool _isWishListLoading = true;
+  bool _isAddToCartLoading = false;
   bool _isProductWishListed = false;
   int _userID = 0;
 
@@ -49,11 +53,17 @@ class _DashboardHorizontalListCardState
     setState(() {});
   }
 
+  void _toggleCartLoading() {
+    _isAddToCartLoading = !_isAddToCartLoading;
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: widget.onPressed ??
-          () => Common.push(
+              () =>
+              Common.push(
                 context,
                 ProductDetail(product: widget.product),
               ),
@@ -84,11 +94,11 @@ class _DashboardHorizontalListCardState
                       borderRadius: BorderRadius.circular(15.0),
                       child: widget.product.images.length != 0
                           ? Image.network(
-                              "${widget.product.images.first.src}",
-                              fit: BoxFit.fill,
-                            )
+                        "${widget.product.images.first.src}",
+                        fit: BoxFit.fill,
+                      )
                           : Image.asset(
-                              "${Common.assetsImages}demo_product.png"),
+                          "${Common.assetsImages}demo_product.png"),
                     ),
                   ),
                   Positioned(
@@ -113,17 +123,73 @@ class _DashboardHorizontalListCardState
                         child: _isWishListLoading
                             ? CupertinoActivityIndicator()
                             : Icon(
-                                _isProductWishListed
-                                    ? Icons.favorite
-                                    : Icons.favorite_border,
-                                size: 26.0,
-                                color: _isProductWishListed
-                                    ? AppColors.appBlueColor
-                                    : AppColors.appGreyColor,
-                              ),
+                          _isProductWishListed
+                              ? Icons.favorite
+                              : Icons.favorite_border,
+                          size: 26.0,
+                          color: _isProductWishListed
+                              ? AppColors.appBlueColor
+                              : AppColors.appGreyColor,
+                        ),
                       ),
                     ),
                   ),
+                  Visibility(
+                    visible: widget.product.onSale == true,
+                    child: Positioned(
+                      top: 90.0,
+                      right: 0.0,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(40),
+                            bottomLeft: Radius.circular(40),
+                          ),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 5.0, horizontal: 10),
+                          child: Text(
+                            'onSale',
+                            style: TextStyle(color: AppColors.appWhiteColor),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Visibility(
+                    visible: widget.product.variations.isEmpty,
+                    child: Positioned(
+                        top: 10.0,
+                        left: 10.0,
+                        child: InkWell(
+                          onTap: () => _processAddToCart(),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: AppColors.appWhiteColor,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: AppColors.appBlackColor.withOpacity(
+                                      0.1),
+                                  blurRadius: 10,
+                                  spreadRadius: 3,
+                                  offset: Offset(1, 3),
+                                ),
+                              ],
+                            ),
+                            padding: const EdgeInsets.all(6.0),
+                            child: _isAddToCartLoading
+                                ? CupertinoActivityIndicator()
+                                : Icon(
+                              Icons.shopping_cart,
+                              size: 26.0,
+                              color: AppColors.appBlueColor,
+                            ),
+                          ),
+                        )),
+                  )
                 ],
               ),
             ),
@@ -139,14 +205,15 @@ class _DashboardHorizontalListCardState
                   Text(
                     "${widget.product.name}",
                     style: GoogleFonts.montserrat(
-                      color: AppColors.appBlackColor.withOpacity(0.8),
+                      color: AppColors.appBlueColor,
                       fontWeight: FontWeight.w700,
-                      fontSize: 15.0,
+                      fontSize: 12.0,
                     ),
+                    textAlign: TextAlign.center,
                     overflow: TextOverflow.ellipsis,
                     maxLines: 2,
                   ),
-                  const SizedBox(height: 5.0),
+                  const SizedBox(height: 10.0),
                   Row(
                     children: [
                       Expanded(
@@ -156,21 +223,21 @@ class _DashboardHorizontalListCardState
                           children: [
                             widget.product.salePrice.isNotEmpty
                                 ? Text(
-                                    "AED ${widget.product.regularPrice}",
-                                    style: GoogleFonts.poppins(
-                                      color: AppColors.appBlackColor,
-                                      fontSize: 18.0,
-                                      fontWeight: FontWeight.w500,
-                                      decoration: TextDecoration.lineThrough,
-                                    ),
-                                  )
+                              "AED ${widget.product.regularPrice}",
+                              style: GoogleFonts.poppins(
+                                color: AppColors.appBlueColor.withOpacity(0.5),
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.bold,
+                                decoration: TextDecoration.lineThrough,
+                              ),
+                            )
                                 : const SizedBox.shrink(),
                             Text(
                               "AED ${widget.product.price}",
                               style: GoogleFonts.poppins(
-                                color: AppColors.appBlackColor,
+                                color: Colors.red,
                                 fontSize: 20.0,
-                                fontWeight: FontWeight.w700,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                           ],
@@ -195,4 +262,25 @@ class _DashboardHorizontalListCardState
       _getWishListDetails();
     }
   }
+
+  void _processAddToCart() async {
+    _toggleCartLoading();
+    await ApiRequests.processAddProductToCart(
+      widget.product.id.toString(),
+      1,
+      _userID.toString(),
+      variation: 0,
+      context: context,
+    );
+    await Provider.of<CartProvider>(context, listen: false)
+        .getCartProducts(context);
+    Common.showSuccessTopSnack(
+        context, "Product Added to Cart Successfully!");
+    _toggleCartLoading();
+  }
 }
+
+
+
+
+
