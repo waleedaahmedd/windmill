@@ -202,7 +202,6 @@ class _CheckoutState extends State<Checkout> {
                         maxLines: 4,
                         minLines: 1,
                       ),
-
                      /* LabelAndInputField(
                         fontSize: 15,
                         fieldController: _streetAddressController,
