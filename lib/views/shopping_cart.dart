@@ -75,15 +75,18 @@ class _ShoppingCartState extends State<ShoppingCart> {
       _toggleCartLoading();
 
       await ApiRequests.removeItemFromShoppingCart(_userID, productId, productVariation);
-      getCart();
+      //await getCart();
+      await Provider.of<CartProvider>(context, listen: false)
+          .minusCartCount(1);
+      _getSubTotal();
       _toggleCartLoading();
     }
   }
 
-  Future<void> getCart() async {
+/*  Future<void> getCart() async {
     await Provider.of<CartProvider>(context, listen: false)
         .getCartProducts(context);
-  }
+  }*/
 
   void _incrementProductQuantity(String productId) async {
     if (!_isQuantityLoading) {
@@ -296,6 +299,7 @@ class _ShoppingCartState extends State<ShoppingCart> {
                                                                   .productId,_product
                                                                   .productVariation);
                                                             }
+
                                                             ,child: Icon(Icons.delete_forever,color: AppColors
                                                                 .appBlueColor,),
                                                           )

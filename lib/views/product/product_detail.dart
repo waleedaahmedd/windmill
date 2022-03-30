@@ -88,19 +88,21 @@ class _ProductDetailState extends State<ProductDetail> {
       return Scaffold(
         floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
         floatingActionButton: Padding(
-          padding: const EdgeInsets.symmetric(vertical:20.0),
+          padding: const EdgeInsets.symmetric(vertical: 20.0),
           child: FloatingActionButton(
             child: Badge(
               position: BadgePosition.topEnd(top: -12, end: -20),
               badgeColor: Colors.deepOrange,
               showBadge: true,
-              badgeContent: Text('${i.cartCount}',style: GoogleFonts.montserrat(color: Colors.white),),
+              badgeContent: Text(
+                '${i.cartCount}',
+                style: GoogleFonts.montserrat(color: Colors.white),
+              ),
               child: Icon(Icons.shopping_cart),
             ),
             backgroundColor: Colors.blue.shade800,
             onPressed: () {
-              Navigator.of(context)
-                  .pushNamed(AppRoutes.shoppingCartRoute);
+              Navigator.of(context).pushNamed(AppRoutes.shoppingCartRoute);
             },
           ),
         ),
@@ -120,7 +122,7 @@ class _ProductDetailState extends State<ProductDetail> {
                           ),
                           child: Center(
                             child: Padding(
-                              padding: const EdgeInsets.only(top:20),
+                              padding: const EdgeInsets.only(top: 20),
                               child: Image.network(
                                 '${_finalVariationDetail != null ? _finalVariationDetail!.image!.src : widget.product.images.first.src}',
                                 fit: BoxFit.fill,
@@ -136,12 +138,13 @@ class _ProductDetailState extends State<ProductDetail> {
                             onTap: () => Common.pop(context),
                             child: Container(
                               decoration: BoxDecoration(
-                                color: AppColors.appWhiteColor.withOpacity(0.25),
+                                color:
+                                    AppColors.appWhiteColor.withOpacity(0.25),
                                 borderRadius: BorderRadius.circular(15.0),
                                 boxShadow: [
                                   BoxShadow(
                                     color:
-                                    AppColors.appGreyColor.withOpacity(0.4),
+                                        AppColors.appGreyColor.withOpacity(0.4),
                                     blurRadius: 5.0,
                                     spreadRadius: 5.0,
                                     offset: Offset(1, 2),
@@ -203,14 +206,14 @@ class _ProductDetailState extends State<ProductDetail> {
                                   child: _isWishListLoading
                                       ? CupertinoActivityIndicator()
                                       : Icon(
-                                    _isProductWishListed
-                                        ? Icons.favorite
-                                        : Icons.favorite_border,
-                                    size: 26.0,
-                                    color: _isProductWishListed
-                                        ? AppColors.appBlueColor
-                                        : AppColors.appGreyColor,
-                                  ),
+                                          _isProductWishListed
+                                              ? Icons.favorite
+                                              : Icons.favorite_border,
+                                          size: 26.0,
+                                          color: _isProductWishListed
+                                              ? AppColors.appBlueColor
+                                              : AppColors.appGreyColor,
+                                        ),
                                 ),
                               ),
                             ],
@@ -227,7 +230,7 @@ class _ProductDetailState extends State<ProductDetail> {
                                 ),
                                 child: Row(
                                   mainAxisAlignment:
-                                  MainAxisAlignment.spaceBetween,
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     InkWell(
                                       onTap: () {
@@ -281,43 +284,44 @@ class _ProductDetailState extends State<ProductDetail> {
                               ),
                               _finalVariationDetail == null && _minValue != null
                                   ? Text('AED $_minValue - AED $_maxValue',
-                                  style: GoogleFonts.montserrat(
-                                    color: Colors.blue,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20.0,
-                                  ))
-                                  : Visibility(
-                                visible: _isLoading ? false : true,
-                                child: Column(
-                                  children: [
-                                    sale!
-                                        ? Text(
-                                      'AED ${_finalVariationDetail != null ? _finalVariationDetail!.regularPrice : widget.product.regularPrice}',
                                       style: GoogleFonts.montserrat(
-                                        color: Colors.black,
-                                        decoration: TextDecoration
-                                            .lineThrough,
-                                        fontSize: 15.0,
-                                      ),
-                                    )
-                                        : const SizedBox.shrink(),
-                                    Text(
-                                      'AED ${_finalVariationDetail != null ? _finalVariationDetail!.price : widget.product.price}',
-                                      style: GoogleFonts.montserrat(
-                                        color: Colors.black,
+                                        color: Colors.blue,
                                         fontWeight: FontWeight.bold,
                                         fontSize: 20.0,
+                                      ))
+                                  : Visibility(
+                                      visible: _isLoading ? false : true,
+                                      child: Column(
+                                        children: [
+                                          sale!
+                                              ? Text(
+                                                  'AED ${_finalVariationDetail != null ? _finalVariationDetail!.regularPrice : widget.product.regularPrice}',
+                                                  style: GoogleFonts.montserrat(
+                                                    color: Colors.black,
+                                                    decoration: TextDecoration
+                                                        .lineThrough,
+                                                    fontSize: 15.0,
+                                                  ),
+                                                )
+                                              : const SizedBox.shrink(),
+                                          Text(
+                                            'AED ${_finalVariationDetail != null ? _finalVariationDetail!.price : widget.product.price}',
+                                            style: GoogleFonts.montserrat(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 20.0,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                  ],
-                                ),
-                              ),
                             ],
                           ),
                           const SizedBox(height: 20.0),
                           Visibility(
-                            visible:
-                            widget.product.variations.isEmpty ? false : true,
+                            visible: widget.product.variations.isEmpty
+                                ? false
+                                : true,
                             child: Column(
                               children: [
                                 Row(
@@ -335,11 +339,16 @@ class _ProductDetailState extends State<ProductDetail> {
                                       child: DropdownButton<String>(
                                         isExpanded: true,
                                         value: _packingValue,
-                                        hint: Text("Choose an Option",style: GoogleFonts.montserrat(),),
+                                        hint: Text(
+                                          "Choose an Option",
+                                          style: GoogleFonts.montserrat(),
+                                        ),
                                         items:
-                                        _finalPackingList.map((packingOne) {
+                                            _finalPackingList.map((packingOne) {
                                           return DropdownMenuItem(
-                                            child: Text(packingOne,style: GoogleFonts.montserrat()),
+                                            child: Text(packingOne,
+                                                style:
+                                                    GoogleFonts.montserrat()),
                                             //label of item
                                             value: packingOne, //value of item
                                           );
@@ -373,10 +382,15 @@ class _ProductDetailState extends State<ProductDetail> {
                                       child: DropdownButton<String>(
                                         isExpanded: true,
                                         value: _volumeValue,
-                                        hint: Text("Choose an Option",style: GoogleFonts.montserrat()),
-                                        items: _finalVolumeList.map((volumeOne) {
+                                        hint: Text("Choose an Option",
+                                            style: GoogleFonts.montserrat()),
+                                        items:
+                                            _finalVolumeList.map((volumeOne) {
                                           return DropdownMenuItem(
-                                            child: Text(volumeOne, style: GoogleFonts.montserrat(),),
+                                            child: Text(
+                                              volumeOne,
+                                              style: GoogleFonts.montserrat(),
+                                            ),
                                             //label of item
                                             value: volumeOne, //value of item
                                           );
@@ -384,9 +398,9 @@ class _ProductDetailState extends State<ProductDetail> {
                                         onChanged: (value) {
                                           _packingValue != null
                                               ? setState(() {
-                                            _volumeValue = value!;
-                                            findVariationIndex();
-                                          })
+                                                  _volumeValue = value!;
+                                                  findVariationIndex();
+                                                })
                                               : showMessage();
 
                                           //change the country name
@@ -408,7 +422,49 @@ class _ProductDetailState extends State<ProductDetail> {
                             ),
                           ),
                           const SizedBox(height: 5.0),
-                          Html(data: widget.product.description)
+                          Html(data: widget.product.description),
+                          const SizedBox(height: 20.0),
+                          Text(
+                            'Additional Information',
+                            style: GoogleFonts.montserrat(
+                              fontSize: 18.0,
+                              color: Colors.black87,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 10.0),
+                          ListView.builder(
+                            physics: NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount: widget.product.attributes.length,
+                            itemBuilder: (context, index) {
+                              /*    if(i.productList[index]){*/
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 10.0,horizontal: 10),
+                                child: Row(
+                                  children: [
+                                    SizedBox(
+                                      width: 100,
+                                      child: Text(
+                                        '${widget.product.attributes[index].name}',
+                                        style: GoogleFonts.montserrat(
+                                            color: Colors.blueAccent,fontSize: 15,fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                    Flexible(
+                                      child: Text(
+                                        '${widget.product.attributes[index].options.join(" , ")}',
+                                        style: GoogleFonts.montserrat(
+                                            color: Colors.blueAccent,fontSize: 15,fontWeight: FontWeight.w500),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                              /*  }*/
+                            },
+                          ),
+                          const SizedBox(height: 10.0),
                         ],
                       ),
                     ),
@@ -459,7 +515,7 @@ class _ProductDetailState extends State<ProductDetail> {
                       borderRadius: BorderRadius.circular(20.0),
                     ),
                     padding:
-                    EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                        EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
                     child: Text(
                       'Add to cart',
                       style: GoogleFonts.montserrat(
@@ -477,7 +533,6 @@ class _ProductDetailState extends State<ProductDetail> {
         ),
       );
     });
-
   }
 
   void _toggleLoading({bool? isLoading}) {
@@ -512,6 +567,8 @@ class _ProductDetailState extends State<ProductDetail> {
           variation: _finalVariationDetail?.id,
           context: context,
         );
+        /*await Provider.of<CartProvider>(context, listen: false)
+            .addCartCount(1);*/
         Common.showSuccessTopSnack(
             context, "Product Added to Cart Successfully!");
       }
@@ -526,19 +583,19 @@ class _ProductDetailState extends State<ProductDetail> {
           widget.product.id.toString(),
           purchaseItemCount,
           _userID,
-          variation: _finalVariationDetail == null? 0 : _finalVariationDetail!.id,
+          variation:
+              _finalVariationDetail == null ? 0 : _finalVariationDetail!.id,
           context: context,
         );
-        await Provider.of<CartProvider>(context, listen: false)
-            .getCartProducts(context);
+
+        /*await Provider.of<CartProvider>(context, listen: false)
+            .getCartProducts(context);*/
         Common.showSuccessTopSnack(
             context, "Product Added to Cart Successfully!");
       }
       _toggleLoading();
     }
   }
-
-
 
   void _getIndex() {
     final index =

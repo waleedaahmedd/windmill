@@ -9,8 +9,13 @@ class CartProvider with ChangeNotifier {
   String? _userID;
   final firestoreInstance = FirebaseFirestore.instance;
 
-  addCartCount() {
-    this.cartCount = cartCount++;
+  addCartCount(int value) {
+    this.cartCount = cartCount+value;
+    notifyListeners();
+  }
+
+  minusCartCount(int value){
+    this.cartCount = cartCount-value;
     notifyListeners();
   }
 

@@ -215,34 +215,32 @@ class _DashboardHorizontalListCardState
                   ),
                   const SizedBox(height: 10.0),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Expanded(
-                        child: Wrap(
-                          direction: Axis.vertical,
-                          spacing: -10,
-                          children: [
-                            widget.product.salePrice.isNotEmpty
-                                ? Text(
-                              "AED ${widget.product.regularPrice}",
-                              style: GoogleFonts.poppins(
-                                color: AppColors.appBlueColor.withOpacity(0.5),
-                                fontSize: 18.0,
-                                fontWeight: FontWeight.bold,
-                                decoration: TextDecoration.lineThrough,
-                              ),
-                            )
-                                : const SizedBox.shrink(),
-                            Text(
-                              "AED ${widget.product.price}",
-                              style: GoogleFonts.poppins(
-                                color: Colors.red,
-                                fontSize: 20.0,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
+
+                        widget.product.salePrice.isNotEmpty
+                            ? Text(
+                          "AED ${widget.product.regularPrice}",
+                          style: GoogleFonts.poppins(
+                            color: AppColors.appBlueColor.withOpacity(0.5),
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.bold,
+                            decoration: TextDecoration.lineThrough,
+                          ),
+                        )
+                            : const SizedBox.shrink(),
+                        SizedBox(
+                          width: 10,
                         ),
-                      ),
+                        Text(
+                          "AED ${widget.product.price}",
+                          style: GoogleFonts.poppins(
+                            color: Colors.red,
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+
                     ],
                   ),
                 ],
@@ -272,8 +270,7 @@ class _DashboardHorizontalListCardState
       variation: 0,
       context: context,
     );
-    await Provider.of<CartProvider>(context, listen: false)
-        .getCartProducts(context);
+
     Common.showSuccessTopSnack(
         context, "Product Added to Cart Successfully!");
     _toggleCartLoading();

@@ -568,9 +568,13 @@ class ApiRequests {
         needDecrementOnQuantity: false,
         needIncrementOnQuantity: false,
       );
+      await Provider.of<CartProvider>(context, listen: false)
+          .addCartCount(1);
     } else {
       // if item not in cart then add quantity only
       await addProductToCart(productID, quantity, variation, userID);
+      await Provider.of<CartProvider>(context, listen: false)
+          .addCartCount(1);
     }
   }
 

@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart' as coder;
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
@@ -41,7 +42,7 @@ class _CheckoutState extends State<Checkout> {
   Completer<GoogleMapController> _controller = Completer();
 
   static final CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
+    target: LatLng(24.207500, 55.744720),
     zoom: 14.4746,
   );
 
@@ -52,6 +53,7 @@ class _CheckoutState extends State<Checkout> {
 
   @override
   void initState() {
+    _latLogIntoAddress(24.207500,55.744720);
     _getUserDetails();
     super.initState();
     if (Platform.isAndroid) WebView.platform = AndroidWebView();
@@ -179,14 +181,36 @@ class _CheckoutState extends State<Checkout> {
                           fontSize: 15.0,
                         ),
                       ),
-                      const SizedBox(height: 10.0),
-                      LabelAndInputField(
+                      const SizedBox(height: 20.0),
+                      Text(
+                        "House number & Street Address",
+                        style: GoogleFonts.montserrat(
+                          fontSize: 15.0,
+                          color: AppColors.appBlackColor,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      TextField(
+                        enabled: false,
+                        controller: _streetAddressController,
+                        autofocus: false,
+                        style: GoogleFonts.montserrat(
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.appBlueColor,
+                          fontSize: 15.0,
+                        ),
+                        maxLines: 4,
+                        minLines: 1,
+                      ),
+                     /* LabelAndInputField(
+                        fontSize: 15,
                         fieldController: _streetAddressController,
                         label: "House number & Street Address*",
                         labelColor: AppColors.appGreyColor,
                         textColor: AppColors.appBlackColor,
-                        fieldHeight: 50.0,
-                      ),
+                        maxLines: 4,
+                        //fieldHeight: 50.0,
+                      ),*/
                       const SizedBox(height: 10.0),
                       // add emirate as abu dhabi in text
                       Text(
@@ -218,6 +242,7 @@ class _CheckoutState extends State<Checkout> {
                       Container(
                         height: 300,
                         child: GoogleMap(
+                          myLocationButtonEnabled: false,
                           mapType: MapType.normal,
                           initialCameraPosition: _kGooglePlex,
                           onMapCreated: (GoogleMapController controller) {
@@ -282,6 +307,7 @@ class _CheckoutState extends State<Checkout> {
       currentLocation = null;
     }
 
+    _latLogIntoAddress(currentLocation!.latitude!, currentLocation.longitude!);
     controller.animateCamera(CameraUpdate.newCameraPosition(
       CameraPosition(
         bearing: 0,
@@ -456,4 +482,12 @@ class _CheckoutState extends State<Checkout> {
   final Set<Factory<OneSequenceGestureRecognizer>> gestureRecognizers = [
     Factory(() => EagerGestureRecognizer()),
   ].toSet();
+
+  Future<void> _latLogIntoAddress(double lat, double long) async {
+    List<coder.Placemark> placemarks = await coder.placemarkFromCoordinates(lat, long);
+    print(placemarks);
+    setState(() {
+      _streetAddressController.text = '${placemarks[0].street.toString()} , ${placemarks[0].locality.toString()} , ${placemarks[0].country.toString()}';
+    });
+  }
 }
