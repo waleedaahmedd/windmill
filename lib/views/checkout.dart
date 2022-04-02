@@ -42,7 +42,7 @@ class _CheckoutState extends State<Checkout> {
   Completer<GoogleMapController> _controller = Completer();
 
   static final CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(24.207500, 55.744720),
+    target: LatLng(24.466667, 54.366669),
     zoom: 14.4746,
   );
 
@@ -50,9 +50,17 @@ class _CheckoutState extends State<Checkout> {
   String? _userID;
   bool _isLoading = true;
   bool _acceptedTermsAndConditions = true;
+  String checkLocation = "Abu Dhabi";
+ String? city;
+     String? state;
+  String? postcode;
+  String? country;
 
   @override
   void initState() {
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      AndroidGoogleMapsFlutter.useAndroidViewSurface = true;
+    }
     _latLogIntoAddress(24.207500,55.744720);
     _getUserDetails();
     super.initState();
@@ -190,17 +198,28 @@ class _CheckoutState extends State<Checkout> {
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                      TextField(
-                        enabled: false,
-                        controller: _streetAddressController,
-                        autofocus: false,
-                        style: GoogleFonts.montserrat(
+                      Visibility(
+                        visible: checkLocation != "Abu Dhabi",
+                        child: Text('Free Delivery is only available in Abu Dhabi',style: GoogleFonts.montserrat(
                           fontWeight: FontWeight.w700,
-                          color: AppColors.appBlueColor,
+                          color: Colors.red,
                           fontSize: 15.0,
+                        ),),
+                      ),
+                      Visibility(
+                        visible: checkLocation == "Abu Dhabi",
+                        child: TextField(
+                          enabled: false,
+                          controller: _streetAddressController,
+                          autofocus: false,
+                          style: GoogleFonts.montserrat(
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.appBlueColor,
+                            fontSize: 15.0,
+                          ),
+                          maxLines: 4,
+                          minLines: 1,
                         ),
-                        maxLines: 4,
-                        minLines: 1,
                       ),
                      /* LabelAndInputField(
                         fontSize: 15,
@@ -281,9 +300,12 @@ class _CheckoutState extends State<Checkout> {
                           ),
                         ),
                       ),
-                      PrimaryButton(
-                        title: "Place Order",
-                        onPressed: () => _processOrder(),
+                      Visibility(
+                        visible: checkLocation == "Abu Dhabi",
+                        child: PrimaryButton(
+                          title: "Place Order",
+                          onPressed: () => _processOrder(),
+                        ),
                       ),
                     ],
                   ),
@@ -311,7 +333,7 @@ class _CheckoutState extends State<Checkout> {
     controller.animateCamera(CameraUpdate.newCameraPosition(
       CameraPosition(
         bearing: 0,
-        target: LatLng(currentLocation!.latitude!, currentLocation.longitude!),
+        target: LatLng(currentLocation.latitude!, currentLocation.longitude!),
         zoom: 17.0,
       ),
     ));
@@ -361,9 +383,9 @@ class _CheckoutState extends State<Checkout> {
           lastName: _lastName,
           address1: _houseNumberAddress,
           address2: _houseNumberAddress,
-          city: "Abu Dhabi",
-          state: "Abu Dhabi",
-          postcode: "51133",
+          city: "adminstrative",
+          state: "adminstrative",
+          postcode: "post",
           country: "United Arab Emirates",
           email: _emailAddress,
           phone: _phoneNumber,
@@ -488,6 +510,11 @@ class _CheckoutState extends State<Checkout> {
     print(placemarks);
     setState(() {
       _streetAddressController.text = '${placemarks[0].street.toString()} , ${placemarks[0].locality.toString()} , ${placemarks[0].country.toString()}';
+      checkLocation = '${placemarks[0].administrativeArea}';
+      city = '${placemarks[0].administrativeArea}';
+      state = '${placemarks[0].administrativeArea}';
+      postcode = '${placemarks[0].postalCode}';
+      country = '${placemarks[0].country}';
     });
   }
 }

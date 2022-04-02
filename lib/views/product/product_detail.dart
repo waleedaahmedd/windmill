@@ -414,7 +414,7 @@ class _ProductDetailState extends State<ProductDetail> {
                           ),
                           const SizedBox(height: 20.0),
                           Text(
-                            'Details',
+                            'Description',
                             style: GoogleFonts.montserrat(
                               fontSize: 18.0,
                               color: Colors.black87,

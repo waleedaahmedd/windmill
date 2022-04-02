@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_storage/get_storage.dart';
@@ -10,6 +11,7 @@ import 'package:windmill_general_trading/views/utils/utils_exporter.dart';
 import 'package:windmill_general_trading/views/verification_screen.dart';
 import 'package:windmill_general_trading/views/views_exporter.dart';
 
+
 import 'cart_provider.dart';
 import 'views/routes/app_routes.dart';
 
@@ -18,6 +20,15 @@ void main() async {
   await Firebase.initializeApp();
   await Common.licensesFonts();
   await GetStorage.init();
+  /*if (kIsWeb) {
+    // initialiaze the facebook javascript SDK
+    FacebookAuth.instance.webInitialize(
+      appId: "1329834907365798",
+      cookie: true,
+      xfbml: true,
+      version: "v12.0",
+    );
+  }*/
   runApp(MyApp());
 }
 

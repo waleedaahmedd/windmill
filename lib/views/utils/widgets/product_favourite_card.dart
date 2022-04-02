@@ -1,28 +1,43 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:windmill_general_trading/modals/modals_exporter.dart';
 import 'package:windmill_general_trading/views/utils/utils_exporter.dart';
 import 'package:windmill_general_trading/views/views_exporter.dart';
 
-class ProductFavouriteCard extends StatelessWidget {
+class ProductFavouriteCard extends StatefulWidget {
+
   final ProductModal product;
   final String userID;
   final VoidCallback? onPressed;
-  const ProductFavouriteCard({
-    Key? key,
-    required this.product,
+
+  const ProductFavouriteCard({Key? key,required this.product,
     required this.userID,
-    this.onPressed,
-  }) : super(key: key);
+    this.onPressed,}) : super(key: key);
+
+
+  @override
+  _ProductFavouriteCardState createState() => _ProductFavouriteCardState();
+}
+
+class _ProductFavouriteCardState extends State<ProductFavouriteCard> {
+
+  bool _isAddToCartLoading = false;
+
+
+  void _toggleCartLoading() {
+    _isAddToCartLoading = !_isAddToCartLoading;
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: onPressed ??
-          () => Common.push(
-                context,
-                ProductDetail(product: product),
-              ),
+      onTap: widget.onPressed ??
+              () => Common.push(
+            context,
+            ProductDetail(product: widget.product),
+          ),
       child: Stack(
         children: [
           Container(
@@ -34,11 +49,11 @@ class ProductFavouriteCard extends StatelessWidget {
                   flex: 1,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(10.0),
-                    child: product.images.length != 0
+                    child: widget.product.images.length != 0
                         ? Image.network(
-                            "${product.images.first.src}",
-                            fit: BoxFit.fill,
-                          )
+                      "${widget.product.images.first.src}",
+                      fit: BoxFit.fill,
+                    )
                         : Image.asset("${Common.assetsImages}demo_product.png"),
                   ),
                 ),
@@ -49,7 +64,7 @@ class ProductFavouriteCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '${product.name}',
+                        '${widget.product.name}',
                         style: GoogleFonts.montserrat(
                           fontSize: 18.0,
                           fontWeight: FontWeight.bold,
@@ -61,7 +76,7 @@ class ProductFavouriteCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 5.0),
                       Text(
-                        "AED ${product.price}",
+                        "AED ${widget.product.price}",
                         style: GoogleFonts.montserrat(
                           color: AppColors.appBlackColor,
                           fontSize: 26.0,
@@ -80,7 +95,7 @@ class ProductFavouriteCard extends StatelessWidget {
             left: 20.0,
             child: InkWell(
               onTap: () =>
-                  ApiRequests.toggleProductWishList(true, userID, product),
+                  ApiRequests.toggleProductWishList(true, widget.userID, widget.product),
               child: Container(
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
@@ -103,8 +118,56 @@ class ProductFavouriteCard extends StatelessWidget {
               ),
             ),
           ),
+          Visibility(
+            visible: widget.product.variations.isEmpty,
+            child: Positioned(
+                top: 10.0,
+                right: 10.0,
+                child: InkWell(
+                  onTap: () => _processAddToCart(context),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: AppColors.appWhiteColor,
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.appBlackColor.withOpacity(
+                              0.1),
+                          blurRadius: 10,
+                          spreadRadius: 3,
+                          offset: Offset(1, 3),
+                        ),
+                      ],
+                    ),
+                    padding: const EdgeInsets.all(6.0),
+                    child: _isAddToCartLoading
+                        ? CupertinoActivityIndicator()
+                        : Icon(
+                      Icons.shopping_cart,
+                      size: 26.0,
+                      color: AppColors.appBlueColor,
+                    ),
+                  ),
+                )),
+          )
         ],
       ),
     );
   }
+
+  void _processAddToCart(BuildContext context) async {
+    _toggleCartLoading();
+    await ApiRequests.processAddProductToCart(
+      widget.product.id.toString(),
+      1,
+      widget.userID.toString(),
+      variation: 0,
+      context: context,
+    );
+
+    Common.showSuccessTopSnack(
+        context, "Product Added to Cart Successfully!");
+    _toggleCartLoading();
+  }
 }
+

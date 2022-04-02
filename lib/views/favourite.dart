@@ -102,9 +102,16 @@ class _FavouriteState extends State<Favourite> {
                                 );
                               ProductModal _product =
                                   snapshot.data as ProductModal;
-                              return ProductFavouriteCard(
-                                product: _product,
-                                userID: _userID,
+                              return Column(
+                                children: [
+                                  ProductFavouriteCard(
+                                    product: _product,
+                                    userID: _userID,
+                                  ),
+                                  Divider(
+                                      color: Colors.black
+                                  )
+                                ],
                               );
                             },
                           );

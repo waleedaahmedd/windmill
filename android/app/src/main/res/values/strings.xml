@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Windmill General Trading</string>
-    <string name="facebook_app_id">403165771193113</string>
-    <string name="fb_login_protocol_scheme">fb403165771193113</string>
+    <string name="facebook_app_id">636470587612324</string>
+    <string name="fb_login_protocol_scheme">fb636470587612324</string>
+    <string name="facebook_client_token">06153c734fe9b6b5b68c126f1620d1f6</string>
     <string name="google_map_key">AIzaSyCW0AzN_xWSi3nwKlHdNYjMi3ASnFXvYYQ</string>
 </resources>

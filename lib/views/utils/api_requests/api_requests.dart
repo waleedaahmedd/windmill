@@ -48,6 +48,7 @@ class ApiRequests {
 
   static facebookLogin(BuildContext context) async {
     try {
+
       FacebookLogin facebookLogin = FacebookLogin();
       final result = await facebookLogin.logIn(permissions: [
         FacebookPermission.publicProfile,
