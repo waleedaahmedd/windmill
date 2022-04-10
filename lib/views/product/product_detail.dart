@@ -29,7 +29,9 @@ class ProductDetail extends StatefulWidget {
 }
 
 class _ProductDetailState extends State<ProductDetail> {
+/*
   VariationModel? _variationDetail;
+*/
   VariationModel? _finalVariationDetail;
   List<VariationModel> _variationList = [];
   List<String> _volumeList = [];
@@ -615,11 +617,14 @@ class _ProductDetailState extends State<ProductDetail> {
   }
 
   void _getVariants() async {
+
+    _variationList = await ApiRequests.getAllVariations(
+        widget.product.id.toString());
+
+    print(_variationList);
+
     for (var i = 0, j = widget.product.variations.length; i < j; i++) {
-      _variationDetail = await ApiRequests.getVariations(
-          widget.product.id.toString(), widget.product.variations[i]);
-      _variationList.add(_variationDetail!);
-      final int variationPrices = int.parse(_variationDetail!.price!);
+      final int variationPrices = int.parse(_variationList[i].price!);
       _variationPrice.add(variationPrices);
       print(_variationPrice);
       print(_variationList);

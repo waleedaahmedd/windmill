@@ -4,6 +4,8 @@ import 'package:windmill_general_trading/views/utils/utils_exporter.dart';
 import 'package:windmill_general_trading/views/utils/widgets/widgets_exporter.dart';
 import 'package:windmill_general_trading/views/views_exporter.dart';
 
+import '../modals/social_login_modal.dart';
+
 class GetStarted extends StatefulWidget {
   const GetStarted({Key? key}) : super(key: key);
 
@@ -111,11 +113,14 @@ class _GetStartedState extends State<GetStarted> {
       setState(() {
         _isLoading = false;
       });
+      SocialLoginModal data = loggedUser;
 
-      print(loggedUser);
-      // setString(Common.TOKEN, loggedUser.data!.token);
-      // setInt(Common.ID, loggedUser.data!.id);
-      // Common.pushAndRemoveUntil(context, Dashboard());
+      if (data.id != null) {
+        // store token in shared preferences
+        setString(Common.TOKEN, data.token!);
+        setInt(Common.ID, data.id!);
+        Common.pushAndRemoveUntil(context, Dashboard());
+      }
     });
   }
 

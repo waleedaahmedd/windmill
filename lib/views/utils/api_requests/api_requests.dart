@@ -14,11 +14,12 @@ import 'package:windmill_general_trading/views/utils/utils_exporter.dart';
 import 'package:http/http.dart' as http;
 
 import '../../../cart_provider.dart';
+import '../../../modals/social_login_modal.dart';
 
 class ApiRequests {
   static FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
-  static const String username = "ck_920da5e157d013d1b547b499fe81dc186218c375";
-  static const String password = "cs_578b7434cb8c504b8f56d498a45ff245310ec1e7";
+  static const String username = 'ck_6f937efcd8827ae2e449d6d0b6a0e67a659c73b5'/*"ck_920da5e157d013d1b547b499fe81dc186218c375"*/;
+  static const String password = 'cs_e0012cc667d5ff48267620c91a2fad8692aa517e'/*"cs_578b7434cb8c504b8f56d498a45ff245310ec1e7"*/;
   static const String key = "$username:$password";
 
   static var header = <String, String>{
@@ -48,7 +49,6 @@ class ApiRequests {
 
   static facebookLogin(BuildContext context) async {
     try {
-
       FacebookLogin facebookLogin = FacebookLogin();
       final result = await facebookLogin.logIn(permissions: [
         FacebookPermission.publicProfile,
@@ -59,14 +59,18 @@ class ApiRequests {
       if (result.status == FacebookLoginStatus.success) {
         final profile = await facebookLogin.getUserProfile();
         final email = await facebookLogin.getUserEmail();
+        final token = result.accessToken!.token;
         final firstName = profile?.firstName;
         final lastName = profile?.lastName;
-        return await loginUser(context, email!, isSocialLogin: true);
+
+        return await nextEndSocialLogin(
+            token,email,firstName,lastName); /*await loginUser(context, email!, isSocialLogin: true);*/
       }
     } catch (e) {
       throw (e);
     }
   }
+
 
   static Future<ProductModal> getProduct(String id) async {
     String url = Common.API_URL + "products/$id";
@@ -74,20 +78,82 @@ class ApiRequests {
     try {
       return await Dio()
           .get(
-            url,
-            options: Options(headers: header),
-          )
+        url,
+        options: Options(headers: header),
+      )
           .then(
             (value) => ProductModal.fromJson(value.data),
-          );
+      );
     } on DioError catch (e) {
       print(e);
       return ProductModal.fromJson(e.response!.data);
     }
   }
 
-  static Future<List<ProductModal>> getProductByType(
-      String type, int perPage, int pageNumber) async {
+  static Future<List<ProductModal>> getProductsByCategory(String name, int perPage,
+      int pageNumber) async {
+    String url =
+        Common.BASE_URL + "productsbycat/v1/products/category/$name/$pageNumber/$perPage";
+    print(url);
+    try {
+      return await Dio()
+          .get(
+        url,
+        options: Options(headers: header),
+      )
+          .then((value) {
+        List<ProductModal> _products = [];
+        value.data.forEach((product) {
+          _products.add(ProductModal.fromJson(product));
+        });
+        return _products;
+      });
+    } on DioError catch (e) {
+      print(e);
+      return <ProductModal>[];
+    }
+  }
+
+  static Future<List<ProductModal>> getProductsBySubCategory({
+    required int category,
+    String? orderBy,
+    String? order = Common.DESC,
+    String? categories,
+    int? page,
+    int? perPage,
+  }) async {
+    String url = "";
+    if (categories != null)
+      url = Common.API_URL + "products?categories=$categories&page=$page&per_page=$perPage";
+    else
+      url = (orderBy == null || orderBy == Common.RECOMMENDED)
+          ? Common.API_URL + "products?category=$category"
+          : (orderBy == Common.DISCOUNT)
+          ? Common.API_URL + "products?category=$category&$orderBy&page=$page&per_page=$perPage"
+          : Common.API_URL +
+          "products?category=$category&orderby=$orderBy&order=$order&page=$page&per_page=$perPage";
+    print(url);
+    try {
+      return await Dio()
+          .get(
+        url,
+        options: Options(headers: header),
+      )
+          .then((value) {
+        List<ProductModal> _products = [];
+        value.data.forEach((product) {
+          _products.add(ProductModal.fromJson(product));
+        });
+        return _products;
+      });
+    } on DioError catch (e) {
+      print(e);
+      return <ProductModal>[];
+    }
+  }
+
+  static Future<List<ProductModal>> getProductByType(String type, int perPage,
+      int pageNumber) async {
     String url =
         Common.API_URL + "products/?$type&per_page=$perPage&page=$pageNumber";
     print(url);
@@ -110,8 +176,8 @@ class ApiRequests {
     }
   }
 
-  static Future<List<ProductModal>> getAllProduct(
-      int perPage, int pageNumber) async {
+  static Future<List<ProductModal>> getAllProduct(int perPage,
+      int pageNumber) async {
     String url =
         Common.API_URL + "products/?per_page=$perPage&page=$pageNumber";
     print(url);
@@ -155,8 +221,8 @@ class ApiRequests {
     }
   }
 
-  static Future<bool> getWishlistProduct(
-      String productID, String userID) async {
+  static Future<bool> getWishlistProduct(String productID,
+      String userID) async {
     bool _isProductWishListed = false;
     await _firebaseFirestore
         .collection(Common.WISHLISTS)
@@ -169,8 +235,8 @@ class ApiRequests {
     return _isProductWishListed;
   }
 
-  static Future<void> toggleProductWishList(
-      bool isProductWishListed, String userID, ProductModal product) async {
+  static Future<void> toggleProductWishList(bool isProductWishListed,
+      String userID, ProductModal product) async {
     if (isProductWishListed)
       await _firebaseFirestore
           .collection(Common.WISHLISTS)
@@ -187,7 +253,7 @@ class ApiRequests {
       });
     else {
       DocumentReference wishListReference =
-          _firebaseFirestore.collection(Common.WISHLISTS).doc();
+      _firebaseFirestore.collection(Common.WISHLISTS).doc();
       await wishListReference.set({
         "id": wishListReference.id,
         "user_id": userID,
@@ -205,19 +271,46 @@ class ApiRequests {
         .snapshots();
   }
 
-  static Future<VariationModel> getVariations(
-      String productId, int variationId) async {
+  static Future<List<VariationModel>> getAllVariations(String productId,
+     ) async {
+    String url = Common.API_URL + "products/$productId/variations?type=variable&per_page=99&consumer_key=$username&consumer_secret=$password";
+    print(url);
+    try {
+
+      Response response = await Dio()
+          .get(
+        url,
+        /*   options: Options(headers: header),*/
+      );
+      return
+        (response.data as List)
+            .map((x) => VariationModel.fromJson(x))
+            .toList();
+          /*.then(
+            (value) => VariationModel.fromJson(value.data),
+      );*/
+    } on DioError catch (e) {
+      print(e);
+      return (e.response!.data as List)
+          .map((x) => VariationModel.fromJson(x))
+          .toList();
+       /* VariationModel.fromJson(e.response!.data);*/
+    }
+  }
+
+  static Future<VariationModel> getVariations(String productId,
+      int variationId) async {
     String url = Common.API_URL + "products/$productId/variations/$variationId";
     print(url);
     try {
       return await Dio()
           .get(
-            url,
-            options: Options(headers: header),
-          )
+        url,
+        options: Options(headers: header),
+      )
           .then(
             (value) => VariationModel.fromJson(value.data),
-          );
+      );
     } on DioError catch (e) {
       print(e);
       return VariationModel.fromJson(e.response!.data);
@@ -268,41 +361,7 @@ class ApiRequests {
     }
   }
 
-  static Future<List<ProductModal>> getProductsByCategory({
-    required int category,
-    String? orderBy,
-    String? order = Common.DESC,
-    String? categories,
-  }) async {
-    String url = "";
-    if (categories != null)
-      url = Common.API_URL + "products?categories=$categories";
-    else
-      url = (orderBy == null || orderBy == Common.RECOMMENDED)
-          ? Common.API_URL + "products?category=$category"
-          : (orderBy == Common.DISCOUNT)
-              ? Common.API_URL + "products?category=$category&$orderBy"
-              : Common.API_URL +
-                  "products?category=$category&orderby=$orderBy&order=$order";
-    print(url);
-    try {
-      return await Dio()
-          .get(
-        url,
-        options: Options(headers: header),
-      )
-          .then((value) {
-        List<ProductModal> _products = [];
-        value.data.forEach((product) {
-          _products.add(ProductModal.fromJson(product));
-        });
-        return _products;
-      });
-    } on DioError catch (e) {
-      print(e);
-      return <ProductModal>[];
-    }
-  }
+
 
   static Future<LoginModal> loginUser(BuildContext context, String email,
       {String? uid, bool isSocialLogin = false}) async {
@@ -357,17 +416,17 @@ class ApiRequests {
     }
   }
 
-  static Future<RegisterModal> registerUser(
-      BuildContext context, request) async {
+  static Future<RegisterModal> registerUser(BuildContext context,
+      request) async {
     print(Common().encryptedHeader());
     print('Basic ' + base64Encode(key.codeUnits));
     try {
       return await Dio()
           .post(
-            Common.API_URL + "customers",
-            options: Options(headers: header),
-            data: request,
-          )
+        Common.API_URL + "customers",
+        options: Options(headers: header),
+        data: request,
+      )
           .then((value) => registerMethod(value));
     } on DioError catch (e) {
       print("Error is " + e.response.toString());
@@ -402,8 +461,8 @@ class ApiRequests {
     }
   }
 
-  static Future<List<OrderResponseModal>> getOrders(
-      String userID, String role) async {
+  static Future<List<OrderResponseModal>> getOrders(String userID,
+      String role) async {
     print(role);
     String url = "";
     if (role == Common.DRIVER)
@@ -415,10 +474,11 @@ class ApiRequests {
     try {
       return await Dio()
           .get(
-            url,
-            options: Options(headers: header),
-          )
-          .then((value) => (value.data as List)
+        url,
+        options: Options(headers: header),
+      )
+          .then((value) =>
+          (value.data as List)
               .map((e) => OrderResponseModal.fromJson(e))
               .toList());
     } on DioError catch (e) {
@@ -427,8 +487,8 @@ class ApiRequests {
     }
   }
 
-  static Future<bool> isProductInCart(
-      String productID, String userID, int variation) async {
+  static Future<bool> isProductInCart(String productID, String userID,
+      int variation) async {
     bool _isItemInCart = false;
     await _firebaseFirestore
         .collection(Common.SHOPPING_CART)
@@ -438,7 +498,7 @@ class ApiRequests {
         .then((value) {
       value.docs.forEach((shoppingCart) {
         ShoppingCartModal _shoppingCart =
-            ShoppingCartModal.fromJson(shoppingCart.data());
+        ShoppingCartModal.fromJson(shoppingCart.data());
         _shoppingCart.products.forEach((product) {
           _isItemInCart = product.productId == productID &&
               product.productVariation == variation;
@@ -448,10 +508,10 @@ class ApiRequests {
     return _isItemInCart;
   }
 
-  static Future<void> addProductToCart(
-      String productID, int quantity, int variation, String userID) async {
+  static Future<void> addProductToCart(String productID, int quantity,
+      int variation, String userID) async {
     DocumentReference shoppingCartReference =
-        _firebaseFirestore.collection(Common.SHOPPING_CART).doc();
+    _firebaseFirestore.collection(Common.SHOPPING_CART).doc();
     Product _product = new Product(
       productId: productID,
       productQuantity: quantity,
@@ -468,14 +528,13 @@ class ApiRequests {
     await shoppingCartReference.set(shoppingCartModal.toJson());
   }
 
-  static Future<void> updateInCartProduct(
-    String productID,
-    String userID,
-    int newQuantity,
-    int variation, {
-    required bool needIncrementOnQuantity,
-    required bool needDecrementOnQuantity,
-  }) async {
+  static Future<void> updateInCartProduct(String productID,
+      String userID,
+      int newQuantity,
+      int variation, {
+        required bool needIncrementOnQuantity,
+        required bool needDecrementOnQuantity,
+      }) async {
     String _shoppingCartID = "";
     late ShoppingCartModal _shoppingCart;
     int _quantity = newQuantity;
@@ -520,15 +579,14 @@ class ApiRequests {
         .update(_shoppingCart.toJson());
   }
 
-  static Future<void> processAddProductToCart(
-    String productID,
-    int quantity,
-    String userID, {
-    required BuildContext context,
-    int? variation,
-    bool needIncrementOnQuantity = true,
-    bool needDecrementOnQuantity = false,
-  }) async {
+  static Future<void> processAddProductToCart(String productID,
+      int quantity,
+      String userID, {
+        required BuildContext context,
+        int? variation,
+        bool needIncrementOnQuantity = true,
+        bool needDecrementOnQuantity = false,
+      }) async {
     // check if item is already in cart or not
     print("Variation is " + variation.toString());
     if (await isProductInCart(productID, userID, variation!)) {
@@ -579,8 +637,8 @@ class ApiRequests {
     }
   }
 
-  static Future<void> getInCartProductsNew(
-      String userID, BuildContext context) async {
+  static Future<void> getInCartProductsNew(String userID,
+      BuildContext context) async {
     ShoppingCartModal? _shoppingCart;
 
     _firebaseFirestore
@@ -618,8 +676,8 @@ class ApiRequests {
     return _isCartAvailable;
   }
 
-  static Future<void> removeItemFromShoppingCart(
-      String userID, String productID, int productVariation) async {
+  static Future<void> removeItemFromShoppingCart(String userID,
+      String productID, int productVariation) async {
     String _shoppingCartID = "";
     ShoppingCartModal? _shoppingCart;
     List<Product> _updatedList = [];
@@ -687,12 +745,12 @@ class ApiRequests {
           if (product.productVariation == 0) {
             ProductModal _product = await getProduct(product.productId);
             _subTotal +=
-                (double.parse(_product.price) * product.productQuantity);
+            (double.parse(_product.price) * product.productQuantity);
           } else {
             VariationModel _variation = await getVariations(
                 product.productId, product.productVariation);
             _subTotal +=
-                (double.parse(_variation.price!) * product.productQuantity);
+            (double.parse(_variation.price!) * product.productQuantity);
           }
         }
       }
@@ -709,7 +767,7 @@ class ApiRequests {
         .then((value) async {
       for (var shoppingCart in value.docs) {
         ShoppingCartModal _cart =
-            ShoppingCartModal.fromJson(shoppingCart.data());
+        ShoppingCartModal.fromJson(shoppingCart.data());
         print(_cart.id);
         await _firebaseFirestore
             .collection(Common.SHOPPING_CART)
@@ -719,14 +777,13 @@ class ApiRequests {
     });
   }
 
-  static Future<void> markOrderAsCompleted(
-    OrderResponseModal order,
-    UserModal user, {
-    bool shouldSendNotification = true,
-    bool isCodOrder = true,
-    bool displaySuccessMessage = true,
-    required BuildContext context,
-  }) async {
+  static Future<void> markOrderAsCompleted(OrderResponseModal order,
+      UserModal user, {
+        bool shouldSendNotification = true,
+        bool isCodOrder = true,
+        bool displaySuccessMessage = true,
+        required BuildContext context,
+      }) async {
     var data;
 
     // params set_paid = isCodOrder and status = completed
@@ -756,7 +813,8 @@ class ApiRequests {
           await sendNotification(
             order.customerID,
             "Order has been delivered.",
-            "${user.firstName} delivered your order. Thank you for shopping with us, we hope to see you again ordering from us.",
+            "${user
+                .firstName} delivered your order. Thank you for shopping with us, we hope to see you again ordering from us.",
           );
 
         if (displaySuccessMessage)
@@ -788,15 +846,13 @@ class ApiRequests {
     return;
   }
 
-  static Future<void> sendNotification(
-    int notificationReceiverID,
-    String notificationTitle,
-    String notificationBody,
-  ) async {
+  static Future<void> sendNotification(int notificationReceiverID,
+      String notificationTitle,
+      String notificationBody,) async {
     // make collection in firebase and deliver notification to receiver.
     // at login time take user information and add id/token to firebase collection. once user logs out delete the token.
     DocumentReference notificationsReference =
-        _firebaseFirestore.collection(Common.NOTIFICATIONS).doc();
+    _firebaseFirestore.collection(Common.NOTIFICATIONS).doc();
     NotificationsModal notificationsModal = new NotificationsModal(
       id: notificationsReference.id,
       userId: notificationReceiverID.toString(),
@@ -851,16 +907,16 @@ class ApiRequests {
         print("Order Status Code is " + orderResponse.body.toString());
         if (orderResponse.statusCode == 201) {
           Map<String, dynamic> _orderResponse =
-              jsonDecode(orderResponse.body.toString());
+          jsonDecode(orderResponse.body.toString());
           var _paymentLink =
-              _orderResponse["_links"]["payment"]["href"].toString();
+          _orderResponse["_links"]["payment"]["href"].toString();
           var _orderReferenceValueArray =
-              _orderResponse["_embedded"]["payment"];
+          _orderResponse["_embedded"]["payment"];
           List<dynamic> list = _orderReferenceValueArray;
 
           var _orderReferenceValue = list[0];
           var _orderReference =
-              _orderReferenceValue["orderReference"].toString();
+          _orderReferenceValue["orderReference"].toString();
           print("Payment link is " + _paymentLink);
           print("_orderReferenceValue " + _orderReference);
           return PaymentModal(
@@ -908,28 +964,28 @@ class ApiRequests {
       print("Order Status Code is " + orderResponse.data.toString());
       if (orderResponse.statusCode == 200) {
         Map<String, dynamic> _authResponse =
-            jsonDecode(orderResponse.data.toString());
+        jsonDecode(orderResponse.data.toString());
         var _orderReferenceValueArray = _authResponse["_embedded"]["payment"];
         if (_orderReferenceValueArray != null) {
           List<dynamic> list = _orderReferenceValueArray;
           var _orderReferenceValue = list[0];
           bool state =
-              _orderReferenceValue["state"] == "CAPTURED" ? true : false;
+          _orderReferenceValue["state"] == "CAPTURED" ? true : false;
           if (state) {
             bool success =
-                _orderReferenceValue["authResponse"]["success"] == true
-                    ? true
-                    : false;
+            _orderReferenceValue["authResponse"]["success"] == true
+                ? true
+                : false;
             bool resultCode =
-                _orderReferenceValue["authResponse"]["resultCode"] == "00"
-                    ? true
-                    : false;
+            _orderReferenceValue["authResponse"]["resultCode"] == "00"
+                ? true
+                : false;
             bool _3dsSuccess =
-                _orderReferenceValue["3ds"]["status"] == "SUCCESS"
-                    ? true
-                    : false;
+            _orderReferenceValue["3ds"]["status"] == "SUCCESS"
+                ? true
+                : false;
             bool _3dSresultCode =
-                _orderReferenceValue["3ds"]["eci"] == "02" ? true : false;
+            _orderReferenceValue["3ds"]["eci"] == "02" ? true : false;
 
             print("Output of success " + success.toString());
             print("Output of resultCode " + resultCode.toString());
@@ -950,6 +1006,34 @@ class ApiRequests {
       }
     } else {
       return false;
+    }
+  }
+
+  static Future<SocialLoginModal> nextEndSocialLogin(String token, String? email, String? firstName, String? lastName) async {
+    final accessToken = '{"access_token":"$token"}';
+    SocialLoginModal data;
+    try {
+      return await Dio()
+          .post(
+        Common.BASE_URL +
+            "nextend-social-login/v1/facebook/get_user?access_token=$accessToken",
+      )
+          .then((value) async {
+        // LoginModal _login = LoginModal.fromJson(value);
+        String userId = value.toString();
+        await updateDeviceToken(int.parse(userId));
+          data  = SocialLoginModal(token: token, id: int.parse(userId), email: email, fName: firstName, lName: lastName, username: username);
+
+        return data;
+
+      });
+
+
+    } on DioError catch (e) {
+      print(e);
+      data  = SocialLoginModal(token: null, id: null, email: null, fName: null, lName: null, username: null);
+
+      return data;
     }
   }
 }

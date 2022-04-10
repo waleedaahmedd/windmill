@@ -42,7 +42,7 @@ class ShopBuy extends StatelessWidget {
     ),
     Padding(
       padding: const EdgeInsets.symmetric(vertical: 10.0),
-      child: Text('Sale',style: GoogleFonts.montserrat(),),
+      child: Text('Sale',style: GoogleFonts.montserrat(color: Colors.red),),
     ),
   ];
 
@@ -328,7 +328,7 @@ class _AllState extends State<All> {
                           /*localImageURL:
                               "${Common.assetsImages}application_icon.png",*/
                           onPressed: () {
-                            if (_isAllProductsLoading) return;
+                          /*  if (_isAllProductsLoading) return;
                             // popping to close bottom sheet
                             Common.pop(context);
                             Common.pushAndDetectReturn(
@@ -364,13 +364,14 @@ class _AllState extends State<All> {
                                 }
 
                                 _allProducts =
-                                    await ApiRequests.getProductsByCategory(
+                                    await ApiRequests.getProductsBySubCategory(
                                   category: 25,
                                   categories: _categories,
+                                        page: 1,perPage: 10
                                 );
                                 _toggleListLoading();
                               },
-                            );
+                            );*/
                           },
                         ),
                         SizedBox(
@@ -466,10 +467,11 @@ class _AllState extends State<All> {
     // get products by sorting filter
     _order = order;
 
-    _allProducts = await ApiRequests.getProductsByCategory(
+    _allProducts = await ApiRequests.getProductsBySubCategory(
       category: 25,
       orderBy: sortingBy,
       order: _order,
+        page: 1,perPage: 10
     );
 
     _toggleListLoading();
@@ -652,9 +654,10 @@ class _BeerState extends State<Beer> {
                                 }
 
                                 _beerProducts =
-                                    await ApiRequests.getProductsByCategory(
+                                    await ApiRequests.getProductsBySubCategory(
                                   category: 25,
                                   categories: _categories,
+                                        page: 1,perPage: 10
                                 );
                                 _toggleListLoading();
                               },
@@ -738,8 +741,13 @@ class _BeerState extends State<Beer> {
   }
 
   void _getBeerProducts() async {
-    _beerProducts = await ApiRequests.getProductsByCategory(category: 25);
-    _toggleListLoading();
+    _beerProducts = await ApiRequests.getProductsBySubCategory(category: 25,page: 1,perPage: 10);
+    _isBeerProductsLoading = false;
+    if (mounted) setState(() {});
+/*
+    _beerProducts = await ApiRequests.getProductsByCategory('beers',10,1);
+*/
+   /* _toggleListLoading();*/
   }
 
   void _toggleListLoading() {
@@ -754,10 +762,11 @@ class _BeerState extends State<Beer> {
     // get products by sorting filter
     _order = order;
 
-    _beerProducts = await ApiRequests.getProductsByCategory(
+    _beerProducts = await ApiRequests.getProductsBySubCategory(
       category: 25,
       orderBy: sortingBy,
       order: _order,
+        page: 1,perPage: 10
     );
 
     _toggleListLoading();
@@ -1005,7 +1014,7 @@ class _WineState extends State<Wine> {
   }
 
   void _getWineProducts() async {
-    _wineProducts = await ApiRequests.getProductsByCategory(category: 27);
+    _wineProducts = await ApiRequests.getProductsBySubCategory(category: 27,page: 1,perPage: 10);
     _isWineProductsLoading = false;
     if (mounted) setState(() {});
   }
@@ -1226,7 +1235,7 @@ class _LiquorState extends State<Liquor> {
   }
 
   void _getLiquorProducts() async {
-    _liquorProducts = await ApiRequests.getProductsByCategory(category: 113);
+    _liquorProducts = await ApiRequests.getProductsBySubCategory(category: 26,page: 1,perPage: 10);
     _isLiquorProductsLoading = false;
     if (mounted) setState(() {});
   }
