@@ -16,7 +16,7 @@ class ShopBuy extends StatelessWidget {
   final List<Widget> categoryTabs = [
     All(),
     Beer(),
-    Liquor(),
+    Spirit(),
     Wine(),
     Sale(),
   ];
@@ -26,23 +26,38 @@ class ShopBuy extends StatelessWidget {
   List<Widget> tabs = [
     Padding(
       padding: const EdgeInsets.symmetric(vertical: 10.0),
-      child: Text('All',style: GoogleFonts.montserrat(),),
+      child: Text(
+        'All',
+        style: GoogleFonts.montserrat(),
+      ),
     ),
     Padding(
       padding: const EdgeInsets.symmetric(vertical: 10.0),
-      child: Text('Beers',style: GoogleFonts.montserrat(),),
+      child: Text(
+        'Beers',
+        style: GoogleFonts.montserrat(),
+      ),
     ),
     Padding(
       padding: const EdgeInsets.symmetric(vertical: 10.0),
-      child: Text('Spirits',style: GoogleFonts.montserrat(),),
+      child: Text(
+        'Spirits',
+        style: GoogleFonts.montserrat(),
+      ),
     ),
     Padding(
       padding: const EdgeInsets.symmetric(vertical: 10.0),
-      child: Text('Wines',style: GoogleFonts.montserrat(),),
+      child: Text(
+        'Wines',
+        style: GoogleFonts.montserrat(),
+      ),
     ),
     Padding(
       padding: const EdgeInsets.symmetric(vertical: 10.0),
-      child: Text('Sale',style: GoogleFonts.montserrat(color: Colors.red),),
+      child: Text(
+        'Sale',
+        style: GoogleFonts.montserrat(color: Colors.red),
+      ),
     ),
   ];
 
@@ -103,8 +118,8 @@ class ShopBuy extends StatelessWidget {
                                     padding: const EdgeInsets.only(left: 8.0),
                                     child: Text(
                                       '${i.productList[index].name}',
-                                      style:
-                                      GoogleFonts.montserrat(color: Colors.blueAccent),
+                                      style: GoogleFonts.montserrat(
+                                          color: Colors.blueAccent),
                                     ),
                                   ),
                                   subtitle: Column(
@@ -147,8 +162,8 @@ class ShopBuy extends StatelessWidget {
                                             ),
                                             Text(
                                               'AED ${i.productList[index].price}',
-                                              style:
-                                              GoogleFonts.montserrat(color: Colors.red),
+                                              style: GoogleFonts.montserrat(
+                                                  color: Colors.red),
                                             ),
                                           ],
                                         ),
@@ -164,7 +179,8 @@ class ShopBuy extends StatelessWidget {
                                             horizontal: 10.0),
                                         child: Text(
                                           'Sale',
-                                          style: GoogleFonts.montserrat(color: Colors.white),
+                                          style: GoogleFonts.montserrat(
+                                              color: Colors.white),
                                         ),
                                       ),
                                     ),
@@ -315,7 +331,7 @@ class _AllState extends State<All> {
                   title: "Sort",
                   icon: Icons.sort,
                 ),
-                AppBarFilterButton(
+              /*  AppBarFilterButton(
                   onPressed: () => Common.showModalSheet(
                     context,
                     title: "Filter",
@@ -325,10 +341,10 @@ class _AllState extends State<All> {
                         BottomSheetCard(
                           title: "Category",
                           isSelected: false,
-                          /*localImageURL:
-                              "${Common.assetsImages}application_icon.png",*/
+                          *//*localImageURL:
+                              "${Common.assetsImages}application_icon.png",*//*
                           onPressed: () {
-                          /*  if (_isAllProductsLoading) return;
+                            *//*  if (_isAllProductsLoading) return;
                             // popping to close bottom sheet
                             Common.pop(context);
                             Common.pushAndDetectReturn(
@@ -371,7 +387,7 @@ class _AllState extends State<All> {
                                 );
                                 _toggleListLoading();
                               },
-                            );*/
+                            );*//*
                           },
                         ),
                         SizedBox(
@@ -380,8 +396,8 @@ class _AllState extends State<All> {
                         BottomSheetCard(
                           title: "Colors",
                           isSelected: false,
-                          /*  localImageURL:
-                              "${Common.assetsImages}application_icon.png",*/
+                          *//*  localImageURL:
+                              "${Common.assetsImages}application_icon.png",*//*
                         ),
                         SizedBox(
                           height: 10,
@@ -389,8 +405,8 @@ class _AllState extends State<All> {
                         BottomSheetCard(
                           title: "Sizes",
                           isSelected: false,
-                          /* localImageURL:
-                              "${Common.assetsImages}application_icon.png",*/
+                          *//* localImageURL:
+                              "${Common.assetsImages}application_icon.png",*//*
                         ),
                         SizedBox(
                           height: 10,
@@ -398,8 +414,8 @@ class _AllState extends State<All> {
                         BottomSheetCard(
                           title: "Prices",
                           isSelected: false,
-                          /* localImageURL:
-                              "${Common.assetsImages}application_icon.png",*/
+                          *//* localImageURL:
+                              "${Common.assetsImages}application_icon.png",*//*
                         ),
                         SizedBox(
                           height: 10,
@@ -407,8 +423,8 @@ class _AllState extends State<All> {
                         BottomSheetCard(
                           title: "Bundles",
                           isSelected: false,
-                          /*localImageURL:
-                              "${Common.assetsImages}application_icon.png",*/
+                          *//*localImageURL:
+                              "${Common.assetsImages}application_icon.png",*//*
                         ),
                         SizedBox(
                           height: 10,
@@ -418,7 +434,7 @@ class _AllState extends State<All> {
                   ),
                   title: "Filter",
                   icon: Icons.filter_alt_sharp,
-                ),
+                ),*/
               ],
             ),
           ),
@@ -451,7 +467,7 @@ class _AllState extends State<All> {
   }
 
   void _getAllProducts() async {
-    _allProducts = await ApiRequests.getAllProduct(10,1);
+    _allProducts = await ApiRequests.getAllProduct(10, 1);
     _toggleListLoading();
   }
 
@@ -468,11 +484,7 @@ class _AllState extends State<All> {
     _order = order;
 
     _allProducts = await ApiRequests.getProductsBySubCategory(
-      category: 25,
-      orderBy: sortingBy,
-      order: _order,
-        page: 1,perPage: 10
-    );
+        category: 25, orderBy: sortingBy, order: _order, page: 1, perPage: 10);
 
     _toggleListLoading();
   }
@@ -516,10 +528,17 @@ class _BeerState extends State<Beer> {
   String _sortingBy = Common.RECOMMENDED;
   String _order = Common.DESC;
   bool _isBeerProductsLoading = true;
+  int _beerId = 25;
+  int _categoryId = 25;
+  bool filterView = false;
+  List<Category> _categoryList = [];
+
+  // List tags = ['one', 'two'];
 
   @override
   void initState() {
     _getBeerProducts();
+    _getAllCategories();
     super.initState();
   }
 
@@ -605,109 +624,87 @@ class _BeerState extends State<Beer> {
                   title: "Sort",
                   icon: Icons.sort,
                 ),
-                AppBarFilterButton(
-                  onPressed: () => Common.showModalSheet(
-                    context,
-                    title: "Filter",
-                    scrollViewPaddingChild: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                Expanded(
+                  child: InkWell(
+                    onTap: () {
+                      setState(() {
+                        filterView ? filterView = false : filterView = true;
+                      });
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        BottomSheetCard(
-                          title: "Category",
-                          isSelected: false,
-                          /*localImageURL:
-                              "${Common.assetsImages}application_icon.png",*/
-                          onPressed: () {
-                            if (_isBeerProductsLoading) return;
-                            // popping to close bottom sheet
-                            Common.pop(context);
-                            Common.pushAndDetectReturn(
-                              context,
-                              SubFilterList(
-                                categoryTitle: 'Category',
-                                categoryId: 25,
-                              ),
-                              onReturn: (value) async {
-                                // user returned after pop
-                                // check if user selected any filtering categories or not
-                                // if categories select then filter products by it
-                                _toggleListLoading();
-
-                                PersistentStorage _persistentStorage =
-                                    PersistentStorage();
-                                List<Category> _selectedCategories = [];
-                                _selectedCategories = _persistentStorage
-                                            .getSelectedCategories(25) ==
-                                        null
-                                    ? []
-                                    : _persistentStorage
-                                        .getSelectedCategories(25)!;
-
-                                String _categories = "";
-                                for (int i = 0;
-                                    i < _selectedCategories.length;
-                                    i++) {
-                                  _categories +=
-                                      _selectedCategories[i].id.toString();
-                                  if (i < _selectedCategories.length - 1)
-                                    _categories += ",";
-                                }
-
-                                _beerProducts =
-                                    await ApiRequests.getProductsBySubCategory(
-                                  category: 25,
-                                  categories: _categories,
-                                        page: 1,perPage: 10
-                                );
-                                _toggleListLoading();
-                              },
-                            );
-                          },
+                        Icon(
+                          Icons.filter_alt_sharp,
+                          color: AppColors.appGreyColor.withOpacity(0.9),
                         ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        BottomSheetCard(
-                          title: "Colors",
-                          isSelected: false,
-                          /*  localImageURL:
-                              "${Common.assetsImages}application_icon.png",*/
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        BottomSheetCard(
-                          title: "Sizes",
-                          isSelected: false,
-                          /* localImageURL:
-                              "${Common.assetsImages}application_icon.png",*/
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        BottomSheetCard(
-                          title: "Prices",
-                          isSelected: false,
-                          /* localImageURL:
-                              "${Common.assetsImages}application_icon.png",*/
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        BottomSheetCard(
-                          title: "Bundles",
-                          isSelected: false,
-                          /*localImageURL:
-                              "${Common.assetsImages}application_icon.png",*/
-                        ),
-                        SizedBox(
-                          height: 10,
+                        const SizedBox(width: 5.0),
+                        Text(
+                          "Filter",
+                          style: GoogleFonts.montserrat(
+                            color: AppColors.appGreyColor,
+                            fontWeight: FontWeight.w400,
+                          ),
                         ),
                       ],
                     ),
                   ),
-                  title: "Filter",
-                  icon: Icons.filter_alt_sharp,
+                )
+              ],
+            ),
+          ),
+          Visibility(
+            visible: filterView,
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(
+                      top: 10.0, bottom: 5, left: 10, right: 10),
+                  child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Categories',
+                        style: GoogleFonts.montserrat(
+                            color: AppColors.appBlackColor,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 18),
+                      )),
+                ),
+                Wrap(
+                  direction: Axis.horizontal,
+                  children: _categoryList
+                      .map((i) => Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  filterView = false;
+                                  _categoryId = i.id;
+                                  _beerId = _categoryId;
+                                });
+                                _isBeerProductsLoading = true;
+                                _beerProducts!.clear();
+
+                                _getBeerProducts();
+                              },
+                              child: Container(
+                                  decoration: _categoryId == i.id
+                                      ? borderLessButton()
+                                      : borderButton(),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 5.0, horizontal: 10),
+                                    child: Text(
+                                      '${i.name}',
+                                      style: GoogleFonts.montserrat(
+                                          color: _categoryId == i.id
+                                              ? AppColors.appWhiteColor
+                                              : AppColors.appBlueColor),
+                                    ),
+                                  )),
+                            ),
+                          ))
+                      .toList(),
                 ),
               ],
             ),
@@ -741,13 +738,23 @@ class _BeerState extends State<Beer> {
   }
 
   void _getBeerProducts() async {
-    _beerProducts = await ApiRequests.getProductsBySubCategory(category: 25,page: 1,perPage: 10);
+    _beerProducts = await ApiRequests.getProductsBySubCategory(
+        category: _beerId, page: 1, perPage: 10);
     _isBeerProductsLoading = false;
     if (mounted) setState(() {});
-/*
-    _beerProducts = await ApiRequests.getProductsByCategory('beers',10,1);
-*/
-   /* _toggleListLoading();*/
+  }
+
+  void _getAllCategories() async {
+    Category all = Category(id: _beerId, name: 'All', slug: '', parent: 0);
+    _categoryList.add(all);
+    final _categories = await ApiRequests.getAllCategories();
+    for (var elements in _categories) {
+      if (elements.parent == _beerId) {
+        print(elements.parent);
+        _categoryList.add(elements);
+        print(_categoryList);
+      }
+    }
   }
 
   void _toggleListLoading() {
@@ -763,11 +770,7 @@ class _BeerState extends State<Beer> {
     _order = order;
 
     _beerProducts = await ApiRequests.getProductsBySubCategory(
-      category: 25,
-      orderBy: sortingBy,
-      order: _order,
-        page: 1,perPage: 10
-    );
+        category: 25, orderBy: sortingBy, order: _order, page: 1, perPage: 10);
 
     _toggleListLoading();
   }
@@ -797,22 +800,46 @@ class _BeerState extends State<Beer> {
 
     _toggleListLoading();
   }
+
+  BoxDecoration borderButton() {
+    return BoxDecoration(
+      border: Border.all(color: AppColors.appBlueColor),
+      borderRadius: BorderRadius.circular(20),
+      //color: AppColors.appBlueColor,
+    );
+  }
+
+  BoxDecoration borderLessButton() {
+    return BoxDecoration(
+      borderRadius: BorderRadius.circular(20),
+      color: AppColors.appBlueColor,
+    );
+  }
 }
 
 class Wine extends StatefulWidget {
   const Wine({Key? key}) : super(key: key);
 
   @override
-  State<Wine> createState() => _WineState();
+  _WineState createState() => _WineState();
 }
 
 class _WineState extends State<Wine> {
   List<ProductModal>? _wineProducts;
+  String _sortingBy = Common.RECOMMENDED;
+  String _order = Common.DESC;
   bool _isWineProductsLoading = true;
+  int _wineId = 27;
+  int _categoryId = 27;
+  bool filterView = false;
+  List<Category> _categoryList = [];
+
+  // List tags = ['one', 'two'];
 
   @override
   void initState() {
     _getWineProducts();
+    _getAllCategories();
     super.initState();
   }
 
@@ -839,17 +866,19 @@ class _WineState extends State<Wine> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         BottomSheetCard(
+                          onPressed: () => _updateSortingBy(Common.RECOMMENDED),
                           title: "Recommended",
-                          isSelected: true,
-                          /* localImageURL:
+                          isSelected: (_sortingBy == Common.RECOMMENDED),
+                          /*localImageURL:
                               "${Common.assetsImages}application_icon.png",*/
                         ),
                         SizedBox(
                           height: 10,
                         ),
                         BottomSheetCard(
+                          onPressed: () => _updateSortingBy(Common.NEW),
                           title: "New",
-                          isSelected: false,
+                          isSelected: (_sortingBy == Common.NEW),
                           /* localImageURL:
                               "${Common.assetsImages}application_icon.png",*/
                         ),
@@ -857,8 +886,11 @@ class _WineState extends State<Wine> {
                           height: 10,
                         ),
                         BottomSheetCard(
+                          onPressed: () => _updateSortingBy(Common.PRICE,
+                              order: Common.DESC),
                           title: "High to low",
-                          isSelected: false,
+                          isSelected: (_sortingBy == Common.PRICE &&
+                              _order == Common.DESC),
                           /*localImageURL:
                               "${Common.assetsImages}application_icon.png",*/
                         ),
@@ -866,18 +898,22 @@ class _WineState extends State<Wine> {
                           height: 10,
                         ),
                         BottomSheetCard(
+                          onPressed: () =>
+                              _updateSortingBy(Common.PRICE, order: Common.ASC),
                           title: "Low to high",
-                          isSelected: false,
-                          /* localImageURL:
+                          isSelected: (_sortingBy == Common.PRICE &&
+                              _order == Common.ASC),
+                          /*localImageURL:
                               "${Common.assetsImages}application_icon.png",*/
                         ),
                         SizedBox(
                           height: 10,
                         ),
                         BottomSheetCard(
+                          onPressed: () => _updateSortingBy(Common.DISCOUNT),
                           title: "Discount",
-                          isSelected: false,
-                          /*localImageURL:
+                          isSelected: (_sortingBy == Common.DISCOUNT),
+                          /*  localImageURL:
                               "${Common.assetsImages}application_icon.png",*/
                         ),
                         SizedBox(
@@ -889,98 +925,87 @@ class _WineState extends State<Wine> {
                   title: "Sort",
                   icon: Icons.sort,
                 ),
-                AppBarFilterButton(
-                  onPressed: () => Common.showModalSheet(
-                    context,
-                    title: "Filter",
-                    scrollViewPaddingChild: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                Expanded(
+                  child: InkWell(
+                    onTap: () {
+                      setState(() {
+                        filterView ? filterView = false : filterView = true;
+                      });
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        BottomSheetCard(
-                          title: "Category",
-                          isSelected: false,
-                          /*localImageURL:
-                              "${Common.assetsImages}application_icon.png",*/
-                          onPressed: () => Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => SubFilterList(
-                                categoryTitle: 'Category',
-                                categoryId: 27,
-                              ),
-                            ),
+                        Icon(
+                          Icons.filter_alt_sharp,
+                          color: AppColors.appGreyColor.withOpacity(0.9),
+                        ),
+                        const SizedBox(width: 5.0),
+                        Text(
+                          "Filter",
+                          style: GoogleFonts.montserrat(
+                            color: AppColors.appGreyColor,
+                            fontWeight: FontWeight.w400,
                           ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        BottomSheetCard(
-                          title: "Brands",
-                          isSelected: false,
-                          /*localImageURL:
-                              "${Common.assetsImages}application_icon.png",*/
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        BottomSheetCard(
-                          title: "Colors",
-                          isSelected: false,
-                          /*localImageURL:
-                              "${Common.assetsImages}application_icon.png",*/
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        BottomSheetCard(
-                          title: "Sizes",
-                          isSelected: false,
-                          /*localImageURL:
-                              "${Common.assetsImages}application_icon.png",*/
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        BottomSheetCard(
-                          title: "Prices",
-                          isSelected: false,
-                          /*localImageURL:
-                              "${Common.assetsImages}application_icon.png",*/
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        BottomSheetCard(
-                          title: "New Arrivals",
-                          isSelected: false,
-                          /*localImageURL:
-                              "${Common.assetsImages}application_icon.png",*/
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        BottomSheetCard(
-                          title: "Bundles",
-                          isSelected: false,
-                          /*localImageURL:
-                              "${Common.assetsImages}application_icon.png",*/
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        BottomSheetCard(
-                          title: "Discounted Products",
-                          isSelected: true,
-                          /*localImageURL:
-                              "${Common.assetsImages}application_icon.png",*/
-                        ),
-                        SizedBox(
-                          height: 10,
                         ),
                       ],
                     ),
                   ),
-                  title: "Filter",
-                  icon: Icons.filter_alt_sharp,
+                )
+              ],
+            ),
+          ),
+          Visibility(
+            visible: filterView,
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(
+                      top: 10.0, bottom: 5, left: 10, right: 10),
+                  child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Categories',
+                        style: GoogleFonts.montserrat(
+                            color: AppColors.appBlackColor,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 18),
+                      )),
+                ),
+                Wrap(
+                  direction: Axis.horizontal,
+                  children: _categoryList
+                      .map((i) => Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  filterView = false;
+                                  _categoryId = i.id;
+                                  _wineId = _categoryId;
+                                });
+                                _isWineProductsLoading = true;
+                                _wineProducts!.clear();
+
+                                _getWineProducts();
+                              },
+                              child: Container(
+                                  decoration: _categoryId == i.id
+                                      ? borderLessButton()
+                                      : borderButton(),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 5.0, horizontal: 10),
+                                    child: Text(
+                                      '${i.name}',
+                                      style: GoogleFonts.montserrat(
+                                          color: _categoryId == i.id
+                                              ? AppColors.appWhiteColor
+                                              : AppColors.appBlueColor),
+                                    ),
+                                  )),
+                            ),
+                          ))
+                      .toList(),
                 ),
               ],
             ),
@@ -1014,26 +1039,108 @@ class _WineState extends State<Wine> {
   }
 
   void _getWineProducts() async {
-    _wineProducts = await ApiRequests.getProductsBySubCategory(category: 27,page: 1,perPage: 10);
+    _wineProducts = await ApiRequests.getProductsBySubCategory(
+        category: _wineId, page: 1, perPage: 10);
     _isWineProductsLoading = false;
     if (mounted) setState(() {});
   }
+
+  void _getAllCategories() async {
+    Category all = Category(id: _wineId, name: 'All', slug: '', parent: 0);
+    _categoryList.add(all);
+    final _categories = await ApiRequests.getAllCategories();
+    for (var elements in _categories) {
+      if (elements.parent == _wineId) {
+        print(elements.parent);
+        _categoryList.add(elements);
+        print(_categoryList);
+      }
+    }
+  }
+
+  void _toggleListLoading() {
+    _isWineProductsLoading = !_isWineProductsLoading;
+    if (mounted) setState(() {});
+  }
+
+  Future<void> _updateProductsListings(String sortingBy,
+      {String order = Common.DESC}) async {
+    _toggleListLoading();
+
+    // get products by sorting filter
+    _order = order;
+
+    _wineProducts = await ApiRequests.getProductsBySubCategory(
+        category: 25, orderBy: sortingBy, order: _order, page: 1, perPage: 10);
+
+    _toggleListLoading();
+  }
+
+  Future<void> _updateSortingBy(String sortingBy,
+      {String order = Common.DESC}) async {
+    // update the listing only if sorting field is not same as previously selected
+    bool _updateProductListings =
+        ((sortingBy != _sortingBy) || (order != _order));
+    _sortingBy = sortingBy;
+    Common.pop(context);
+    if (_updateProductListings)
+      await _updateProductsListings(
+        _sortingBy,
+        order: order,
+      );
+    if (mounted) setState(() {});
+  }
+
+  Future<void> _getProductsBySelectedCategories(
+      List<Category> selectedSubCategories) async {
+    _toggleListLoading();
+
+    selectedSubCategories.forEach((category) {
+      print(category.id);
+    });
+
+    _toggleListLoading();
+  }
+
+  BoxDecoration borderButton() {
+    return BoxDecoration(
+      border: Border.all(color: AppColors.appBlueColor),
+      borderRadius: BorderRadius.circular(20),
+      //color: AppColors.appBlueColor,
+    );
+  }
+
+  BoxDecoration borderLessButton() {
+    return BoxDecoration(
+      borderRadius: BorderRadius.circular(20),
+      color: AppColors.appBlueColor,
+    );
+  }
 }
 
-class Liquor extends StatefulWidget {
-  const Liquor({Key? key}) : super(key: key);
+class Spirit extends StatefulWidget {
+  const Spirit({Key? key}) : super(key: key);
 
   @override
-  State<Liquor> createState() => _LiquorState();
+  _SpiritState createState() => _SpiritState();
 }
 
-class _LiquorState extends State<Liquor> {
-  List<ProductModal>? _liquorProducts;
-  bool _isLiquorProductsLoading = true;
+class _SpiritState extends State<Spirit> {
+  List<ProductModal>? _spiritProducts;
+  String _sortingBy = Common.RECOMMENDED;
+  String _order = Common.DESC;
+  bool _isSpiritProductsLoading = true;
+  int _spiritId = 26;
+  int _categoryId = 26;
+  bool filterView = false;
+  List<Category> _categoryList = [];
+
+  // List tags = ['one', 'two'];
 
   @override
   void initState() {
-    _getLiquorProducts();
+    _getSpiritProducts();
+    _getAllCategories();
     super.initState();
   }
 
@@ -1060,35 +1167,19 @@ class _LiquorState extends State<Liquor> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         BottomSheetCard(
+                          onPressed: () => _updateSortingBy(Common.RECOMMENDED),
                           title: "Recommended",
-                          isSelected: true,
-                          /* localImageURL:
+                          isSelected: (_sortingBy == Common.RECOMMENDED),
+                          /*localImageURL:
                               "${Common.assetsImages}application_icon.png",*/
                         ),
                         SizedBox(
                           height: 10,
                         ),
                         BottomSheetCard(
+                          onPressed: () => _updateSortingBy(Common.NEW),
                           title: "New",
-                          isSelected: false,
-                          /*localImageURL:
-                              "${Common.assetsImages}application_icon.png",*/
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        BottomSheetCard(
-                          title: "High to low",
-                          isSelected: false,
-                          /*localImageURL:
-                              "${Common.assetsImages}application_icon.png",*/
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        BottomSheetCard(
-                          title: "Low to high",
-                          isSelected: false,
+                          isSelected: (_sortingBy == Common.NEW),
                           /* localImageURL:
                               "${Common.assetsImages}application_icon.png",*/
                         ),
@@ -1096,9 +1187,34 @@ class _LiquorState extends State<Liquor> {
                           height: 10,
                         ),
                         BottomSheetCard(
-                          title: "Discount",
-                          isSelected: false,
+                          onPressed: () => _updateSortingBy(Common.PRICE,
+                              order: Common.DESC),
+                          title: "High to low",
+                          isSelected: (_sortingBy == Common.PRICE &&
+                              _order == Common.DESC),
                           /*localImageURL:
+                              "${Common.assetsImages}application_icon.png",*/
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        BottomSheetCard(
+                          onPressed: () =>
+                              _updateSortingBy(Common.PRICE, order: Common.ASC),
+                          title: "Low to high",
+                          isSelected: (_sortingBy == Common.PRICE &&
+                              _order == Common.ASC),
+                          /*localImageURL:
+                              "${Common.assetsImages}application_icon.png",*/
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        BottomSheetCard(
+                          onPressed: () => _updateSortingBy(Common.DISCOUNT),
+                          title: "Discount",
+                          isSelected: (_sortingBy == Common.DISCOUNT),
+                          /*  localImageURL:
                               "${Common.assetsImages}application_icon.png",*/
                         ),
                         SizedBox(
@@ -1110,104 +1226,93 @@ class _LiquorState extends State<Liquor> {
                   title: "Sort",
                   icon: Icons.sort,
                 ),
-                AppBarFilterButton(
-                  onPressed: () => Common.showModalSheet(
-                    context,
-                    title: "Filter",
-                    scrollViewPaddingChild: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                Expanded(
+                  child: InkWell(
+                    onTap: () {
+                      setState(() {
+                        filterView ? filterView = false : filterView = true;
+                      });
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        BottomSheetCard(
-                          title: "Category",
-                          isSelected: false,
-                          /* localImageURL:
-                              "${Common.assetsImages}application_icon.png",*/
-                          onPressed: () => Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => SubFilterList(
-                                categoryTitle: 'Category',
-                                categoryId: 113,
-                              ),
-                            ),
+                        Icon(
+                          Icons.filter_alt_sharp,
+                          color: AppColors.appGreyColor.withOpacity(0.9),
+                        ),
+                        const SizedBox(width: 5.0),
+                        Text(
+                          "Filter",
+                          style: GoogleFonts.montserrat(
+                            color: AppColors.appGreyColor,
+                            fontWeight: FontWeight.w400,
                           ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        BottomSheetCard(
-                          title: "Brands",
-                          isSelected: false,
-                          /* localImageURL:
-                              "${Common.assetsImages}application_icon.png",*/
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        BottomSheetCard(
-                          title: "Colors",
-                          isSelected: false,
-                          /*localImageURL:
-                              "${Common.assetsImages}application_icon.png",*/
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        BottomSheetCard(
-                          title: "Sizes",
-                          isSelected: false,
-                          /*localImageURL:
-                              "${Common.assetsImages}application_icon.png",*/
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        BottomSheetCard(
-                          title: "Prices",
-                          isSelected: false,
-                          /*localImageURL:
-                              "${Common.assetsImages}application_icon.png",*/
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        BottomSheetCard(
-                          title: "New Arrivals",
-                          isSelected: false,
-                          /*localImageURL:
-                              "${Common.assetsImages}application_icon.png",*/
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        BottomSheetCard(
-                          title: "Bundles",
-                          isSelected: false,
-                          /*localImageURL:
-                              "${Common.assetsImages}application_icon.png",*/
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        BottomSheetCard(
-                          title: "Discounted Products",
-                          isSelected: true,
-                          /*localImageURL:
-                              "${Common.assetsImages}application_icon.png",*/
-                        ),
-                        SizedBox(
-                          height: 10,
                         ),
                       ],
                     ),
                   ),
-                  title: "Filter",
-                  icon: Icons.filter_alt_sharp,
+                )
+              ],
+            ),
+          ),
+          Visibility(
+            visible: filterView,
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(
+                      top: 10.0, bottom: 5, left: 10, right: 10),
+                  child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Categories',
+                        style: GoogleFonts.montserrat(
+                            color: AppColors.appBlackColor,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 18),
+                      )),
+                ),
+                Wrap(
+                  direction: Axis.horizontal,
+                  children: _categoryList
+                      .map((i) => Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  filterView = false;
+                                  _categoryId = i.id;
+                                  _spiritId = _categoryId;
+                                });
+                                _isSpiritProductsLoading = true;
+                                _spiritProducts!.clear();
+
+                                _getSpiritProducts();
+                              },
+                              child: Container(
+                                  decoration: _categoryId == i.id
+                                      ? borderLessButton()
+                                      : borderButton(),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 5.0, horizontal: 10),
+                                    child: Text(
+                                      '${i.name}',
+                                      style: GoogleFonts.montserrat(
+                                          color: _categoryId == i.id
+                                              ? AppColors.appWhiteColor
+                                              : AppColors.appBlueColor),
+                                    ),
+                                  )),
+                            ),
+                          ))
+                      .toList(),
                 ),
               ],
             ),
           ),
           Expanded(
-            child: _isLiquorProductsLoading
+            child: _isSpiritProductsLoading
                 ? CupertinoActivityIndicator()
                 : GridView.builder(
                     padding: const EdgeInsets.symmetric(
@@ -1216,9 +1321,9 @@ class _LiquorState extends State<Liquor> {
                     ),
                     physics: BouncingScrollPhysics(),
                     shrinkWrap: true,
-                    itemCount: _liquorProducts?.length,
+                    itemCount: _spiritProducts?.length,
                     itemBuilder: (BuildContext context, int index) {
-                      ProductModal _product = _liquorProducts![index];
+                      ProductModal _product = _spiritProducts![index];
                       return DashboardHorizontalListCard(product: _product);
                     },
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -1234,10 +1339,83 @@ class _LiquorState extends State<Liquor> {
     );
   }
 
-  void _getLiquorProducts() async {
-    _liquorProducts = await ApiRequests.getProductsBySubCategory(category: 26,page: 1,perPage: 10);
-    _isLiquorProductsLoading = false;
+  void _getSpiritProducts() async {
+    _spiritProducts = await ApiRequests.getProductsBySubCategory(
+        category: _spiritId, page: 1, perPage: 10);
+    _isSpiritProductsLoading = false;
     if (mounted) setState(() {});
+  }
+
+  void _getAllCategories() async {
+    Category all = Category(id: _spiritId, name: 'All', slug: '', parent: 0);
+    _categoryList.add(all);
+    final _categories = await ApiRequests.getAllCategories();
+    for (var elements in _categories) {
+      if (elements.parent == _spiritId) {
+        print(elements.parent);
+        _categoryList.add(elements);
+        print(_categoryList);
+      }
+    }
+  }
+
+  void _toggleListLoading() {
+    _isSpiritProductsLoading = !_isSpiritProductsLoading;
+    if (mounted) setState(() {});
+  }
+
+  Future<void> _updateProductsListings(String sortingBy,
+      {String order = Common.DESC}) async {
+    _toggleListLoading();
+
+    // get products by sorting filter
+    _order = order;
+
+    _spiritProducts = await ApiRequests.getProductsBySubCategory(
+        category: 25, orderBy: sortingBy, order: _order, page: 1, perPage: 10);
+
+    _toggleListLoading();
+  }
+
+  Future<void> _updateSortingBy(String sortingBy,
+      {String order = Common.DESC}) async {
+    // update the listing only if sorting field is not same as previously selected
+    bool _updateProductListings =
+        ((sortingBy != _sortingBy) || (order != _order));
+    _sortingBy = sortingBy;
+    Common.pop(context);
+    if (_updateProductListings)
+      await _updateProductsListings(
+        _sortingBy,
+        order: order,
+      );
+    if (mounted) setState(() {});
+  }
+
+  Future<void> _getProductsBySelectedCategories(
+      List<Category> selectedSubCategories) async {
+    _toggleListLoading();
+
+    selectedSubCategories.forEach((category) {
+      print(category.id);
+    });
+
+    _toggleListLoading();
+  }
+
+  BoxDecoration borderButton() {
+    return BoxDecoration(
+      border: Border.all(color: AppColors.appBlueColor),
+      borderRadius: BorderRadius.circular(20),
+      //color: AppColors.appBlueColor,
+    );
+  }
+
+  BoxDecoration borderLessButton() {
+    return BoxDecoration(
+      borderRadius: BorderRadius.circular(20),
+      color: AppColors.appBlueColor,
+    );
   }
 }
 
@@ -1331,7 +1509,7 @@ class _SaleState extends State<Sale> {
                   title: "Sort",
                   icon: Icons.sort,
                 ),
-                AppBarFilterButton(
+               /* AppBarFilterButton(
                   onPressed: () => Common.showModalSheet(
                     context,
                     title: "Filter",
@@ -1341,8 +1519,8 @@ class _SaleState extends State<Sale> {
                         BottomSheetCard(
                           title: "Category",
                           isSelected: false,
-                          /*localImageURL:
-                              "${Common.assetsImages}application_icon.png",*/
+                          *//*localImageURL:
+                              "${Common.assetsImages}application_icon.png",*//*
                           onPressed: () => Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (context) => SubFilterList(
@@ -1358,8 +1536,8 @@ class _SaleState extends State<Sale> {
                         BottomSheetCard(
                           title: "Brands",
                           isSelected: false,
-                          /*localImageURL:
-                              "${Common.assetsImages}application_icon.png",*/
+                          *//*localImageURL:
+                              "${Common.assetsImages}application_icon.png",*//*
                         ),
                         SizedBox(
                           height: 10,
@@ -1367,8 +1545,8 @@ class _SaleState extends State<Sale> {
                         BottomSheetCard(
                           title: "Colors",
                           isSelected: false,
-                          /*localImageURL:
-                              "${Common.assetsImages}application_icon.png",*/
+                          *//*localImageURL:
+                              "${Common.assetsImages}application_icon.png",*//*
                         ),
                         SizedBox(
                           height: 10,
@@ -1376,8 +1554,8 @@ class _SaleState extends State<Sale> {
                         BottomSheetCard(
                           title: "Sizes",
                           isSelected: false,
-                          /*localImageURL:
-                              "${Common.assetsImages}application_icon.png",*/
+                          *//*localImageURL:
+                              "${Common.assetsImages}application_icon.png",*//*
                         ),
                         SizedBox(
                           height: 10,
@@ -1385,8 +1563,8 @@ class _SaleState extends State<Sale> {
                         BottomSheetCard(
                           title: "Prices",
                           isSelected: false,
-                          /*localImageURL:
-                              "${Common.assetsImages}application_icon.png",*/
+                          *//*localImageURL:
+                              "${Common.assetsImages}application_icon.png",*//*
                         ),
                         SizedBox(
                           height: 10,
@@ -1394,8 +1572,8 @@ class _SaleState extends State<Sale> {
                         BottomSheetCard(
                           title: "New Arrivals",
                           isSelected: false,
-                          /*localImageURL:
-                              "${Common.assetsImages}application_icon.png",*/
+                          *//*localImageURL:
+                              "${Common.assetsImages}application_icon.png",*//*
                         ),
                         SizedBox(
                           height: 10,
@@ -1403,8 +1581,8 @@ class _SaleState extends State<Sale> {
                         BottomSheetCard(
                           title: "Bundles",
                           isSelected: false,
-                          /*localImageURL:
-                              "${Common.assetsImages}application_icon.png",*/
+                          *//*localImageURL:
+                              "${Common.assetsImages}application_icon.png",*//*
                         ),
                         SizedBox(
                           height: 10,
@@ -1412,8 +1590,8 @@ class _SaleState extends State<Sale> {
                         BottomSheetCard(
                           title: "Discounted Products",
                           isSelected: true,
-                          /*localImageURL:
-                              "${Common.assetsImages}application_icon.png",*/
+                          *//*localImageURL:
+                              "${Common.assetsImages}application_icon.png",*//*
                         ),
                         SizedBox(
                           height: 10,
@@ -1423,7 +1601,7 @@ class _SaleState extends State<Sale> {
                   ),
                   title: "Filter",
                   icon: Icons.filter_alt_sharp,
-                ),
+                ),*/
               ],
             ),
           ),
@@ -1467,25 +1645,3 @@ class _SaleState extends State<Sale> {
     if (mounted) setState(() {});
   }*/
 }
-
-/*class CustomTab extends StatelessWidget {
-  final String title;
-
-  const CustomTab({
-    Key? key,
-    required this.title,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 15.0),
-      child: Text(
-        "$title",
-        style: TextStyle(
-          color: AppColors.appGreyColor,fontWeight: FontWeight.normal
-        ),
-      ),
-    );
-  }
-}*/

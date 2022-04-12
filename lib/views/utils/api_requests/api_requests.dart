@@ -18,8 +18,8 @@ import '../../../modals/social_login_modal.dart';
 
 class ApiRequests {
   static FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
-  static const String username = 'ck_6f937efcd8827ae2e449d6d0b6a0e67a659c73b5'/*"ck_920da5e157d013d1b547b499fe81dc186218c375"*/;
-  static const String password = 'cs_e0012cc667d5ff48267620c91a2fad8692aa517e'/*"cs_578b7434cb8c504b8f56d498a45ff245310ec1e7"*/;
+  static const String username = "ck_920da5e157d013d1b547b499fe81dc186218c375";
+  static const String password = "cs_578b7434cb8c504b8f56d498a45ff245310ec1e7";
   static const String key = "$username:$password";
 
   static var header = <String, String>{
@@ -124,20 +124,20 @@ class ApiRequests {
   }) async {
     String url = "";
     if (categories != null)
-      url = Common.API_URL + "products?categories=$categories&page=$page&per_page=$perPage";
+      url = Common.API_URL + "products?categories=$categories&page=$page&per_page=$perPage&consumer_key=$username&consumer_secret=$password";
     else
       url = (orderBy == null || orderBy == Common.RECOMMENDED)
-          ? Common.API_URL + "products?category=$category"
+          ? Common.API_URL + "products?category=$category&consumer_key=$username&consumer_secret=$password"
           : (orderBy == Common.DISCOUNT)
-          ? Common.API_URL + "products?category=$category&$orderBy&page=$page&per_page=$perPage"
+          ? Common.API_URL + "products?category=$category&$orderBy&page=$page&per_page=$perPage&consumer_key=$username&consumer_secret=$password"
           : Common.API_URL +
-          "products?category=$category&orderby=$orderBy&order=$order&page=$page&per_page=$perPage";
+          "products?category=$category&orderby=$orderBy&order=$order&page=$page&per_page=$perPage&consumer_key=$username&consumer_secret=$password";
     print(url);
     try {
       return await Dio()
           .get(
         url,
-        options: Options(headers: header),
+        /*options: Options(headers: header),*/
       )
           .then((value) {
         List<ProductModal> _products = [];
@@ -155,7 +155,7 @@ class ApiRequests {
   static Future<List<ProductModal>> getProductByType(String type, int perPage,
       int pageNumber) async {
     String url =
-        Common.API_URL + "products/?$type&per_page=$perPage&page=$pageNumber";
+        Common.API_URL + "products/?$type&per_page=$perPage&page=$pageNumber&consumer_key=$username&consumer_secret=$password";
     print(url);
     try {
       return await Dio()
@@ -179,7 +179,7 @@ class ApiRequests {
   static Future<List<ProductModal>> getAllProduct(int perPage,
       int pageNumber) async {
     String url =
-        Common.API_URL + "products/?per_page=$perPage&page=$pageNumber";
+        Common.API_URL + "products/?per_page=$perPage&page=$pageNumber&consumer_key=$username&consumer_secret=$password";
     print(url);
     try {
       return await Dio()
@@ -205,7 +205,7 @@ class ApiRequests {
     try {
       return await Dio()
           .get(
-        Common.API_URL + "products?orderby=$orderBy&order=$order",
+        Common.API_URL + "products?orderby=$orderBy&order=$order&consumer_key=$username&consumer_secret=$password",
         options: Options(headers: header),
       )
           .then((value) {
@@ -318,7 +318,7 @@ class ApiRequests {
   }
 
   static Future<List<Category>> getAllCategories() async {
-    String url = Common.API_URL + "products/categories?per_page=100";
+    String url = Common.API_URL + "products/categories?consumer_key=$username&consumer_secret=$password&per_page=99";
     print(url);
     try {
       return await Dio()
