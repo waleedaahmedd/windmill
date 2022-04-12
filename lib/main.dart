@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:provider/provider.dart';
 import 'package:windmill_general_trading/search_provider.dart';
+import 'package:windmill_general_trading/views/authentication/otp_screen.dart';
 import 'package:windmill_general_trading/views/edit_profile.dart';
 import 'package:windmill_general_trading/views/notification.dart';
 import 'package:windmill_general_trading/views/utils/utils_exporter.dart';
@@ -61,6 +62,7 @@ class MyApp extends StatelessWidget {
 
         AppRoutes.loginRoute: (context) => Login(),
         AppRoutes.registerRoute: (context) => Register(),
+        AppRoutes.otpRoute: (context) => OtpScreen(),
         AppRoutes.forgetPasswordRoute: (context) => ForgetPassword(),
         AppRoutes.chooseOptionRoute: (context) => ChooseOption(),
         AppRoutes.dashboardRoute: (context) => Dashboard(),

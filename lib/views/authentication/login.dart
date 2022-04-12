@@ -65,7 +65,7 @@ class _LoginState extends State<Login> {
                     const SizedBox(height: 60.0),
                     LabelAndInputField(
                       fieldController: emailController,
-                      label: 'Email Address',
+                      label: 'Email Address / Phone Number',
                       inputType: TextInputType.emailAddress,
                     ),
                     const SizedBox(height: 15.0),
@@ -102,7 +102,8 @@ class _LoginState extends State<Login> {
     String uid = uidController.text.trim();
     if (email.isEmpty ||
         !RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-            .hasMatch(email))
+            .hasMatch(email) || !RegExp(r'(^(?:9)?[0-9]{10,12}$)')
+        .hasMatch(email))
       Common.showErrorTopSnack(
           context, "Please provide valid Email-Address and try again");
     else if (uid.isEmpty)

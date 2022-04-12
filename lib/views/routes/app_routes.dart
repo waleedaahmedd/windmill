@@ -10,6 +10,8 @@ class AppRoutes {
   static String forgetPasswordRoute = "/forget-password";
   static String loginRoute = "/login";
   static String registerRoute = "/register";
+  static String otpRoute = "/otp";
+
   static String chooseOptionRoute = "/choose-option";
   static String dashboardRoute = "/dashboard";
   static String shopBuyRoute = "/shop-buy";

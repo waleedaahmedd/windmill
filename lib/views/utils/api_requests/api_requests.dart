@@ -2,10 +2,12 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_login_facebook/flutter_login_facebook.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
+import 'package:windmill_general_trading/modals/create_verify_otp_model.dart';
 import 'package:windmill_general_trading/modals/modals_exporter.dart';
 import 'package:windmill_general_trading/modals/payment_modal.dart';
 import 'package:windmill_general_trading/modals/varition_model.dart';
@@ -35,6 +37,25 @@ class ApiRequests {
     "Accept": "*/*",
     "Connection": "keep-alive",
   };
+
+  static Future <CreateAndVerifyOtpModel> createOrVerifyOtp (BuildContext context, String phoneNumber) async{
+    String url = Common.BASE_URL + "otp/create-otp/$phoneNumber/?consumer_key=$username&consumer_secret=$password";
+    print(url);
+    try{
+     return await Dio()
+          .get(
+        url,
+      )
+          .then(
+              (value) => CreateAndVerifyOtpModel.fromJson(value.data),
+      );
+
+    }
+    on DioError catch (e) {
+      print(e);
+      return CreateAndVerifyOtpModel.fromJson(e.response!.data);
+    }
+  }
 
   static Future<LoginModal> googleLogin(BuildContext context) async {
     try {
