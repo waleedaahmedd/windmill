@@ -17,6 +17,9 @@ import 'package:windmill_general_trading/views/utils/utils_exporter.dart';
 import 'package:windmill_general_trading/views/utils/widgets/widgets_exporter.dart';
 import 'package:windmill_general_trading/views/views_exporter.dart';
 
+import '../modals/create_verify_otp_model.dart';
+import 'authentication/otp_screen.dart';
+
 class Checkout extends StatefulWidget {
   final double subTotal;
   final ShoppingCartModal shoppingCart;
@@ -55,6 +58,16 @@ class _CheckoutState extends State<Checkout> {
      String? state;
   String? postcode;
   String? country;
+
+  String? _firstName;
+  String? _lastName;
+  String? _phoneNumber;
+  String? _emailAddress;
+  String? _houseNumberAddress;
+  String? _orderNotes;
+
+  CreateAndVerifyOtpModel? _createAndVerifyOtpData;
+
 
   @override
   void initState() {
@@ -304,7 +317,7 @@ class _CheckoutState extends State<Checkout> {
                         visible: checkLocation == "Abu Dhabi",
                         child: PrimaryButton(
                           title: "Place Order",
-                          onPressed: () => _processOrder(),
+                          onPressed: () => _validation(),
                         ),
                       ),
                     ],
@@ -339,56 +352,95 @@ class _CheckoutState extends State<Checkout> {
     ));
   }
 
-  void _processOrder() async {
-    String _firstName = _fNameController.text.trim();
-    String _lastName = _lNameController.text.trim();
-    String _phoneNumber = _phoneController.text.trim();
-    String _emailAddress = _emailAddressController.text.trim();
-    String _houseNumberAddress = _streetAddressController.text.trim();
-    String _orderNotes = _orderNotesController.text.trim();
+  void _validation() async{
+     _firstName = _fNameController.text.trim();
+     _lastName = _lNameController.text.trim();
+     _phoneNumber = _phoneController.text.trim();
+     _emailAddress = _emailAddressController.text.trim();
+     _houseNumberAddress = _streetAddressController.text.trim();
+     _orderNotes = _orderNotesController.text.trim();
 
     if (!_acceptedTermsAndConditions)
       Common.showErrorTopSnack(
           context, "Accept terms and conditions to proceed with order");
-    else if (_firstName.isEmpty)
+    else if (_firstName!.isEmpty)
       Common.showErrorTopSnack(context, "Fill first name and proceed");
-    else if (_lastName.isEmpty)
+    else if (_lastName!.isEmpty)
       Common.showErrorTopSnack(context, "Fill last name and proceed");
-    else if (_phoneNumber.isEmpty)
+    else if (_phoneNumber!.isEmpty)
       Common.showErrorTopSnack(context, "Fill phone number and proceed");
-    else if (_emailAddress.isEmpty ||
+    else if (_emailAddress!.isEmpty ||
         !RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-            .hasMatch(_emailAddress))
+            .hasMatch(_emailAddress!))
       Common.showErrorTopSnack(context, "Fill valid Email-Address and proceed");
-    else if (_houseNumberAddress.isEmpty)
+    else if (_houseNumberAddress!.isEmpty)
       Common.showErrorTopSnack(context, "Fill house number and street address");
-    else {
+    else{
+      _checkVerification();
+    }
+  }
+
+  Future<void> _checkVerification() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    _createAndVerifyOtpData =
+    await ApiRequests.createOrVerifyOtp(context, _phoneNumber!);
+
+    print(_createAndVerifyOtpData!.status);
+
+    if (_createAndVerifyOtpData!.status == 'already_verified') {
+      _processOrder();
+    } else {
+      setState(() {
+        _isLoading = false;
+      });
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                OtpScreen(phone: _phoneNumber, email: _emailAddress, firstName: _firstName, lastName: _lastName,
+                    address: _houseNumberAddress,comingFrom: 'checkout', shoppingCart: widget.shoppingCart, userId: _userID
+                , note: _orderNotes, total: widget.subTotal)),
+      );
+      /* Navigator.of(context).pushNamed(
+        AppRoutes.otpRoute,
+      );*/
+
+    }
+  }
+
+  void _processOrder() async {
+
+
       if (!_isLoading) {
         _toggleLoading();
         // place order to woocommerce api.
         Ing _billing = new Ing(
-          firstName: _firstName,
-          lastName: _lastName,
-          address1: _houseNumberAddress,
-          address2: _houseNumberAddress,
+          firstName: _firstName!,
+          lastName: _lastName!,
+          address1: _houseNumberAddress!,
+          address2: _houseNumberAddress!,
           city: "Abu Dhabi",
           state: "Abu Dhabi",
           postcode: "51133",
           country: "United Arab Emirates",
-          email: _emailAddress,
-          phone: _phoneNumber,
+          email: _emailAddress!,
+          phone: _phoneNumber!,
         );
         Ing _shipping = new Ing(
-          firstName: _firstName,
-          lastName: _lastName,
-          address1: _houseNumberAddress,
-          address2: _houseNumberAddress,
+          firstName: _firstName!,
+          lastName: _lastName!,
+          address1: _houseNumberAddress!,
+          address2: _houseNumberAddress!,
           city: "adminstrative",
           state: "adminstrative",
           postcode: "post",
           country: "United Arab Emirates",
-          email: _emailAddress,
-          phone: _phoneNumber,
+          email: _emailAddress!,
+          phone: _phoneNumber!,
         );
         List<LineItem> _lineItems = [];
         widget.shoppingCart.products.forEach((product) {
@@ -402,7 +454,7 @@ class _CheckoutState extends State<Checkout> {
         List<ShippingLine> _shippingLine = [];
         OrderModal _order = new OrderModal(
           customerID: _userID!,
-          note: _orderNotes,
+          note: _orderNotes!,
           // orderStatus: "N-Genius Online Complete",
           orderStatus: "N-Genius Online Complete",
           paymentMethod: "Online Payment",
@@ -472,7 +524,7 @@ class _CheckoutState extends State<Checkout> {
           Common.showSuccessTopSnack(context, "Something went wrong!!");
         }
       }
-    }
+
   }
 
   Future<void> _completeOrder(_order, dataOrder) async {

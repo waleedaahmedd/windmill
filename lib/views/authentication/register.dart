@@ -4,6 +4,7 @@ import 'package:flutter_html/shims/dart_ui_real.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:windmill_general_trading/modals/create_verify_otp_model.dart';
+import 'package:windmill_general_trading/views/authentication/otp_screen.dart';
 import 'package:windmill_general_trading/views/utils/utils_exporter.dart';
 import 'package:windmill_general_trading/views/utils/widgets/widgets_exporter.dart';
 import 'package:windmill_general_trading/views/views_exporter.dart';
@@ -31,6 +32,7 @@ class _RegisterState extends State<Register> {
   String? _fName;
   String? _lName;
   String? _phoneNumber;
+  var request;
   CreateAndVerifyOtpModel? _createAndVerifyOtpData;
 
   @override
@@ -93,7 +95,11 @@ class _RegisterState extends State<Register> {
                       LabelAndInputField(
                         prefixIcon: Padding(
                           padding: const EdgeInsets.all(20.0),
-                          child: Text('+971',style: GoogleFonts.montserrat(color: AppColors.appWhiteColor),),
+                          child: Text(
+                            '+971',
+                            style: GoogleFonts.montserrat(
+                                color: AppColors.appWhiteColor),
+                          ),
                         ),
                         fieldController: _phoneNumberController,
                         label: 'PhoneNumber',
@@ -152,43 +158,55 @@ class _RegisterState extends State<Register> {
     else if (_uid!.isEmpty || _uid!.length < 8)
       Common.showErrorTopSnack(context,
           "Strong password minimum of 8 characters is required to proceed.");
-    else if (_phoneNumber!.isEmpty || !RegExp(r'(^(?:9)?[0-9]{10,12}$)')
-        .hasMatch(_email!))
-      Common.showErrorTopSnack(context,
-          "phone Number is not valid");
+    else if (_phoneNumber!
+            .isEmpty /*|| !RegExp(r'/^[+]?(\d{1,2})?[\s.-]?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/')
+        .hasMatch(_phoneNumber!)*/
+        )
+      Common.showErrorTopSnack(context, "phone Number is not valid");
     else {
       _checkVerification();
     }
   }
 
   Future<void> _checkVerification() async {
-
     setState(() {
       _isLoading = true;
     });
 
-    _createAndVerifyOtpData = await ApiRequests.createOrVerifyOtp(context, _phoneNumber!);
+    _createAndVerifyOtpData =
+        await ApiRequests.createOrVerifyOtp(context, _phoneNumber!);
 
     print(_createAndVerifyOtpData!.status);
 
-    if(_createAndVerifyOtpData!.status == 'already_verified') {
+    if (_createAndVerifyOtpData!.status == 'already_verified') {
       _processRegistration();
-    }
-    else{
-      Navigator.of(context).pushNamed(
-        AppRoutes.registerRoute,
+    } else {
+      setState(() {
+        _isLoading = false;
+      });
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                OtpScreen(phone: _phoneNumber, email: _email, password: _uid, firstName: _fName, lastName: _lName, comingFrom: 'register')),
       );
+      /* Navigator.of(context).pushNamed(
+        AppRoutes.otpRoute,
+      );*/
+
     }
   }
 
   void _processRegistration() async {
-        var request = {
+    var request = {
       'email': _email,
       'first_name': _fName,
       'last_name': _lName,
       'username': _phoneNumber,
       'password': _uid,
     };
+
     await ApiRequests.registerUser(context, request)
         .then((registeredUser) async {
       if (registeredUser.id == null) {

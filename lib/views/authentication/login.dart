@@ -7,6 +7,8 @@ import 'package:windmill_general_trading/views/utils/widgets/widgets_exporter.da
 import 'package:windmill_general_trading/views/views_exporter.dart';
 
 import '../../cart_provider.dart';
+import '../../modals/create_verify_otp_model.dart';
+import 'otp_screen.dart';
 
 class Login extends StatefulWidget {
   Login({Key? key}) : super(key: key);
@@ -18,6 +20,10 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   TextEditingController emailController = TextEditingController();
   TextEditingController uidController = TextEditingController();
+  CreateAndVerifyOtpModel? _createAndVerifyOtpData;
+  String? email;
+  String? uid;
+
   bool _isLoading = false;
 
   @override
@@ -78,7 +84,7 @@ class _LoginState extends State<Login> {
                     // TODO: change route to option choice screen later
                     PrimaryButton(
                       title: "LOGIN",
-                      onPressed: () => _processLogin(),
+                      onPressed: () => _checkValidation(),
                     ),
                     const SizedBox(height: 10.0),
                     InquiryTextButton(
@@ -97,50 +103,80 @@ class _LoginState extends State<Login> {
     );
   }
 
-  void _processLogin() async {
-    String email = emailController.text.trim();
-    String uid = uidController.text.trim();
-    if (email.isEmpty ||
+  void _checkValidation() async {
+    email = emailController.text.trim();
+    uid = uidController.text.trim();
+    if (email!.isEmpty /*||
         !RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-            .hasMatch(email) || !RegExp(r'(^(?:9)?[0-9]{10,12}$)')
-        .hasMatch(email))
+            .hasMatch(email!) ||
+        !RegExp(r'(^(?:9)?[0-9]{10,12}$)').hasMatch(email!)*/)
       Common.showErrorTopSnack(
           context, "Please provide valid Email-Address and try again");
-    else if (uid.isEmpty)
+    else if (uid!.isEmpty)
       Common.showErrorTopSnack(
           context, "Please provide strong password and try-again");
     else {
+      if (email! == RegExp(r'(^(?:9)?[0-9]{10,12}$)')) {
+        _checkVerification();
+      } else {
+        _processLogin();
+      }
+    }
+  }
+
+  Future<void> _checkVerification() async {
+    setState(() {
       _isLoading = true;
-      setState(() {});
-      await ApiRequests.loginUser(context, email, uid: uid).then((value) async {
+    });
+
+    _createAndVerifyOtpData =
+        await ApiRequests.createOrVerifyOtp(context, email!);
+
+    print(_createAndVerifyOtpData!.status);
+
+    if (_createAndVerifyOtpData!.status == 'already_verified') {
+      _processLogin();
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                OtpScreen(phone: email, password: uid, comingFrom: 'login')),
+      );
+    }
+  }
+
+  void _processLogin() async {
+    _isLoading = true;
+    setState(() {});
+    await ApiRequests.loginUser(context, email!, uid: uid!).then((value) async {
+      setState(() {
+        _isLoading = false;
+      });
+
+      if (value.success) {
+        // store token in shared preferences
+        setString(Common.TOKEN, value.data!.token);
+        setInt(Common.ID, value.data!.id);
+        Common.pushAndRemoveUntil(context, Dashboard());
+      } else {
+        Common.showErrorTopSnack(
+          context,
+          "${value.message}",
+        );
+      }
+    }).onError(
+      (error, stackTrace) {
+        print("Dio Error --------" + error.toString());
+
         setState(() {
           _isLoading = false;
         });
-
-        if (value.success) {
-          // store token in shared preferences
-          setString(Common.TOKEN, value.data!.token);
-          setInt(Common.ID, value.data!.id);
-          Common.pushAndRemoveUntil(context, Dashboard());
-        } else {
-          Common.showErrorTopSnack(
-            context,
-            "${value.message}",
-          );
-        }
-      }).onError(
-        (error, stackTrace) {
-          print("Dio Error --------"+error.toString());
-
-          setState(() {
-            _isLoading = false;
-          });
-          Common.showErrorTopSnack(
-            context,
-            "Unable to login. please try again by double checking your email-address and password.",
-          );
-        },
-      );
-    }
+        Common.showErrorTopSnack(
+          context,
+          "Unable to login. please try again by double checking your email-address and password.",
+        );
+      },
+    );
   }
 }

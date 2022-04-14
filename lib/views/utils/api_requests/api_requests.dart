@@ -38,6 +38,26 @@ class ApiRequests {
     "Connection": "keep-alive",
   };
 
+  static Future <CreateAndVerifyOtpModel> verifyOtp (BuildContext context, String phoneNumber , String otp) async{
+    String url = Common.BASE_URL + "otp/verify-otp/$phoneNumber/$otp/?consumer_key=$username&consumer_secret=$password";
+    print(url);
+    try{
+      return await Dio()
+          .get(
+        url,
+      )
+          .then(
+            (value) => CreateAndVerifyOtpModel.fromJson(value.data),
+      );
+
+    }
+    on DioError catch (e) {
+      print(e);
+      return CreateAndVerifyOtpModel.fromJson(e.response!.data);
+    }
+  }
+
+
   static Future <CreateAndVerifyOtpModel> createOrVerifyOtp (BuildContext context, String phoneNumber) async{
     String url = Common.BASE_URL + "otp/create-otp/$phoneNumber/?consumer_key=$username&consumer_secret=$password";
     print(url);
@@ -444,8 +464,8 @@ class ApiRequests {
     try {
       return await Dio()
           .post(
-        Common.API_URL + "customers",
-        options: Options(headers: header),
+        Common.API_URL + "customers?consumer_key=$username&consumer_secret=$password",
+      //  options: Options(headers: header),
         data: request,
       )
           .then((value) => registerMethod(value));
